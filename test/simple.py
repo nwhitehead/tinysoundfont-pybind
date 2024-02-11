@@ -6,10 +6,10 @@ def test_help():
     help(tinysoundfont)
 
 def test_load():
-    print(tinysoundfont.tsf_load_filename)
     i = tinysoundfont.SoundFont('test/example.sf2')
     print(i)
     i.reset()
+    print(i.get_preset_count())
 
 def test_all():
     test_help()
