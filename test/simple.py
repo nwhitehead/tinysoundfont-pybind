@@ -15,6 +15,7 @@ def test_load():
     i.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, 0.0)
     o = tinysoundfont.SoundFont(i)
     print(o)
+    o.set_volume(0.5)
 
 def test_all():
     test_help()

@@ -33,6 +33,8 @@ public:
     std::string get_preset_name(int index) { return std::string(tsf_get_presetname(obj, index)); }
     std::string get_preset_name(int bank, int number) { return tsf_bank_get_presetname(obj, bank, number); }
     void set_output(enum TSFOutputMode output_mode, int samplerate, float global_gain_db) { tsf_set_output(obj, output_mode, samplerate, global_gain_db); }
+    void set_volume(float global_gain) { tsf_set_volume(obj, global_gain); }
+    void set_max_voices(int max_voices) { tsf_set_max_voices(obj, max_voices); }
 };
 
 PYBIND11_MODULE(tinysoundfont, m) {
@@ -64,5 +66,11 @@ PYBIND11_MODULE(tinysoundfont, m) {
         .def("set_output", &SoundFont::set_output,
             "Setup the parameters for the voice render methods",
             "output_mode"_a, "samplerate"_a, "global_gain_db"_a)
+        .def("set_volume", &SoundFont::set_volume,
+            "Set the global gain as a volume factor (1.0 is normal 100%)",
+            "global_gain"_a)
+        .def("set_max_voices", &SoundFont::set_max_voices,
+            "Set the maximum number of voices to play simultaneously. Depending on the soundfond, one note can cause many new voices to be started, so don't keep this number too low or otherwise sounds may not play.",
+            "max_voices"_a)
     ;
 }
