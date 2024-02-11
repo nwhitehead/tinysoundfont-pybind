@@ -2,8 +2,6 @@
 namespace py = pybind11;
 using namespace pybind11::literals;
 
-#include <iostream>
-
 #include <stdexcept>
 #include <string>
 
@@ -58,8 +56,12 @@ public:
         if (info.format != py::format_descriptor<float>::format()) {
             throw std::runtime_error("Incompatible buffer format, must be float32");
         }
-        int samples = info.shape[0];
-        std::cout << "samples = " << samples << std::endl;
+        // Assume stereo
+        int output_channels = obj->outputmode == TSF_MONO ? 1 : 2;
+        if (info.shape[0] % output_channels) {
+            throw std::runtime_error("Incompatible buffer length, must be a multiple of 2 for stereo");
+        }
+        int samples = info.shape[0] / output_channels;
         tsf_render_float(obj, static_cast<float *>(info.ptr), samples, 0);
     }
 };
