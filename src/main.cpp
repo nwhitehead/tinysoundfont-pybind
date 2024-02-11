@@ -35,6 +35,7 @@ public:
     void set_output(enum TSFOutputMode output_mode, int samplerate, float global_gain_db) { tsf_set_output(obj, output_mode, samplerate, global_gain_db); }
     void set_volume(float global_gain) { tsf_set_volume(obj, global_gain); }
     void set_max_voices(int max_voices) { tsf_set_max_voices(obj, max_voices); }
+    int note_on(int index, int key, float velocity) { tsf_note_on(obj, index, key, velocity); }
 };
 
 PYBIND11_MODULE(tinysoundfont, m) {
@@ -72,5 +73,8 @@ PYBIND11_MODULE(tinysoundfont, m) {
         .def("set_max_voices", &SoundFont::set_max_voices,
             "Set the maximum number of voices to play simultaneously. Depending on the soundfond, one note can cause many new voices to be started, so don't keep this number too low or otherwise sounds may not play.",
             "max_voices"_a)
+        .def("note_on", &SoundFont::note_on,
+            "Start playing a note",
+            "index"_a, "key"_a, "velocity"_a)
     ;
 }
