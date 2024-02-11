@@ -10,6 +10,7 @@ def test_load():
     print(i)
     i.reset()
     print(i.get_preset_count())
+    print(i.get_preset_name(0))
 
 def test_all():
     test_help()

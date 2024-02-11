@@ -40,5 +40,8 @@ PYBIND11_MODULE(tinysoundfont, m) {
             py::arg("bank"), py::arg("preset"))
         .def("get_preset_count", &SoundFont::get_preset_count,
             "Returns the number of presets in the loaded SoundFont")
+        .def("get_preset_name", &SoundFont::get_preset_name,
+            "Returns the name of a preset index >= 0 and < get_preset_count()",
+            py::arg("index"))
     ;
 }
