@@ -15,7 +15,7 @@ public:
     {
         obj = tsf_load_filename(filename.c_str());
         if (!obj) {
-            throw std::runtime_error("Could not load SoundFont file: " + filename);
+            throw std::runtime_error(std::string("Could not load SoundFont file: ") + filename);
         }
     }
     SoundFont(const SoundFont &other) {
@@ -35,7 +35,19 @@ public:
     void set_output(enum TSFOutputMode output_mode, int samplerate, float global_gain_db) { tsf_set_output(obj, output_mode, samplerate, global_gain_db); }
     void set_volume(float global_gain) { tsf_set_volume(obj, global_gain); }
     void set_max_voices(int max_voices) { tsf_set_max_voices(obj, max_voices); }
-    int note_on(int index, int key, float velocity) { tsf_note_on(obj, index, key, velocity); }
+    void note_on(int index, int key, float velocity) { 
+        if (!tsf_note_on(obj, index, key, velocity)) {
+            throw std::runtime_error(std::string("Error in note_on, allocation of new voice failed"));
+        }
+    }
+    void note_on(int bank, int number, int key, float velocity) { 
+        if (!tsf_bank_note_on(obj, bank, number, key, velocity)) {
+            throw std::runtime_error(std::string("Error in note_on, preset does not exist or allocation of new voice failed"));
+        }
+    }
+    void note_off() { tsf_note_off_all(obj); }
+    void note_off(int index, int key) { tsf_note_off(obj, index, key); }
+    void note_off(int bank, int number, int key) { tsf_bank_note_off(obj, bank, number, key); }
 };
 
 PYBIND11_MODULE(tinysoundfont, m) {
@@ -73,8 +85,19 @@ PYBIND11_MODULE(tinysoundfont, m) {
         .def("set_max_voices", &SoundFont::set_max_voices,
             "Set the maximum number of voices to play simultaneously. Depending on the soundfond, one note can cause many new voices to be started, so don't keep this number too low or otherwise sounds may not play.",
             "max_voices"_a)
-        .def("note_on", &SoundFont::note_on,
+        .def("note_on", py::overload_cast<int, int, float>(&SoundFont::note_on),
             "Start playing a note",
             "index"_a, "key"_a, "velocity"_a)
+        .def("note_on", py::overload_cast<int, int, int, float>(&SoundFont::note_on),
+            "Start playing a note",
+            "bank"_a, "number"_a, "key"_a, "velocity"_a)
+        .def("note_off", py::overload_cast<>(&SoundFont::note_off),
+            "Stop playing all notes")
+        .def("note_off", py::overload_cast<int, int>(&SoundFont::note_off),
+            "Stop playing a note",
+            "index"_a, "key"_a)
+        .def("note_off", py::overload_cast<int, int, int>(&SoundFont::note_off),
+            "Stop playing a note",
+            "bank"_a, "number"_a, "key"_a)
     ;
 }

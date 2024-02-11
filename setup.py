@@ -10,7 +10,6 @@ ext_modules = [
         ["src/main.cpp"],
         define_macros=[("VERSION_INFO", __version__)],
         cxx_std=17,
-        extra_compile_args=["-g"],
     ),
 ]
 
