@@ -7,8 +7,9 @@ def test_help():
 
 def test_load():
     print(tinysoundfont.tsf_load_filename)
-    i = tinysoundfont.SoundFont('test.sf2')
+    i = tinysoundfont.SoundFont('test/example.sf2')
     print(i)
+    i.reset()
 
 def test_all():
     test_help()

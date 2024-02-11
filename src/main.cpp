@@ -25,6 +25,7 @@ public:
     ~SoundFont() {
         tsf_close(obj);
     }
+    void reset() { tsf_reset(obj); }
 };
 
 PYBIND11_MODULE(tinysoundfont, m) {
@@ -33,5 +34,6 @@ PYBIND11_MODULE(tinysoundfont, m) {
     m.def("add", &add, "A function that adds two numbers");
     m.def("tsf_load_filename", &tsf_load_filename, "Directly load a SoundFont from a .sf2 file path");
     py::class_<SoundFont>(m, "SoundFont")
-        .def(py::init<const std::string &>());
+        .def(py::init<const std::string &>())
+        .def("reset", &SoundFont::reset);
 }
