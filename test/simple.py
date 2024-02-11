@@ -1,0 +1,3 @@
+import tinysoundfont
+
+help(tinysoundfont)

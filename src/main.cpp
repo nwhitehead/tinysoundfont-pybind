@@ -4,8 +4,8 @@ int add(int i, int j) {
     return i + j;
 }
 
-PYBIND11_MODULE(pytinysoundfont, m) {
-    m.doc() = "pybind11 example plugin";
+PYBIND11_MODULE(tinysoundfont, m) {
+    m.doc() = "Tiny Sound Font module";
 
     m.def("add", &add, "A function that adds two numbers");
 }
