@@ -2,6 +2,8 @@
 namespace py = pybind11;
 using namespace pybind11::literals;
 
+#include <iostream>
+
 #include <stdexcept>
 #include <string>
 
@@ -48,6 +50,18 @@ public:
     void note_off() { tsf_note_off_all(obj); }
     void note_off(int index, int key) { tsf_note_off(obj, index, key); }
     void note_off(int bank, int number, int key) { tsf_bank_note_off(obj, bank, number, key); }
+    void render(py::buffer buffer) {
+        py::buffer_info info = buffer.request();
+        if (info.ndim != 1) {
+            throw std::runtime_error("Incompatible buffer dimension, must be 1 dimensional");
+        }
+        if (info.format != py::format_descriptor<float>::format()) {
+            throw std::runtime_error("Incompatible buffer format, must be float32");
+        }
+        int samples = info.shape[0];
+        std::cout << "samples = " << samples << std::endl;
+        tsf_render_float(obj, static_cast<float *>(info.ptr), samples, 0);
+    }
 };
 
 PYBIND11_MODULE(tinysoundfont, m) {
@@ -99,5 +113,8 @@ PYBIND11_MODULE(tinysoundfont, m) {
         .def("note_off", py::overload_cast<int, int, int>(&SoundFont::note_off),
             "Stop playing a note",
             "bank"_a, "number"_a, "key"_a)
+        .def("render", &SoundFont::render,
+            "Render output samples into a buffer",
+            "buffer"_a)
     ;
 }

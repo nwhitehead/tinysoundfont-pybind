@@ -1,4 +1,5 @@
 import tinysoundfont
+import numpy as np
 
 def test_help():
     import os
@@ -21,6 +22,10 @@ def test_load():
     # o.set_volume(0.5)
     # chan = o.note_on(0, 60, 0.5)
     # print(chan)
+    samps = 44100
+    buffer = np.zeros((samps,), dtype=np.float32)
+    print(buffer)
+    i.render(buffer)
 
 def test_all():
     test_help()
