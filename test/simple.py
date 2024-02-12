@@ -23,22 +23,30 @@ def test_chord():
     output = np.zeros((0, 2), dtype=np.float32)
     buffer = np.zeros((44100 * 1, 2), dtype=np.float32)
 
+    # 1 second silence
+    output = np.concatenate((output, buffer))
+
+    # 1 second chord
     sf.channel_note_on(0, 48, 1.0)
     sf.channel_note_on(1, 52, 1.0)
     sf.channel_note_on(2, 55, 1.0)
     sf.render(buffer)
-    output = np.append(output, buffer)
+    output = np.concatenate((output, buffer))
 
+    # 1 second pitch bend
     sf.set_channel_pan(0, 0)
     sf.set_channel_pitch_wheel(0, 16737)
     sf.set_channel_pan(1, 1)
     sf.set_channel_pan(2, 1)
     sf.render(buffer)
-    output = np.append(output, buffer)
+    output = np.concatenate((output, buffer))
 
+    # 1 second fadeout
     sf.note_off()
     sf.render(buffer)
-    output = np.append(output, buffer)
+    output = np.concatenate((output, buffer))
+
+    # Write to WAV file
     scipy.io.wavfile.write('test.wav', 44100, output)
 
 def test_all():
