@@ -50,18 +50,17 @@ public:
     void note_off(int bank, int number, int key) { tsf_bank_note_off(obj, bank, number, key); }
     void render(py::buffer buffer) {
         py::buffer_info info = buffer.request();
-        if (info.ndim != 1) {
-            throw std::runtime_error("Incompatible buffer dimension, must be 1 dimensional");
+        int output_channels = obj->outputmode == TSF_MONO ? 1 : 2;
+        if (info.ndim != 2) {
+            throw std::runtime_error("Incompatible buffer dimension, must be 2 dimensional (samples, channels)");
         }
         if (info.format != py::format_descriptor<float>::format()) {
             throw std::runtime_error("Incompatible buffer format, must be float32");
         }
-        // Assume stereo
-        int output_channels = obj->outputmode == TSF_MONO ? 1 : 2;
-        if (info.shape[0] % output_channels) {
-            throw std::runtime_error("Incompatible buffer length, must be a multiple of 2 for stereo");
+        if (info.shape[1] != output_channels) {
+            throw std::runtime_error(std::string("Incompatible buffer length, channel size must be ") + std::string(output_channels == 1 ? "1 for mono" : "2 for stereo"));
         }
-        int samples = info.shape[0] / output_channels;
+        int samples = info.shape[0];
         tsf_render_float(obj, static_cast<float *>(info.ptr), samples, 0);
     }
 };

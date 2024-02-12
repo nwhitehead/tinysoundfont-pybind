@@ -1,5 +1,6 @@
 import tinysoundfont
 import numpy as np
+import scipy.io.wavfile
 
 def test_help():
     import os
@@ -14,20 +15,19 @@ def test_load():
 def test_chord():
     sf = tinysoundfont.SoundFont('test/example.sf2')
     sf.reset()
-    sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, 0.0)
+    sf.set_max_voices(8)
+    sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, -18.0)
     sf.note_on(0, 48, 1.0)
     sf.note_on(0, 52, 1.0)
     sf.note_on(0, 55, 1.0)
-    samps = 44100
-    buffer = np.zeros((samps,), dtype=np.float32)
+    output = np.zeros((0, 2), dtype=np.float32)
+    buffer = np.zeros((44100 * 1, 2), dtype=np.float32)
     sf.render(buffer)
-    print(buffer)
-
-    # o = tinysoundfont.SoundFont(i)
-    # print(o)
-    # o.set_volume(0.5)
-    # chan = o.note_on(0, 60, 0.5)
-    # print(chan)
+    output = np.append(output, buffer)
+    sf.note_off()
+    sf.render(buffer)
+    output = np.append(output, buffer)
+    scipy.io.wavfile.write('test.wav', 44100, output)
 
 def test_all():
     test_help()
