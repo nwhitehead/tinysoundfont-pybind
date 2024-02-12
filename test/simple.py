@@ -10,6 +10,22 @@ def test_load():
     assert sf.get_preset_count() == 1
     assert sf.get_preset_name(0) == 'El Cheapo Organ'
 
+def test_bytes():
+    sf = tinysoundfont.SoundFont('test/example.sf2')
+    sf.reset()
+    sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, -18.0)
+    sf.set_channel_preset_index(0, 0)
+    sf.channel_note_on(0, 48, 1.0)
+    bytes_per_float = 4
+    channels = 2
+    # Create 1 second buffer
+    buffer = bytearray(44100 * bytes_per_float * channels)
+    sf.render(buffer)
+    # buffer now contains audio data
+    # Check first and last value
+    assert buffer[:4] == b'\x00\x00\x00\x00'
+    assert buffer[-4:] == b'\x80\xc9\xd8='
+
 def test_wav():
     import numpy as np
     import scipy.io.wavfile
@@ -132,6 +148,7 @@ def test_callback():
 def test_all():
     test_help()
     test_load()
+    test_bytes()
     test_wav()
     test_blocking()
     test_callback()

@@ -68,17 +68,30 @@ public:
     void render(py::buffer buffer) {
         py::buffer_info info = buffer.request();
         int output_channels = obj->outputmode == TSF_MONO ? 1 : 2;
-        if (info.ndim != 2) {
-            throw std::runtime_error("Incompatible buffer dimension, must be 2 dimensional (samples, channels)");
+        if (info.ndim == 1) {
+            // 1D buffers must be contiguous byte arrays
+            if (info.format != py::format_descriptor<unsigned char>::format()) {
+                throw std::runtime_error("Incompatible buffer format, must be unsigned char");
+            }
+            if (info.shape[0] % (sizeof(float) * output_channels)) {
+                throw std::runtime_error("Buffer length does not divide evenly into sample frames");
+            }
+            int samples = info.shape[0] / (sizeof(float) * output_channels);
+            tsf_render_float(obj, static_cast<float *>(info.ptr), samples, 0);
+            return;
         }
         if (info.format != py::format_descriptor<float>::format()) {
             throw std::runtime_error("Incompatible buffer format, must be float32");
+        }
+        if (info.ndim != 2) {
+            throw std::runtime_error("Incompatible buffer dimension, must be 1 dimensional bytearray or 2 dimensional of size (samples, channels)");
         }
         if (info.shape[1] != output_channels) {
             throw std::runtime_error(std::string("Incompatible buffer length, channel size must be ") + std::string(output_channels == 1 ? "1 for mono" : "2 for stereo"));
         }
         int samples = info.shape[0];
         tsf_render_float(obj, static_cast<float *>(info.ptr), samples, 0);
+        return;
     }
 
     void set_channel_preset_index(int channel, int index) {
