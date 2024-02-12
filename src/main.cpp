@@ -143,6 +143,10 @@ public:
 
     void channel_note_off(int channel, int key) { tsf_channel_note_off(obj, channel, key); }
 
+    void channel_note_off(int channel) { tsf_channel_note_off_all(obj, channel); }
+
+    void channel_sounds_off(int channel) { tsf_channel_sounds_off_all(obj, channel); }
+
 };
 
 PYBIND11_MODULE(tinysoundfont, m) {
@@ -224,8 +228,14 @@ PYBIND11_MODULE(tinysoundfont, m) {
         .def("channel_note_on", &SoundFont::channel_note_on,
             "Play note on channel (preset must already be set for channel)",
             "channel"_a, "key"_a, "velocity"_a)
-        .def("channel_note_off", &SoundFont::channel_note_off,
+        .def("channel_note_off", py::overload_cast<int, int>(&SoundFont::channel_note_off),
             "Stop note on channel",
             "channel"_a, "key"_a)
+        .def("channel_note_off", py::overload_cast<int>(&SoundFont::channel_note_off),
+            "Stop all notes on channel",
+            "channel"_a)
+        .def("channel_sounds_off", &SoundFont::channel_sounds_off,
+            "Stop all sounds entirely on channel",
+            "channel"_a)
     ;
 }
