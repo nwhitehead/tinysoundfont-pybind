@@ -49,13 +49,13 @@ public:
 
     void note_on(int index, int key, float velocity) {
         if (!tsf_note_on(obj, index, key, velocity)) {
-            throw std::runtime_error(std::string("Error in note_on, allocation of new voice failed"));
+            throw std::runtime_error(std::string("Error in note_on"));
         }
     }
 
     void note_on(int bank, int number, int key, float velocity) {
         if (!tsf_bank_note_on(obj, bank, number, key, velocity)) {
-            throw std::runtime_error("Error in note_on, preset does not exist or allocation of new voice failed");
+            throw std::runtime_error("Error in note_on");
         }
     }
 
@@ -134,6 +134,15 @@ public:
             throw std::runtime_error("Error in set_channel_tuning");
         }
     }
+
+    void channel_note_on(int channel, int key, float velocity) {
+        if (!tsf_channel_note_on(obj, channel, key, velocity)) {
+            throw std::runtime_error(std::string("Error in channel_note_on"));
+        }
+    }
+
+    void channel_note_off(int channel, int key) { tsf_channel_note_off(obj, channel, key); }
+
 };
 
 PYBIND11_MODULE(tinysoundfont, m) {
@@ -212,5 +221,11 @@ PYBIND11_MODULE(tinysoundfont, m) {
         .def("set_channel_tuning", &SoundFont::set_channel_tuning,
             "Set pitch tuning for channel of all playing voices, in semitones (default 0.0, standard (A440) tuning)",
             "channel"_a, "tuning"_a)
+        .def("channel_note_on", &SoundFont::channel_note_on,
+            "Play note on channel (preset must already be set for channel)",
+            "channel"_a, "key"_a, "velocity"_a)
+        .def("channel_note_off", &SoundFont::channel_note_off,
+            "Stop note on channel",
+            "channel"_a, "key"_a)
     ;
 }

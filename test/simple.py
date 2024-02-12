@@ -17,6 +17,7 @@ def test_chord():
     sf.reset()
     sf.set_max_voices(8)
     sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, -18.0)
+    sf.set_channel_preset_index(0, 0)
     sf.note_on(0, 48, 1.0)
     sf.note_on(0, 52, 1.0)
     sf.note_on(0, 55, 1.0)
