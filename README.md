@@ -30,6 +30,9 @@ correct format type `float32` and dimensions `(samples, channels)` where
 `channels` will be 1 (mono) or 2 (stereo). Samples are always in `float32`
 format.
 
+    # Create 1 second buffer for stereo float32 at 44.1 KHz
+    buffer = bytearray(44100 * 4 * 2)
+
 Generate samples using:
 
     sf.render(buffer)
