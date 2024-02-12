@@ -11,6 +11,7 @@ using namespace pybind11::literals;
 class SoundFont {
 public:
     tsf* obj = nullptr;
+
     SoundFont(const std::string& filename)
     {
         obj = tsf_load_filename(filename.c_str());
@@ -18,36 +19,52 @@ public:
             throw std::runtime_error(std::string("Could not load SoundFont file: ") + filename);
         }
     }
+
     SoundFont(const SoundFont &other) {
         obj = tsf_copy(other.obj);
         if (!obj) {
             throw std::runtime_error("Could not clone existing SoundFont object");
         }
     }
+
     ~SoundFont() {
         tsf_close(obj);
     }
+
     void reset() { tsf_reset(obj); }
+
     int get_preset_index(int bank, int number) { return tsf_get_presetindex(obj, bank, number); }
+
     int get_preset_count() { return tsf_get_presetcount(obj); }
+
     std::string get_preset_name(int index) { return std::string(tsf_get_presetname(obj, index)); }
+
     std::string get_preset_name(int bank, int number) { return tsf_bank_get_presetname(obj, bank, number); }
+
     void set_output(enum TSFOutputMode output_mode, int samplerate, float global_gain_db) { tsf_set_output(obj, output_mode, samplerate, global_gain_db); }
+
     void set_volume(float global_gain) { tsf_set_volume(obj, global_gain); }
+
     void set_max_voices(int max_voices) { tsf_set_max_voices(obj, max_voices); }
+
     void note_on(int index, int key, float velocity) {
         if (!tsf_note_on(obj, index, key, velocity)) {
             throw std::runtime_error(std::string("Error in note_on, allocation of new voice failed"));
         }
     }
+
     void note_on(int bank, int number, int key, float velocity) {
         if (!tsf_bank_note_on(obj, bank, number, key, velocity)) {
-            throw std::runtime_error(std::string("Error in note_on, preset does not exist or allocation of new voice failed"));
+            throw std::runtime_error("Error in note_on, preset does not exist or allocation of new voice failed");
         }
     }
+
     void note_off() { tsf_note_off_all(obj); }
+
     void note_off(int index, int key) { tsf_note_off(obj, index, key); }
+
     void note_off(int bank, int number, int key) { tsf_bank_note_off(obj, bank, number, key); }
+
     void render(py::buffer buffer) {
         py::buffer_info info = buffer.request();
         int output_channels = obj->outputmode == TSF_MONO ? 1 : 2;
@@ -63,22 +80,60 @@ public:
         int samples = info.shape[0];
         tsf_render_float(obj, static_cast<float *>(info.ptr), samples, 0);
     }
+
     void set_channel_preset_index(int channel, int index) {
         if (!tsf_channel_set_presetindex(obj, channel, index)) {
-            throw std::runtime_error(std::string("Error in set_channel_preset_index, index does not exist"));
+            throw std::runtime_error("Error in set_channel_preset_index");
         }
     }
-    void set_channel_preset_number(int channel, int number, bool drums) {
-        if (!tsf_channel_set_presetnumber(obj, channel, number, drums ? 1 : 0)) {
-            throw std::runtime_error(std::string("Error in set_channel_preset_number, number does not exist"));
+
+    void set_channel_preset_number(int channel, int number, bool drum) {
+        if (!tsf_channel_set_presetnumber(obj, channel, number, drum ? 1 : 0)) {
+            throw std::runtime_error("Error in set_channel_preset_number");
         }
     }
+
     void set_channel_bank(int channel, int bank) {
         if (!tsf_channel_set_bank(obj, channel, bank)) {
             throw std::runtime_error("Error in set_channel_bank");
         }
     }
 
+    void set_channel_bank_preset(int channel, int bank, int number) {
+        if (!tsf_channel_set_bank_preset(obj, channel, bank, number)) {
+            throw std::runtime_error("Error in set_channel_bank_preset");
+        }
+    }
+
+    void set_channel_pan(int channel, float pan) {
+        if (!tsf_channel_set_pan(obj, channel, pan)) {
+            throw std::runtime_error("Error in set_channel_pan");
+        }
+    }
+
+    void set_channel_volume(int channel, float volume) {
+        if (!tsf_channel_set_volume(obj, channel, volume)) {
+            throw std::runtime_error("Error in set_channel_volume");
+        }
+    }
+
+    void set_channel_pitch_wheel(int channel, int pitch_wheel) {
+        if (!tsf_channel_set_pitchwheel(obj, channel, pitch_wheel)) {
+            throw std::runtime_error("Error in set_channel_pitch_wheel");
+        }
+    }
+
+    void set_channel_pitch_range(int channel, float range) {
+        if (!tsf_channel_set_pitchrange(obj, channel, range)) {
+            throw std::runtime_error("Error in set_channel_pitch_range");
+        }
+    }
+
+    void set_channel_tuning(int channel, float tuning) {
+        if (!tsf_channel_set_tuning(obj, channel, tuning)) {
+            throw std::runtime_error("Error in set_channel_tuning");
+        }
+    }
 };
 
 PYBIND11_MODULE(tinysoundfont, m) {
@@ -137,10 +192,25 @@ PYBIND11_MODULE(tinysoundfont, m) {
             "Set preset index for a channel",
             "channel"_a, "index"_a)
         .def("set_channel_preset_number", &SoundFont::set_channel_preset_number,
-            "Set preset number for a channel, with drum flag",
-            "channel"_a, "number"_a, "drums"_a)
+            "Set preset number for a channel, with drum flag that applies MIDI drum rules",
+            "channel"_a, "number"_a, "drum"_a)
         .def("set_channel_bank", &SoundFont::set_channel_bank,
             "Set bank for a channel",
             "channel"_a, "bank"_a)
+        .def("set_channel_pan", &SoundFont::set_channel_pan,
+            "Set stereo pan for a channel, value from 0.0 (left) to 1.0 (right) (default 0.5 center)",
+            "channel"_a, "pan"_a)
+        .def("set_channel_volume", &SoundFont::set_channel_volume,
+            "Set volume for a channel, linear scale (default 1.0)",
+            "channel"_a, "volume"_a)
+        .def("set_channel_pitch_wheel", &SoundFont::set_channel_pitch_wheel,
+            "Set pitch wheel for a channel, position 0 to 16383 (default 8192 unpitched)",
+            "channel"_a, "pitch_wheel"_a)
+        .def("set_channel_pitch_range", &SoundFont::set_channel_pitch_range,
+            "Set pitch range of channel in semitones (default 2.0, total +/- 2 semitones)",
+            "channel"_a, "range"_a)
+        .def("set_channel_tuning", &SoundFont::set_channel_tuning,
+            "Set pitch tuning for channel of all playing voices, in semitones (default 0.0, standard (A440) tuning)",
+            "channel"_a, "tuning"_a)
     ;
 }
