@@ -2,6 +2,7 @@ Copyright (C) 2024 Nathan Whitehead
 
 Based on TinySoundFont, Copyright (C) 2017-2023 Bernhard Schelling, https://github.com/schellingb/TinySoundFont
 Based on SFZero, Copyright (C) 2012 Steve Folta, https://github.com/stevefolta/SFZero
+Includes stb_vorbis.c, Copyright (c) 2017 Sean Barrett, https://github.com/nothings/stb/blob/master/stb_vorbis.c
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

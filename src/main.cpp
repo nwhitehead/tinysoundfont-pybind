@@ -5,6 +5,9 @@ using namespace pybind11::literals;
 #include <stdexcept>
 #include <string>
 
+// Include support for OGG Vorbis file format (detected automatically by TinySoundFont header)
+#include "stb/stb_vorbis.c"
+
 #define TSF_IMPLEMENTATION
 #include "tsf/tsf.h"
 
