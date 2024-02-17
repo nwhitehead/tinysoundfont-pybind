@@ -103,57 +103,57 @@ public:
         return;
     }
 
-    void set_channel_preset_index(int channel, int index) {
+    void channel_set_preset_index(int channel, int index) {
         if (!tsf_channel_set_presetindex(obj, channel, index)) {
-            throw std::runtime_error("Error in set_channel_preset_index");
+            throw std::runtime_error("Error in channel_set_preset_index");
         }
     }
 
-    void set_channel_preset_number(int channel, int number, bool drum) {
+    void channel_set_preset_number(int channel, int number, bool drum) {
         if (!tsf_channel_set_presetnumber(obj, channel, number, drum ? 1 : 0)) {
-            throw std::runtime_error("Error in set_channel_preset_number");
+            throw std::runtime_error("Error in channel_set_preset_number");
         }
     }
 
-    void set_channel_bank(int channel, int bank) {
+    void channel_set_bank(int channel, int bank) {
         if (!tsf_channel_set_bank(obj, channel, bank)) {
-            throw std::runtime_error("Error in set_channel_bank");
+            throw std::runtime_error("Error in channel_set_bank");
         }
     }
 
-    void set_channel_bank_preset(int channel, int bank, int number) {
+    void channel_set_bank_preset(int channel, int bank, int number) {
         if (!tsf_channel_set_bank_preset(obj, channel, bank, number)) {
-            throw std::runtime_error("Error in set_channel_bank_preset");
+            throw std::runtime_error("Error in channel_set_bank_preset");
         }
     }
 
-    void set_channel_pan(int channel, float pan) {
+    void channel_set_pan(int channel, float pan) {
         if (!tsf_channel_set_pan(obj, channel, pan)) {
-            throw std::runtime_error("Error in set_channel_pan");
+            throw std::runtime_error("Error in channel_set_pan");
         }
     }
 
-    void set_channel_volume(int channel, float volume) {
+    void channel_set_volume(int channel, float volume) {
         if (!tsf_channel_set_volume(obj, channel, volume)) {
-            throw std::runtime_error("Error in set_channel_volume");
+            throw std::runtime_error("Error in channel_set_volume");
         }
     }
 
-    void set_channel_pitch_wheel(int channel, int pitch_wheel) {
+    void channel_set_pitch_wheel(int channel, int pitch_wheel) {
         if (!tsf_channel_set_pitchwheel(obj, channel, pitch_wheel)) {
-            throw std::runtime_error("Error in set_channel_pitch_wheel");
+            throw std::runtime_error("Error in channel_set_pitch_wheel");
         }
     }
 
-    void set_channel_pitch_range(int channel, float range) {
+    void channel_set_pitch_range(int channel, float range) {
         if (!tsf_channel_set_pitchrange(obj, channel, range)) {
-            throw std::runtime_error("Error in set_channel_pitch_range");
+            throw std::runtime_error("Error in channel_set_pitch_range");
         }
     }
 
-    void set_channel_tuning(int channel, float tuning) {
+    void channel_set_tuning(int channel, float tuning) {
         if (!tsf_channel_set_tuning(obj, channel, tuning)) {
-            throw std::runtime_error("Error in set_channel_tuning");
+            throw std::runtime_error("Error in channel_set_tuning");
         }
     }
 
@@ -169,6 +169,27 @@ public:
 
     void channel_sounds_off(int channel) { tsf_channel_sounds_off_all(obj, channel); }
 
+    void channel_midi_control(int channel, int controller, int control_value) {
+        if (!tsf_channel_midi_control(obj, channel, controller, control_value)) {
+            throw std::runtime_error(std::string("Error in channel_midi_control"));
+        }
+    }
+
+    int channel_get_preset_index(int channel) { return tsf_channel_get_preset_index(obj, channel); }
+
+    int channel_get_preset_bank(int channel) { return tsf_channel_get_preset_bank(obj, channel); }
+
+    int channel_get_preset_number(int channel) { return tsf_channel_get_preset_number(obj, channel); }
+
+    float channel_get_pan(int channel) { return tsf_channel_get_pan(obj, channel); }
+
+    float channel_get_volume(int channel) { return tsf_channel_get_volume(obj, channel); }
+
+    int channel_get_pitchwheel(int channel) { return tsf_channel_get_pitchwheel(obj, channel); }
+
+    float channel_get_pitchrange(int channel) { return tsf_channel_get_pitchrange(obj, channel); }
+
+    float channel_get_tuning(int channel) { return tsf_channel_get_tuning(obj, channel); }
 };
 
 PYBIND11_MODULE(tinysoundfont, m) {
@@ -228,28 +249,28 @@ PYBIND11_MODULE(tinysoundfont, m) {
         .def("render", &SoundFont::render,
             "Render output samples into a buffer",
             "buffer"_a)
-        .def("set_channel_preset_index", &SoundFont::set_channel_preset_index,
+        .def("channel_set_preset_index", &SoundFont::channel_set_preset_index,
             "Set preset index for a channel",
             "channel"_a, "index"_a)
-        .def("set_channel_preset_number", &SoundFont::set_channel_preset_number,
+        .def("channel_set_preset_number", &SoundFont::channel_set_preset_number,
             "Set preset number for a channel, with drum flag that applies MIDI drum rules",
             "channel"_a, "number"_a, "drum"_a)
-        .def("set_channel_bank", &SoundFont::set_channel_bank,
+        .def("channel_set_bank", &SoundFont::channel_set_bank,
             "Set bank for a channel",
             "channel"_a, "bank"_a)
-        .def("set_channel_pan", &SoundFont::set_channel_pan,
+        .def("channel_set_pan", &SoundFont::channel_set_pan,
             "Set stereo pan for a channel, value from 0.0 (left) to 1.0 (right) (default 0.5 center)",
             "channel"_a, "pan"_a)
-        .def("set_channel_volume", &SoundFont::set_channel_volume,
+        .def("channel_set_volume", &SoundFont::channel_set_volume,
             "Set volume for a channel, linear scale (default 1.0)",
             "channel"_a, "volume"_a)
-        .def("set_channel_pitch_wheel", &SoundFont::set_channel_pitch_wheel,
+        .def("channel_set_pitch_wheel", &SoundFont::channel_set_pitch_wheel,
             "Set pitch wheel for a channel, position 0 to 16383 (default 8192 unpitched)",
             "channel"_a, "pitch_wheel"_a)
-        .def("set_channel_pitch_range", &SoundFont::set_channel_pitch_range,
+        .def("channel_set_pitch_range", &SoundFont::channel_set_pitch_range,
             "Set pitch range of channel in semitones (default 2.0, total +/- 2 semitones)",
             "channel"_a, "range"_a)
-        .def("set_channel_tuning", &SoundFont::set_channel_tuning,
+        .def("channel_set_tuning", &SoundFont::channel_set_tuning,
             "Set pitch tuning for channel of all playing voices, in semitones (default 0.0, standard (A440) tuning)",
             "channel"_a, "tuning"_a)
         .def("channel_note_on", &SoundFont::channel_note_on,
@@ -264,5 +285,15 @@ PYBIND11_MODULE(tinysoundfont, m) {
         .def("channel_sounds_off", &SoundFont::channel_sounds_off,
             "Stop all sounds entirely on channel",
             "channel"_a)
+        .def("channel_midi_control", &SoundFont::channel_midi_control,
+            "Apply a MIDI control change to the channel (not all controllers are supported!)",
+            "channel"_a, "controller"_a, "control_value"_a)
+        .def("channel_get_preset_index", &SoundFont::channel_get_preset_index,
+            "Get current preset index set on the channel",
+            "channel"_a)
+        .def("channel_get_preset_bank", &SoundFont::channel_get_preset_bank,
+            "Get current preset bank set on the channel",
+            "channel"_a)
+
     ;
 }
