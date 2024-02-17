@@ -76,13 +76,11 @@ def test_blocking():
     import pyaudio
     import numpy as np
     p = pyaudio.PyAudio()
-    stream = p.open(format=p.get_format_from_width(4),
+    stream = p.open(format=pyaudio.paFloat32,
                     channels=2,
                     rate=44100,
                     output=True)
     sf = tinysoundfont.SoundFont('test/example.sf2')
-    sf.reset()
-    sf.set_max_voices(8)
     sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, -18.0)
     sf.channel_set_preset_index(0, 0)
     buffer = np.zeros((44100, 2), dtype=np.float32)
@@ -112,13 +110,53 @@ def test_blocking():
     stream.close()
     p.terminate()
 
+def test_blocking0():
+    import pyaudio
+    p = pyaudio.PyAudio()
+    stream = p.open(format=pyaudio.paFloat32,
+                    channels=2,
+                    rate=44100,
+                    output=True)
+    sf = tinysoundfont.SoundFont('test/example.sf2')
+    sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, -18.0)
+    sf.channel_set_preset_index(0, 0)
+    buffer = bytearray(44100 * 2 * 4)
+    sf.channel_note_on(0, 48, 1.0)
+    sf.render(buffer)
+    stream.write(bytes(buffer))
+    stream.close()
+    p.terminate()
+
+def test_callback0():
+    import pyaudio
+    import time
+    sf = tinysoundfont.SoundFont('test/example.sf2')
+    sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, -18.0)
+    p = pyaudio.PyAudio()
+
+    def callback(in_data, frame_count, time_info, status):
+        buffer = bytearray(frame_count * 2 * 4)
+        sf.render(buffer)
+        return (bytes(buffer), pyaudio.paContinue)
+
+    stream = p.open(format=pyaudio.paFloat32,
+                    channels=2,
+                    rate=44100,
+                    output=True,
+                    stream_callback=callback)
+
+    time.sleep(0.5)
+    sf.channel_set_preset_index(0, 0)
+    sf.channel_note_on(0, 48, 1.0)
+    time.sleep(1)
+    stream.close()
+    p.terminate()
+
 def test_callback():
     import pyaudio
     import numpy as np
     import time
     sf = tinysoundfont.SoundFont('test/example.sf2')
-    sf.reset()
-    sf.set_max_voices(8)
     sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, -18.0)
 
     p = pyaudio.PyAudio()
@@ -128,7 +166,7 @@ def test_callback():
         sf.render(buffer)
         return (buffer.astype(np.float32).tobytes(), pyaudio.paContinue)
 
-    stream = p.open(format=p.get_format_from_width(4),
+    stream = p.open(format=pyaudio.paFloat32,
                     channels=2,
                     rate=44100,
                     output=True,
@@ -157,7 +195,9 @@ def test_all():
     test_load()
     test_bytes()
     test_wav()
+    test_blocking0()
     test_blocking()
+    test_callback0()
     test_callback()
 
 test_all()
