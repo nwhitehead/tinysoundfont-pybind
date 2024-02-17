@@ -12,6 +12,15 @@ class SoundFont {
 public:
     tsf* obj = nullptr;
 
+    SoundFont(py::bytes bytes)
+    {
+        py::buffer_info info(py::buffer(bytes).request());
+        obj = tsf_load_memory(info.ptr, info.size);
+        if (!obj) {
+            throw std::runtime_error(std::string("Could not load SoundFont from bytes"));
+        }
+    }
+
     SoundFont(const std::string& filename)
     {
         obj = tsf_load_filename(filename.c_str());
@@ -170,11 +179,16 @@ PYBIND11_MODULE(tinysoundfont, m) {
         .value("Mono", TSF_MONO)
     ;
     py::class_<SoundFont>(m, "SoundFont")
+        // Need bytes constructor first, otherwise bytes would be converted and match string constructor
+        .def(py::init<py::bytes>(),
+            "Load a SoundFont from a memory buffer",
+            "bytes"_a)
         .def(py::init<const std::string &>(),
-            "Directly load a SoundFont from a .sf2 filename",
+            "Load a SoundFont from a .sf2 filename",
             "filename"_a)
         .def(py::init<const SoundFont &>(),
-            "Clone existing SoundFont. This allows loading a soundfont only once, but using it for multiple independent playbacks.")
+            "Clone existing SoundFont. This allows loading a soundfont only once, but using it for multiple independent playbacks.",
+            "other"_a)
         .def("reset", &SoundFont::reset,
             "Stop all playing notes immediately and reset all channel parameters")
         .def("get_preset_index", &SoundFont::get_preset_index,

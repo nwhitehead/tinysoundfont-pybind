@@ -9,6 +9,13 @@ def test_load():
     sf = tinysoundfont.SoundFont('test/example.sf2')
     assert sf.get_preset_count() == 1
     assert sf.get_preset_name(0) == 'El Cheapo Organ'
+    with open('test/example.sf2', 'rb') as f:
+        mem = f.read()
+        assert mem[:4] == b'RIFF'
+        assert len(mem) == 3576
+        sfmem = tinysoundfont.SoundFont(mem)
+        assert sfmem.get_preset_count() == 1
+        assert sfmem.get_preset_name(0) == 'El Cheapo Organ'
 
 def test_bytes():
     sf = tinysoundfont.SoundFont('test/example.sf2')
