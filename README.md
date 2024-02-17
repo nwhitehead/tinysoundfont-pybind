@@ -122,6 +122,11 @@ Some details from the example above:
 -   Returning `pyaudio.paContinue` as the second part of the tuple in the return value keeps the callback active and being called.
 -   During the `time.sleep(1)` call, the callback is being called many times and continues rendering in a separate thread.
 
+### Audio organization
+
+In general, interactive applications need to use the callback mode of `pyaudio`. Using blocking mode means that no interaction is
+possible during audio playback.
+
 ## Local build and test
 
 Build and install locally with:
