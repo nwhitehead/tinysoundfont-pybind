@@ -23,9 +23,9 @@ Setup the output format and global volume:
 
     sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, -18.0)
 
-The negative global gain lets multiple notes mix without distortion. The correct value to use
-will depend on how many notes you expect to play and the gain settings of the particular `sf2`
-instrument.
+The negative global gain lets multiple notes mix without distortion. The correct
+value to use will depend on how many notes you expect to play and the gain
+settings of the particular `sf2` instrument.
 
 Play a note with:
 
@@ -52,15 +52,17 @@ The buffer now contains audio data for the playing instrument.
 
 ## Playing sound
 
-To play actual sound you need something like [`pyaudio`](https://pypi.org/project/PyAudio/). This package
-just generates audio sample data for playback.
+To play actual sound you need something like
+[`pyaudio`](https://pypi.org/project/PyAudio/). This package just generates
+audio sample data for playback.
 
-PyAudio can play back sound using "blocking mode" or "callback mode". This package is compatible with
-both mechanisms.
+PyAudio can play back sound using "blocking mode" or "callback mode". This
+package is compatible with both mechanisms.
 
 ### Blocking mode
 
-Here is code showing simple setup of `pyaudio` and writing 1 second of audio data with a note playing.
+Here is code showing simple setup of `pyaudio` and writing 1 second of audio
+data with a note playing.
 
     import pyaudio
     import tinysoundfont
@@ -83,8 +85,10 @@ Here is code showing simple setup of `pyaudio` and writing 1 second of audio dat
 
 Some details from the example above:
 
--   The format of the output stream opened must be `pyaudio.paFloat32` to match `float` format of rendered audio buffer.
--   The data written to `pyaudio` streams must be `bytes`, cannot be `bytearray` directly or `numpy.ndarray`.
+-   The format of the output stream opened must be `pyaudio.paFloat32` to match
+    `float` format of rendered audio buffer.
+-   The data written to `pyaudio` streams must be `bytes`, cannot be `bytearray`
+    directly or `numpy.ndarray`.
 
 ### Callback mode
 
@@ -118,14 +122,34 @@ Here is code showing callback mode in `pyaudio`.
 
 Some details from the example above:
 
--   The callback function is provided `frame_count` which is used to create a buffer and fill it with rendered sound.
--   Returning `pyaudio.paContinue` as the second part of the tuple in the return value keeps the callback active and being called.
--   During the `time.sleep(1)` call, the callback is being called many times and continues rendering in a separate thread.
+-   The callback function is provided `frame_count` which is used to create a
+    buffer and fill it with rendered sound.
+-   Returning `pyaudio.paContinue` as the second part of the tuple in the return
+    value keeps the callback active and being called.
+-   During the `time.sleep(1)` call, the callback is being called many times and
+    continues rendering in a separate thread.
 
 ### Audio organization
 
-In general, interactive applications need to use the callback mode of `pyaudio`. Using blocking mode means that no interaction is
-possible during audio playback.
+In general, interactive applications need to use the callback mode of `pyaudio`.
+Using blocking mode means that no interaction is possible during audio playback.
+
+For applications that want to lock video rendering and audio playback there are
+a few choices. One choice is to handle audio callbacks as fast as possible with
+smallest buffer possible. This is the `pyaudio` default configuration if no
+`frames_per_buffer` is passed to `pyaudio.open`. In the callback, output audio
+based on what is happening right then. This method will have the lowest latency.
+Because of the arbitrary nature of buffer sizes this method can introduce
+jitter to event timings.
+
+Another option is to request a buffer size that matches the "rhythm" of the
+game. For example a buffer of 441 samples at 44.1 kHz will be refilled exactly
+100 times a second. If the game action happens at 120 BPM, that means each beat
+will span exactly 50 callback buffer fills. The idea here is to keep track of
+the number of audio callbacks as a master clock for actions and synchronization.
+Video frames can then be synchronized to the latest audio count taking into
+account any fixed playback or video synchronization delays. This method
+has higher latency but lower jitter and consistent delay.
 
 ## Local build and test
 
