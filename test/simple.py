@@ -190,6 +190,28 @@ def test_callback():
     stream.close()
     p.terminate()
 
+def test_rerender():
+    sf = tinysoundfont.SoundFont('test/example.sf2')
+    sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, -18.0)
+    sf.channel_set_preset_index(0, 0)
+    bytes_per_float = 4
+    channels = 2
+    # Wrap with `memoryview` so slicing does not create copies but refers to subsections
+    buffer = memoryview(bytearray(44100 * bytes_per_float * channels))
+    start = 44100 * bytes_per_float * channels // 2
+    sf.render(buffer[:start])
+    sf.channel_note_on(0, 48, 1.0)
+    sf.render(buffer[start:])
+    import pyaudio
+    p = pyaudio.PyAudio()
+    stream = p.open(format=pyaudio.paFloat32,
+                    channels=2,
+                    rate=44100,
+                    output=True)
+    stream.write(bytes(buffer))
+    stream.close()
+    p.terminate()
+
 def test_all():
     test_help()
     test_load()
@@ -199,5 +221,6 @@ def test_all():
     test_blocking()
     test_callback0()
     test_callback()
+    test_rerender()
 
 test_all()

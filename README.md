@@ -134,13 +134,13 @@ Some details from the example above:
 In general, interactive applications need to use the callback mode of `pyaudio`.
 Using blocking mode means that no interaction is possible during audio playback.
 
-For applications that want to lock video rendering and audio playback there are
-a few choices. One choice is to handle audio callbacks as fast as possible with
-smallest buffer possible. This is the `pyaudio` default configuration if no
-`frames_per_buffer` is passed to `pyaudio.open`. In the callback, output audio
-based on what is happening right then. This method will have the lowest latency.
-Because of the arbitrary nature of buffer sizes this method can introduce
-jitter to event timings.
+For applications that want to synchronize video rendering and audio playback
+there are a few choices. One choice is to handle audio callbacks as fast as
+possible with smallest buffer possible. This is the `pyaudio` default
+configuration if no `frames_per_buffer` is passed to `pyaudio.open`. In the
+callback, output audio based on what is happening right then. This method will
+have the lowest latency. Because of the arbitrary nature of buffer sizes this
+method can introduce jitter to event timings.
 
 Another option is to request a buffer size that matches the "rhythm" of the
 game. For example a buffer of 441 samples at 44.1 kHz will be refilled exactly
@@ -150,6 +150,26 @@ the number of audio callbacks as a master clock for actions and synchronization.
 Video frames can then be synchronized to the latest audio count taking into
 account any fixed playback or video synchronization delays. This method
 has higher latency but lower jitter and consistent delay.
+
+A final option is to use the smallest buffer possible to minimize latency but
+also record timing information for every event. Then during audio rendering use
+the timing information to position the events to the correct sample. For
+example, a single `noteon` event might need to happen half way through a buffer
+in the callback. This could be accomplished with the following code:
+
+    # Assume we are inside a PyAudio callback
+    buffer = memoryview(bytearray(frame_count * 2 * 4))
+    start = frame_count * 2 * 4 // 2
+    # Render first half
+    sf.render(buffer[:start])
+    sf.channel_note_on(0, 48, 1.0)
+    # Render second half
+    sf.render(buffer[start:])
+    return (bytes(buffer), pyaudio.paContinue)
+
+It is important to wrap the `bytearray` buffer with `memoryview` so that the
+slicing operations into the buffer do not copy memory in the buffer but instead
+refer to subsections of the buffer.
 
 ## Local build and test
 
