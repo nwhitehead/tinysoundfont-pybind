@@ -2,3 +2,4 @@ build/
 *.egg-info/
 venv/
 test.wav
+test/__pycache__

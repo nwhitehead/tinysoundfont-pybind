@@ -1,7 +1,28 @@
 [build-system]
-requires = [
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tinysoundfont"
+dynamic = ["version"]
+description = "Python bindings for loading Sound Fonts (sf2 format) and generating audio samples"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.7"
+authors = [
+    { name = "Nathan Whitehead", email = "nwhitehe@gmail.com" },
+]
+dependencies = [
+    "pybind11~=2.6.1",
     "setuptools>=42",
     "wheel",
-    "pybind11~=2.6.1"
 ]
-build-backend = "setuptools.build_meta"
+
+[tool.hatch.version]
+path = "tinysoundfont/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/tinysoundfont",
+]
+

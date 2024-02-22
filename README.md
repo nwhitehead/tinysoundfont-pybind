@@ -177,9 +177,9 @@ Build and install locally with:
 
     pip install .
 
-Test with:
+Test in the root directory with:
 
-    python test/simple.py
+    pytest
 
 You may want to build and test in a `virtualenv` environment.
 

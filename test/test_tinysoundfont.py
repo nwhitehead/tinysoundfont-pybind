@@ -1,9 +1,10 @@
 import tinysoundfont
 
 def test_help():
-    import os
-    os.environ['PAGER'] = 'cat'
-    help(tinysoundfont)
+    # Just make sure there is some text for `help(tinysoundfont)`
+    import pydoc
+    helptext = pydoc.render_doc(tinysoundfont, "%s")
+    assert len(helptext.split('\n')) > 10
 
 def test_load():
     sf = tinysoundfont.SoundFont('test/example.sf2')
@@ -36,6 +37,8 @@ def test_bytes():
 def test_wav():
     import numpy as np
     import scipy.io.wavfile
+    import tempfile
+    import zlib
     sf = tinysoundfont.SoundFont('test/example.sf2')
     sf.reset()
     sf.set_max_voices(8)
@@ -70,7 +73,14 @@ def test_wav():
     output = np.concatenate((output, buffer))
 
     # Write to WAV file
-    scipy.io.wavfile.write('test.wav', 44100, output)
+    with tempfile.NamedTemporaryFile(mode='wb', suffix='.wav') as wavfile:
+        scipy.io.wavfile.write(wavfile.name, 44100, output)
+        with open(wavfile.name, 'rb') as wavfileread:
+            contents = wavfileread.read()
+            # Check that WAV file has exactly right size
+            assert len(contents) == 1411258
+            # Check that WAV has right CRC32 (golden value)
+            assert zlib.crc32(contents) == 0x6f378f91
 
 def test_blocking():
     import pyaudio
@@ -212,15 +222,3 @@ def test_rerender():
     stream.close()
     p.terminate()
 
-def test_all():
-    test_help()
-    test_load()
-    test_bytes()
-    test_wav()
-    test_blocking0()
-    test_blocking()
-    test_callback0()
-    test_callback()
-    test_rerender()
-
-test_all()
