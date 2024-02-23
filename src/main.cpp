@@ -196,7 +196,7 @@ public:
 };
 
 PYBIND11_MODULE(tinysoundfont, m) {
-    m.doc() = "Tiny Sound Font module";
+    m.doc() = "TinySoundFont module";
     py::enum_<enum TSFOutputMode>(m, "OutputMode")
         .value("StereoInterleaved", TSF_STEREO_INTERLEAVED)
         .value("StereoUnweaved", TSF_STEREO_UNWEAVED)
