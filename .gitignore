@@ -3,3 +3,4 @@ build/
 venv/
 test.wav
 test/__pycache__
+dist/

@@ -19,10 +19,13 @@ dependencies = [
 ]
 
 [tool.hatch.version]
-path = "tinysoundfont/__init__.py"
+path = "src/__version__.py"
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "/tinysoundfont",
+    "/src",
+    "/test",
 ]
 
+[tool.hatch.build.targets.wheel]
+packages = [ "src" ]
