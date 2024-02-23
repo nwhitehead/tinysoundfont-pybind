@@ -188,9 +188,9 @@ public:
 
     float channel_get_volume(int channel) { return tsf_channel_get_volume(obj, channel); }
 
-    int channel_get_pitchwheel(int channel) { return tsf_channel_get_pitchwheel(obj, channel); }
+    int channel_get_pitch_wheel(int channel) { return tsf_channel_get_pitchwheel(obj, channel); }
 
-    float channel_get_pitchrange(int channel) { return tsf_channel_get_pitchrange(obj, channel); }
+    float channel_get_pitch_range(int channel) { return tsf_channel_get_pitchrange(obj, channel); }
 
     float channel_get_tuning(int channel) { return tsf_channel_get_tuning(obj, channel); }
 };
@@ -297,6 +297,23 @@ PYBIND11_MODULE(tinysoundfont, m) {
         .def("channel_get_preset_bank", &SoundFont::channel_get_preset_bank,
             "Get current preset bank set on the channel",
             "channel"_a)
-
+        .def("channel_get_preset_number", &SoundFont::channel_get_preset_number,
+            "Get current preset number set on the channel",
+            "channel"_a)
+        .def("channel_get_pan", &SoundFont::channel_get_pan,
+            "Get current pan value set on the channel",
+            "channel"_a)
+        .def("channel_get_volume", &SoundFont::channel_get_volume,
+            "Get current volume value set on the channel",
+            "channel"_a)
+        .def("channel_get_pitch_wheel", &SoundFont::channel_get_pitch_wheel,
+            "Get current pitch wheel value set on the channel, 0 to 16383 (8192 is unpitched)",
+            "channel"_a)
+        .def("channel_get_pitch_range", &SoundFont::channel_get_pitch_range,
+            "Get current pitch range value set on the channel, in semitones",
+            "channel"_a)
+        .def("channel_get_tuning", &SoundFont::channel_get_tuning,
+            "Get current tuning value set on the channel, in semitones, (0.0 is standard A440 tuning)",
+            "channel"_a)
     ;
 }
