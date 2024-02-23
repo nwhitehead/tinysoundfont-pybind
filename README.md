@@ -2,7 +2,7 @@
 
 This project is a Python package that provides Python bindings for
 [TinySoundFont](https://github.com/schellingb/TinySoundFont). This lets you
-generate audio using SoundFont instruments (`.sf2`) in Python.
+generate audio using SoundFont instruments (`.sf2` or `.sf3`) in Python.
 
 Python bindings are created using
 [pybind11](https://github.com/pybind/pybind11). This package is self-contained
@@ -19,8 +19,9 @@ To install this package do:
 
 Note that this package just does audio data generation, it does not provide
 audio playback. To playback audio data you need a package that supplies that.
-One example is [PyAudio](https://pypi.org/project/PyAudio/) which supplies
-binding to [PortAUdio](https://portaudio.com/).
+Tests and examples for this package use
+[PyAudio](https://pypi.org/project/PyAudio/) which supplies binding to
+[PortAUdio](https://portaudio.com/).
 
 Getting `pyaudio` working is somewhat platform specific. Basic installation:
 
@@ -64,12 +65,13 @@ Play a note with:
 
 Now create a buffer for the instrument to render to. This buffer can be anything
 that follows the Python buffer protocol. For example, this can be objects of
-type `bytearray`, `numpy.ndarray`, and many other things. The buffer can be 1D
-or 2D. If it is 1D then it is expected to be a simple contiguous array of bytes
-that will be filled with audio samples. If it is 2D then it is expected to have
-correct format type `float32` and dimensions `(samples, channels)` where
-`channels` will be 1 (mono) or 2 (stereo). Samples are always generated in
-`float32` format.
+type `bytearray`, `numpy.ndarray`, and many other things.
+
+The buffer can be 1D or 2D. If it is 1D then it is expected to be a simple
+contiguous array of bytes that will be filled with audio samples. If it is 2D
+then it is expected to have correct format type `float32` and dimensions
+`(samples, channels)` where `channels` will be 1 (mono) or 2 (stereo). Samples
+are always generated in `float32` format.
 
     # Create an empty 1 second buffer for stereo float32 at 44.1 KHz
     buffer = bytearray(44100 * 4 * 2)
@@ -108,7 +110,7 @@ data with a note playing.
     buffer = bytearray(44100 * 2 * 4)
     sf.channel_note_on(0, 48, 1.0)
     sf.render(buffer)
-    # PyAudio requires immutable `bytes`, not mutable `bytearray`
+    # PyAudio requires immutable `bytes`, not mutable `bytearray`, so convert it
     stream.write(bytes(buffer))
     stream.close()
     p.terminate()
@@ -126,6 +128,7 @@ Here is code showing callback mode in `pyaudio`.
 
     import pyaudio
     import time
+    import tinysoundfont
     sf = tinysoundfont.SoundFont('test/example.sf2')
     sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, -18.0)
     p = pyaudio.PyAudio()
@@ -167,10 +170,11 @@ Using blocking mode means that no interaction is possible during audio playback.
 For applications that want to synchronize video rendering and audio playback
 there are a few choices. One choice is to handle audio callbacks as fast as
 possible with the smallest buffer possible. This is the `pyaudio` default
-configuration if no `frames_per_buffer` is passed to `pyaudio.open`. In the
-callback, output audio based on what is happening right then. This method will
-have the lowest latency. Because of the arbitrary nature of buffer sizes this
-method can introduce jitter to event timings.
+configuration if no `frames_per_buffer` is passed to `pyaudio.open`. For this
+choice, in the callback you would output audio based on what is happening right
+at that point in time. This method will have the lowest latency. Because of the
+arbitrary nature of buffer sizes this method can introduce jitter to event
+timings. This jitter may be noticeable for steady periodic beats.
 
 Another option is to request a buffer size that matches the "rhythm" of the
 game. For example a buffer of 441 samples at 44.1 kHz will be refilled exactly
@@ -225,14 +229,20 @@ Build packages with:
 
 This should produce a `sdist` output as a `.tar.gz` file in `dist/` for source distribution.
 
-It should also create a `.whl` file for binary distribution in `dist/`.
+It should also create a `.whl` file for binary distribution in `dist/` for the current platform.
 
 ## Compressed SoundFonts
 
-This package also supports a compressed SoundFont2 format `.sfo` by using
-[std_vorbis.c](https://github.com/nothings/stb/blob/master/stb_vorbis.c). The
-compressed `.sfo` format is similar to regular `.sf2` but the audio waveforms
-are stored with Ogg/Vorbis compression instead of being stored uncompressed.
-This is especially useful for large General MIDI soundbanks that contain many
+This package also supports compressed SoundFont2 formats `.sf3` and `.sfo` by
+using [std_vorbis.c](https://github.com/nothings/stb/blob/master/stb_vorbis.c).
+The compressed formats are similar to regular `.sf2` but the audio waveforms are
+stored with Ogg/Vorbis compression instead of being stored uncompressed. This is
+especially useful for large General MIDI soundbanks that contain many
 instruments in one file. For information about converting SoundFonts see
 [SFOTool](https://github.com/schellingb/TinySoundFont/tree/master/sfotool).
+
+Compressed streams are decompressed into memory when the file is loaded. This
+means there will be more computation required when loading the instrument. This
+also means the total memory needed at runtime will not be less than the
+equivalent uncompressed `.sf2` version. The compressed format is more for saving
+space when distributing or storing the instrument file.
