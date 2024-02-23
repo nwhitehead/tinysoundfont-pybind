@@ -90,7 +90,7 @@ def test_blocking():
                     channels=2,
                     rate=44100,
                     output=True)
-    sf = tinysoundfont.SoundFont('/home/nwhitehead/ext/Downloads/MuseScore_General.sf3')
+    sf = tinysoundfont.SoundFont('test/example.sf2')
     sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, 8.0)
     sf.channel_set_preset_index(0, 1)
     buffer = np.zeros((44100, 2), dtype=np.float32)

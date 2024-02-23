@@ -231,6 +231,21 @@ This should produce a `sdist` output as a `.tar.gz` file in `dist/` for source d
 
 It should also create a `.whl` file for binary distribution in `dist/` for the current platform.
 
+On Linux you need to build in a "lowest common denominator" system
+`manylinux2014`. PyPI will not accept wheels for arbitrary Linux distributions.
+To generate a `manylinux2014` wheel, do:
+
+    docker run -v $(pwd):/io -it quay.io/pypa/manylinux2014_x86_64
+
+Then in the container:
+
+    cd io
+    /opt/python/cp37-cp37m/bin/python -m build
+    auditwheel repair dist/*.whl
+
+The output gets put into a new directory `wheelhouse` and should include `manylinux2014` in the filename.
+This wheel can be uploaded to `PyPI` using `twine`.
+
 ## Compressed SoundFonts
 
 This package also supports compressed SoundFont2 formats `.sf3` and `.sfo` by

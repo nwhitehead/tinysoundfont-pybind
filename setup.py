@@ -7,7 +7,7 @@ setup(
         Pybind11Extension(
             "tinysoundfont",
             ["src/main.cpp"],
-            cxx_std=17,
+            cxx_std=14,
         ),
     ],
 )
