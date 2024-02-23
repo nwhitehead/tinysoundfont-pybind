@@ -11,7 +11,11 @@ authors = [
 description = "Python bindings for using Sound Fonts (sf2 format) and generating audio samples"
 readme = "README.md"
 requires-python = ">=3.7"
-classifiers = ["License :: OSI Approved :: MIT License"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+]
 
 [tool.setuptools.dynamic]
 version = { file = "VERSION" }
