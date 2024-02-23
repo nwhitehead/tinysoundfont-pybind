@@ -1,31 +1,61 @@
-# PyTinySoundFont
+# TinySoundFont-pybind
 
 This project is a Python package that provides Python bindings for
 [TinySoundFont](https://github.com/schellingb/TinySoundFont). This lets you
 generate audio using SoundFont instruments (`.sf2`) in Python.
 
 Python bindings are created using
-[pybind11](https://github.com/pybind/pybind11).
+[pybind11](https://github.com/pybind/pybind11). This package is self-contained
+and does not link to any other native libraries or have any external
+dependencies.
 
 ## Installation
 
-To install from source in this repository, clone this repository then do:
+To install this package do:
 
-    pip install .
+    pip install tinysoundfont
+
+### PyAudio
+
+Note that this package just does audio data generation, it does not provide
+audio playback. To playback audio data you need a package that supplies that.
+One example is [PyAudio](https://pypi.org/project/PyAudio/) which supplies
+binding to [PortAUdio](https://portaudio.com/).
+
+Getting `pyaudio` working is somewhat platform specific. Basic installation:
+
+### Windows
+
+    python -m pip install pyaudio
+
+### macOS
+
+    brew install portaudio
+    pip install pyaudio
+
+### GNU/Linux (Ubuntu)
+
+    sudo apt install python3-pyaudio
 
 ## Basic Usage
+
+    import tinysoundfont
 
 Each SF2 instrument is loaded into its own object:
 
     sf = tinysoundfont.SoundFont('test/example.sf2')
 
+You can also load from a `bytes` object the same way.
+
+    sf = tinysoundfont.SoundFont(myfile.read())
+
 Setup the output format and global volume:
 
     sf.set_output(tinysoundfont.OutputMode.StereoInterleaved, 44100, -18.0)
 
-The negative global gain lets multiple notes mix without distortion. The correct
-value to use will depend on how many notes you expect to play and the gain
-settings of the particular `sf2` instrument.
+The negative global gain here lets multiple notes mix without distortion. The
+correct value to use will depend on how many notes you expect to play and the
+gain settings of the particular `sf2` instrument.
 
 Play a note with:
 
@@ -136,7 +166,7 @@ Using blocking mode means that no interaction is possible during audio playback.
 
 For applications that want to synchronize video rendering and audio playback
 there are a few choices. One choice is to handle audio callbacks as fast as
-possible with smallest buffer possible. This is the `pyaudio` default
+possible with the smallest buffer possible. This is the `pyaudio` default
 configuration if no `frames_per_buffer` is passed to `pyaudio.open`. In the
 callback, output audio based on what is happening right then. This method will
 have the lowest latency. Because of the arbitrary nature of buffer sizes this
@@ -155,7 +185,7 @@ A final option is to use the smallest buffer possible to minimize latency but
 also record timing information for every event. Then during audio rendering use
 the timing information to position the events to the correct sample. For
 example, a single `noteon` event might need to happen half way through a buffer
-in the callback. This could be accomplished with the following code:
+in the callback. This can be accomplished with the following code:
 
     # Assume we are inside a PyAudio callback
     buffer = memoryview(bytearray(frame_count * 2 * 4))
@@ -175,7 +205,7 @@ refer to subsections of the buffer.
 
 Build and install locally with:
 
-    pip install .
+    python -m pip install .
 
 Test in the root directory with:
 
@@ -183,9 +213,19 @@ Test in the root directory with:
 
 You may want to build and test in a `virtualenv` environment.
 
-The `pip install .` will perform a compilation step for `C++` code. Your
+The `python -m pip install .` will perform a compilation step for `C++` code. Your
 environment must have access to a working `C++` compiler as well as the Python
 development headers.
+
+### Packaging
+
+Build packages with:
+
+    python -m build
+
+This should produce a `sdist` output as a `.tar.gz` file in `dist/` for source distribution.
+
+It should also create a `.whl` file for binary distribution in `dist/`.
 
 ## Compressed SoundFonts
 

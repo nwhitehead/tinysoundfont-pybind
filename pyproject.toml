@@ -15,3 +15,6 @@ classifiers = ["License :: OSI Approved :: MIT License"]
 
 [tool.setuptools.dynamic]
 version = { file = "VERSION" }
+
+[tool.setuptools]
+include-package-data = false

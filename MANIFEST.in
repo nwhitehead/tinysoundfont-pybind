@@ -1,2 +1,3 @@
 graft src
 graft test
+global-exclude *.py[cod]
