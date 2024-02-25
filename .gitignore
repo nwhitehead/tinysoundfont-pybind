@@ -5,3 +5,5 @@ test.wav
 test/__pycache__
 dist/
 wheelhouse/
+_skbuild/
+tinysoundfont/__pycache__
