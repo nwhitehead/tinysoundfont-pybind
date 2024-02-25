@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.18...3.22)
+cmake_minimum_required(VERSION 3.15...3.26)
+project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 
-project(tinysoundfont)
+set(PYBIND11_NEWPYTHON ON)
+find_package(pybind11 CONFIG REQUIRED)
 
-find_package(PythonExtensions REQUIRED)
+pybind11_add_module(tinysoundfont src/main.cpp)
 
-add_library(_tinysoundfont MODULE tinysoundfont/main.cpp)
-python_extension_module(_tinysoundfont)
-install(TARGETS _tinysoundfont LIBRARY DESTINATION tinysoundfont)
+install(TARGETS tinysoundfont LIBRARY DESTINATION .)
