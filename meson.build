@@ -11,6 +11,6 @@ pybind11 = declare_dependency(
 py.extension_module(
     'tinysoundfont',
     'src/main.cpp',
-    dependencies: [pybind11],
+    dependencies: [pybind11, py.dependency()],
     install: true
 )
