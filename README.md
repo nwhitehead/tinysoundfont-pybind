@@ -2,7 +2,7 @@
 
 This project is a Python package that provides Python bindings for
 [TinySoundFont](https://github.com/schellingb/TinySoundFont). This lets you
-generate audio using SoundFont instruments (`.sf2` or `.sf3`) in Python.
+generate audio using SoundFont instruments (`.sf2`, `.sf3`, or `.sfo`) in Python.
 
 Python bindings are created using
 [pybind11](https://github.com/pybind/pybind11). This package is self-contained
@@ -42,7 +42,7 @@ Getting `pyaudio` working is somewhat platform specific. Basic installation:
 
     import tinysoundfont
 
-Each SF2 instrument is loaded into its own object:
+Each SoundFont instrument is loaded into its own object:
 
     sf = tinysoundfont.SoundFont('test/example.sf2')
 
@@ -56,7 +56,8 @@ Setup the output format and global volume:
 
 The negative global gain here lets multiple notes mix without distortion. The
 correct value to use will depend on how many notes you expect to play and the
-gain settings of the particular `sf2` instrument.
+gain settings of the particular instrument. The gain setting is a relative dB
+measurement.
 
 Play a note with:
 

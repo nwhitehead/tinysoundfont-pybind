@@ -4,6 +4,6 @@ project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 set(PYBIND11_NEWPYTHON ON)
 find_package(pybind11 CONFIG REQUIRED)
 
-pybind11_add_module(tinysoundfont src/main.cpp)
+pybind11_add_module(_tinysoundfont src/_tinysoundfont/main.cpp)
 
-install(TARGETS tinysoundfont LIBRARY DESTINATION .)
+install(TARGETS _tinysoundfont LIBRARY DESTINATION ./tinysoundfont)

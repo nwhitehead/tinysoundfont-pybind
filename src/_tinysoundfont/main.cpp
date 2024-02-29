@@ -195,7 +195,7 @@ public:
     float channel_get_tuning(int channel) { return tsf_channel_get_tuning(obj, channel); }
 };
 
-PYBIND11_MODULE(tinysoundfont, m) {
+PYBIND11_MODULE(_tinysoundfont, m) {
     m.doc() = "TinySoundFont module";
     py::enum_<enum TSFOutputMode>(m, "OutputMode")
         .value("StereoInterleaved", TSF_STEREO_INTERLEAVED)

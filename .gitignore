@@ -2,8 +2,7 @@ build/
 *.egg-info/
 venv/
 test.wav
-test/__pycache__
 dist/
 wheelhouse/
 _skbuild/
-tinysoundfont/__pycache__
+**/__pycache__
