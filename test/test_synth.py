@@ -3,11 +3,11 @@ import tinysoundfont
 import time
 
 def test_0():
-    synth = tinysoundfont.Synth()
+    synth = tinysoundfont.Synth(samplerate=22050, gain=-3.0)
     synth.start()
     sfid = synth.sfload('test/example.sf2', gain=-12.0)
     assert sfid == 0
-    sfid2 = synth.sfload('test/florestan-subset.sfo', gain=-3.0)
+    sfid2 = synth.sfload('test/florestan-subset.sfo', gain=-1.0)
     assert sfid2 == 1
     name = synth.sfpreset_name(sfid, 0, 0)
     assert name == 'El Cheapo Organ'
@@ -32,6 +32,8 @@ def test_0():
     synth.sfunload(sfid)
     with pytest.raises(Exception):
         synth.sfunload(sfid)
+    synth.sfunload(sfid2)
+    synth.stop()
 
 if __name__ == '__main__':
     test_0()

@@ -32,6 +32,8 @@ class Synth:
         the gain to avoid clipping. Some SoundFonts also require gain adjustment
         to avoid being too loud or too quiet.
         """
+        self.p = None
+        self.stream = None
         self.gain = gain
         self.samplerate = samplerate
         # soundfonts maps sfid numbers to SoundFont objects
@@ -140,8 +142,7 @@ class Synth:
             SIZEOF_FLOAT_IN_BYTES = 4
             buffer = bytearray(frame_count * CHANNELS * SIZEOF_FLOAT_IN_BYTES)
             mix = False
-            for index in self.soundfonts:
-                soundfont = self.soundfonts[index]
+            for soundfont in self.soundfonts.values():
                 soundfont.render(buffer, mix)
                 # After first render turn on mix to mix together all sounds
                 mix = True
@@ -151,7 +152,13 @@ class Synth:
         self.stream = self.p.open(
             format=pyaudio.paFloat32,
             channels=2,
-            rate=44100,
+            rate=self.samplerate,
             output=True,
             stream_callback=callback,
         )
+
+    def stop(self):
+        """Stop audio playback"""
+        if self.p is not None and self.stream is not None:
+            self.stream.close()
+            self.p.terminate()
