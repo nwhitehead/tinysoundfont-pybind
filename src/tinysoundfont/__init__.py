@@ -1,1 +1,1 @@
-from ._tinysoundfont import *
+from .synth import *

@@ -11,6 +11,14 @@ using namespace pybind11::literals;
 #define TSF_IMPLEMENTATION
 #include "tsf/tsf.h"
 
+namespace {
+
+inline const char* string_empty_if_nullptr(const char* s) {
+    return s ? s : "";
+}
+
+} // end anonymous namespace
+
 class SoundFont {
 public:
     tsf* obj = nullptr;
@@ -49,9 +57,9 @@ public:
 
     int get_preset_count() { return tsf_get_presetcount(obj); }
 
-    std::string get_preset_name(int index) { return std::string(tsf_get_presetname(obj, index)); }
+    std::string get_preset_name(int index) { return string_empty_if_nullptr(tsf_get_presetname(obj, index)); }
 
-    std::string get_preset_name(int bank, int number) { return tsf_bank_get_presetname(obj, bank, number); }
+    std::string get_preset_name(int bank, int number) { return string_empty_if_nullptr(tsf_bank_get_presetname(obj, bank, number)); }
 
     void set_output(enum TSFOutputMode output_mode, int samplerate, float global_gain_db) { tsf_set_output(obj, output_mode, samplerate, global_gain_db); }
 
@@ -77,7 +85,7 @@ public:
 
     void note_off(int bank, int number, int key) { tsf_bank_note_off(obj, bank, number, key); }
 
-    void render(py::buffer buffer) {
+    void render(py::buffer buffer, bool mix) {
         py::buffer_info info = buffer.request();
         int output_channels = obj->outputmode == TSF_MONO ? 1 : 2;
         if (info.ndim == 1) {
@@ -89,7 +97,7 @@ public:
                 throw std::runtime_error("Buffer length does not divide evenly into sample frames");
             }
             int samples = info.shape[0] / (sizeof(float) * output_channels);
-            tsf_render_float(obj, static_cast<float *>(info.ptr), samples, 0);
+            tsf_render_float(obj, static_cast<float *>(info.ptr), samples, mix ? 1 : 0);
             return;
         }
         if (info.format != py::format_descriptor<float>::format()) {
@@ -102,7 +110,7 @@ public:
             throw std::runtime_error(std::string("Incompatible buffer length, channel size must be ") + std::string(output_channels == 1 ? "1 for mono" : "2 for stereo"));
         }
         int samples = info.shape[0];
-        tsf_render_float(obj, static_cast<float *>(info.ptr), samples, 0);
+        tsf_render_float(obj, static_cast<float *>(info.ptr), samples, mix ? 1 : 0);
         return;
     }
 
@@ -251,7 +259,8 @@ PYBIND11_MODULE(_tinysoundfont, m) {
             "bank"_a, "number"_a, "key"_a)
         .def("render", &SoundFont::render,
             "Render output samples into a buffer",
-            "buffer"_a)
+            "buffer"_a,
+            "mix"_a = false)
         .def("channel_set_preset_index", &SoundFont::channel_set_preset_index,
             "Set preset index for a channel",
             "channel"_a, "index"_a)

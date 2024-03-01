@@ -222,6 +222,19 @@ The `python -m pip install .` will perform a compilation step for `C++` code. Yo
 environment must have access to a working `C++` compiler as well as the Python
 development headers.
 
+### Editable build
+
+To speed up development you can do an "editable build". This will cache a lot of
+compiling and setup. First install all needed dependencies in `pip`:
+
+    pip install scikit_build_core pyproject_metadata pathspec pybind11
+
+Then install with `editable.rebuild` on:
+
+    pip install . --no-build-isolation --config-setting=editable.rebuild=true -Cbuild-dir=build .
+
+In my experience you still need to rerun this command when editing files, but it will go fast.
+
 ### Packaging
 
 Build packages with:
@@ -231,21 +244,7 @@ Build packages with:
 This should produce a `sdist` output as a `.tar.gz` file in `dist/` for source distribution.
 
 It should also create a `.whl` file for binary distribution in `dist/` for the current platform.
-
-On Linux you need to build in a "lowest common denominator" system
-`manylinux2014`. PyPI will not accept wheels for arbitrary Linux distributions.
-To generate a `manylinux2014` wheel, do:
-
-    docker run -v $(pwd):/io -it quay.io/pypa/manylinux2014_x86_64
-
-Then in the container:
-
-    cd io
-    /opt/python/cp37-cp37m/bin/python -m build
-    auditwheel repair dist/*.whl
-
-The output gets put into a new directory `wheelhouse` and should include `manylinux2014` in the filename.
-This wheel can be uploaded to `PyPI` using `twine`.
+On Linux the build system will create a `manylinux` wheel for the current Python version.
 
 ## Compressed SoundFonts
 
