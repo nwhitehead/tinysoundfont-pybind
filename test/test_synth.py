@@ -3,6 +3,10 @@ import tinysoundfont
 import time
 
 def test_0():
+    assert int(tinysoundfont._tinysoundfont.MidiMessageType.NOTE_ON) == 0x90
+
+    data = tinysoundfont._tinysoundfont.midi_load('test/1080-c01.mid')
+    print(data)
     synth = tinysoundfont.Synth(samplerate=22050, gain=-3.0)
     synth.start()
     sfid = synth.sfload('test/example.sf2', gain=-12.0)

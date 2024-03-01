@@ -8,6 +8,11 @@ class SoundFontException(Exception):
     pass
 
 
+class Event:
+    """Single MIDI event that can be scheduled at a precise time"""
+    pass
+
+
 class Synth:
     """Synth represents a synthesizer that can load a SoundFont and produce audio"""
 

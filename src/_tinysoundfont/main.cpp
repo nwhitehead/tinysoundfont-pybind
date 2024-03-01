@@ -1,15 +1,22 @@
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
 namespace py = pybind11;
 using namespace pybind11::literals;
 
+#include <fstream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 // Include support for OGG Vorbis file format (detected automatically by TinySoundFont header)
 #include "stb/stb_vorbis.c"
 
 #define TSF_IMPLEMENTATION
 #include "tsf/tsf.h"
+
+#define TML_IMPLEMENTATION
+#include "tsf/tml.h"
 
 namespace {
 
@@ -203,6 +210,108 @@ public:
     float channel_get_tuning(int channel) { return tsf_channel_get_tuning(obj, channel); }
 };
 
+enum class MidiMessageType {
+    NOTE_OFF = 0x80,
+    NOTE_ON = 0x90,
+    KEY_PRESSURE = 0xA0,
+    CONTROL_CHANGE = 0xB0,
+    PROGRAM_CHANGE = 0xC0,
+    CHANNEL_PRESSURE = 0xD0,
+    PITCH_BEND = 0xE0,
+    SET_TEMPO = 0x51
+};
+
+struct MidiMessage {
+	// Time of the message in milliseconds
+	unsigned int time;
+    MidiMessageType type;
+	unsigned char channel;
+
+	// 2 byte of parameter data based on the type:
+	// - key, velocity for TML_NOTE_ON and TML_NOTE_OFF messages
+	// - key, key_pressure for TML_KEY_PRESSURE messages
+	// - control, control_value for TML_CONTROL_CHANGE messages (see TMLController)
+	// - program for TML_PROGRAM_CHANGE messages
+	// - channel_pressure for TML_CHANNEL_PRESSURE messages
+	// - pitch_bend for TML_PITCH_BEND messages
+	union {
+		#ifdef _MSC_VER
+		#pragma warning(push)
+		#pragma warning(disable:4201) //nonstandard extension used: nameless struct/union
+		#elif defined(__GNUC__)
+		#pragma GCC diagnostic push
+		#pragma GCC diagnostic ignored "-Wpedantic" //ISO C++ prohibits anonymous structs
+		#endif
+
+		struct {
+            union { 
+                char key, control, program, channel_pressure;
+            };
+            union {
+                char velocity, key_pressure, control_value;
+            };
+        };
+		struct {
+            unsigned short pitch_bend;
+        };
+
+		#ifdef _MSC_VER
+		#pragma warning( pop )
+		#elif defined(__GNUC__)
+		#pragma GCC diagnostic pop
+		#endif
+	};
+};
+
+py::list midi_load_memory(const void *memory, int size) {
+    // Parse contents using TML
+    tml_message *parsed = tml_load_memory(memory, size);
+    if (!parsed) {
+        throw std::runtime_error(std::string("Could not load MIDI data"));
+    }
+    py::list result{};
+    int count = tml_get_info(parsed, nullptr, nullptr, nullptr, nullptr, nullptr);
+    tml_message *pos = parsed;
+    double current_bpm = 10.0;
+    while (pos) {
+        double t = (pos->time) / 1000.0f;
+        py::dict d;
+        d["t"] = t;
+        d["type"] = pos->type;
+        d["channel"] = pos->channel;
+        d["key"] = pos->key;
+        d["velocity"] = pos->velocity;
+        // Update bpm on tempo change
+        if (pos->type == TML_SET_TEMPO) {
+            double microseconds_per_beat = tml_get_tempo_value(pos);
+            current_bpm = 60e6 / microseconds_per_beat;
+        }
+        d["bpm"] = current_bpm;
+        pos = pos->next;
+        result.append(d);
+    }
+    tml_free(parsed);
+    return result;
+}
+
+py::list midi_load(std::string filename) {
+    std::ifstream handle(filename, std::ios::in | std::ios::out | std::ios::binary | std::ios::ate);
+    if (!handle.is_open()) {
+        throw std::runtime_error(std::string("Could not load MIDI data from file"));
+    }
+    const size_t sz = handle.tellg();
+    if (sz <= 0) {
+        throw std::runtime_error(std::string("Could not load MIDI data from file"));
+    }
+    handle.seekg(0, std::ios::beg);
+    std::vector<char> buffer(sz);
+    if (handle.is_open()) {
+        handle.read(buffer.data(), sz);
+    }
+    handle.close();
+    return midi_load_memory(buffer.data(), buffer.size());
+}
+
 PYBIND11_MODULE(_tinysoundfont, m) {
     m.doc() = "TinySoundFont module";
     py::enum_<enum TSFOutputMode>(m, "OutputMode")
@@ -210,6 +319,17 @@ PYBIND11_MODULE(_tinysoundfont, m) {
         .value("StereoUnweaved", TSF_STEREO_UNWEAVED)
         .value("Mono", TSF_MONO)
     ;
+    py::enum_<enum MidiMessageType>(m, "MidiMessageType")
+        .value("NOTE_OFF", MidiMessageType::NOTE_OFF)
+        .value("NOTE_ON", MidiMessageType::NOTE_ON)
+        .value("KEY_PRESSURE", MidiMessageType::KEY_PRESSURE)
+        .value("CONTROL_CHANGE", MidiMessageType::CONTROL_CHANGE)
+        .value("PROGRAM_CHANGE", MidiMessageType::PROGRAM_CHANGE)
+        .value("CHANNEL_PRESSURE", MidiMessageType::CHANNEL_PRESSURE)
+        .value("PITCH_BEND", MidiMessageType::PITCH_BEND)
+        .value("SET_TEMPO", MidiMessageType::SET_TEMPO)
+    ;
+    m.def("midi_load", &midi_load, "Load MIDI file");
     py::class_<SoundFont>(m, "SoundFont")
         // Need bytes constructor first, otherwise bytes would be converted and match string constructor
         .def(py::init<py::bytes>(),
