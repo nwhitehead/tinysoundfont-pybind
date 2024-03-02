@@ -54,6 +54,8 @@ class Sequencer:
                 synth.noteoff(event["channel"], event["key"])
             case MidiMessageType.PROGRAM_CHANGE:
                 synth.program_change(event["channel"], event["program"])
+            case MidiMessageType.CONTROL_CHANGE:
+                synth.control_change(event["channel"], event["control"], event["control_value"])
 
     def process(self, delta, synth):
         """Process delta seconds sending events to synth
@@ -218,6 +220,12 @@ class Synth:
         soundfont = self._get_soundfont(sfid)
         soundfont.channel_note_off(chan, key)
         return True
+
+    def control_change(self, chan, controller, control_value):
+        """Change control value for a specific channel"""
+        sfid = self._get_sfid(chan)
+        soundfont = self._get_soundfont(sfid)
+        soundfont.channel_midi_control(chan, controller, control_value)
 
     def start(self, driver=None):
         """Start audio playback"""
