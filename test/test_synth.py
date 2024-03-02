@@ -68,12 +68,12 @@ def test_0():
             print(0, i, name)
 
     def filter_program_change(event):
+        """Make all program changes go to preset 40 (violin)"""
         if event["type"] == tinysoundfont.MidiMessageType.PROGRAM_CHANGE:
             event["program"] = 40
     synth.sequencer.midi_load("test/1080-c01.mid", filter=filter_program_change)
     time.sleep(10)
 
-    synth.sfunload(sfid)
     with pytest.raises(Exception):
         synth.sfunload(sfid)
     synth.sfunload(sfid2)

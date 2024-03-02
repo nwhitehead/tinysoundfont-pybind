@@ -47,7 +47,6 @@ class Sequencer:
             self.events = deque(events)
     def perform(self, event, synth):
         """Send a MIDI event to the synth object now (ignore time information)"""
-        print(event)
         match event["type"]:
             case MidiMessageType.NOTE_ON:
                 synth.noteon(event["channel"], event["key"], event["velocity"])
