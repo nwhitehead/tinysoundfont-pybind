@@ -1,5 +1,4 @@
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
 namespace py = pybind11;
 using namespace pybind11::literals;
@@ -221,51 +220,11 @@ enum class MidiMessageType {
     SET_TEMPO = 0x51
 };
 
-struct MidiMessage {
-	// Time of the message in milliseconds
-	unsigned int time;
-    MidiMessageType type;
-	unsigned char channel;
 
-	// 2 byte of parameter data based on the type:
-	// - key, velocity for TML_NOTE_ON and TML_NOTE_OFF messages
-	// - key, key_pressure for TML_KEY_PRESSURE messages
-	// - control, control_value for TML_CONTROL_CHANGE messages (see TMLController)
-	// - program for TML_PROGRAM_CHANGE messages
-	// - channel_pressure for TML_CHANNEL_PRESSURE messages
-	// - pitch_bend for TML_PITCH_BEND messages
-	union {
-		#ifdef _MSC_VER
-		#pragma warning(push)
-		#pragma warning(disable:4201) //nonstandard extension used: nameless struct/union
-		#elif defined(__GNUC__)
-		#pragma GCC diagnostic push
-		#pragma GCC diagnostic ignored "-Wpedantic" //ISO C++ prohibits anonymous structs
-		#endif
-
-		struct {
-            union { 
-                char key, control, program, channel_pressure;
-            };
-            union {
-                char velocity, key_pressure, control_value;
-            };
-        };
-		struct {
-            unsigned short pitch_bend;
-        };
-
-		#ifdef _MSC_VER
-		#pragma warning( pop )
-		#elif defined(__GNUC__)
-		#pragma GCC diagnostic pop
-		#endif
-	};
-};
-
-py::list midi_load_memory(const void *memory, int size) {
+py::list midi_load_memory(py::bytes bytes) {
+    py::buffer_info info(py::buffer(bytes).request());
     // Parse contents using TML
-    tml_message *parsed = tml_load_memory(memory, size);
+    tml_message *parsed = tml_load_memory(info.ptr, info.size);
     if (!parsed) {
         throw std::runtime_error(std::string("Could not load MIDI data"));
     }
@@ -274,13 +233,42 @@ py::list midi_load_memory(const void *memory, int size) {
     tml_message *pos = parsed;
     double current_bpm = 10.0;
     while (pos) {
-        double t = (pos->time) / 1000.0f;
+        double t = (pos->time) * 0.001f;
         py::dict d;
         d["t"] = t;
-        d["type"] = pos->type;
-        d["channel"] = pos->channel;
-        d["key"] = pos->key;
-        d["velocity"] = pos->velocity;
+        d["type"] = static_cast<MidiMessageType>(pos->type);
+        d["channel"] = static_cast<int>(pos->channel);
+        switch (pos->type) {
+            case TML_NOTE_OFF:
+                // Fallthrough
+            case TML_NOTE_ON:
+                d["key"] = static_cast<int>(pos->key);
+                d["velocity"] = static_cast<int>(pos->velocity);
+                break;
+            case TML_KEY_PRESSURE:
+                d["key"] = static_cast<int>(pos->key);
+                d["key_pressure"] = static_cast<int>(pos->key_pressure);
+                break;
+            case TML_CONTROL_CHANGE:
+                d["control"] = static_cast<int>(pos->control);
+                d["control_value"] = static_cast<int>(pos->control_value);
+                break;
+            case TML_PROGRAM_CHANGE:
+                d["program"] = static_cast<int>(pos->program);
+                break;
+            case TML_CHANNEL_PRESSURE:
+                d["channel_pressure"] = static_cast<int>(pos->channel_pressure);
+                break;
+            case TML_PITCH_BEND:
+                d["pitch_bend"] = static_cast<int>(pos->pitch_bend);
+                break;
+            case TML_SET_TEMPO:
+                // No payload, updates bpm field for this and subsequent events
+                break;
+            default:
+                // Unknown events don't get any payload
+                break;
+        }
         // Update bpm on tempo change
         if (pos->type == TML_SET_TEMPO) {
             double microseconds_per_beat = tml_get_tempo_value(pos);
@@ -292,24 +280,6 @@ py::list midi_load_memory(const void *memory, int size) {
     }
     tml_free(parsed);
     return result;
-}
-
-py::list midi_load(std::string filename) {
-    std::ifstream handle(filename, std::ios::in | std::ios::out | std::ios::binary | std::ios::ate);
-    if (!handle.is_open()) {
-        throw std::runtime_error(std::string("Could not load MIDI data from file"));
-    }
-    const size_t sz = handle.tellg();
-    if (sz <= 0) {
-        throw std::runtime_error(std::string("Could not load MIDI data from file"));
-    }
-    handle.seekg(0, std::ios::beg);
-    std::vector<char> buffer(sz);
-    if (handle.is_open()) {
-        handle.read(buffer.data(), sz);
-    }
-    handle.close();
-    return midi_load_memory(buffer.data(), buffer.size());
 }
 
 PYBIND11_MODULE(_tinysoundfont, m) {
@@ -329,7 +299,7 @@ PYBIND11_MODULE(_tinysoundfont, m) {
         .value("PITCH_BEND", MidiMessageType::PITCH_BEND)
         .value("SET_TEMPO", MidiMessageType::SET_TEMPO)
     ;
-    m.def("midi_load", &midi_load, "Load MIDI file");
+    m.def("midi_load_memory", &midi_load_memory, "Load MIDI file data in Standard MIDI File format");
     py::class_<SoundFont>(m, "SoundFont")
         // Need bytes constructor first, otherwise bytes would be converted and match string constructor
         .def(py::init<py::bytes>(),

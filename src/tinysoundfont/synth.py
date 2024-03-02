@@ -1,4 +1,7 @@
 from . import _tinysoundfont
+from ._tinysoundfont import MidiMessageType, midi_load_memory
+
+from collections import deque
 
 # Drum channels have separate samples per key
 DRUM_CHANNEL = 10
@@ -8,9 +11,49 @@ class SoundFontException(Exception):
     pass
 
 
-class Event:
-    """Single MIDI event that can be scheduled at a precise time"""
-    pass
+class Sequencer:
+    """A Sequencer schedules MIDI events over time"""
+    def __init__(self):
+        self.time = 0.0
+        # events stores events for future, orderedd by time
+        # Queue has items (t, event)
+        # Event is events as returned by _tinysoundfont.midi_load_memory
+        self.events = deque()
+    def midi_load(self, filename):
+        with open(filename, "rb") as fin:
+            data = fin.read()
+            self.data = _tinysoundfont.midi_load_memory(data)
+            events = []
+            for event in self.data:
+                events.append(event)
+            events.sort(key=lambda e: e["t"])
+            self.events = deque(events)
+    def process(self, delta, synth):
+        """Process delta seconds sending events to synth
+
+        Return actual delta that can be generated before more events need to be processed.
+        Returned value will always be between 0 and delta.
+        """
+        # Send all events that are scheduled for time <= self.time
+        while len(self.events) > 0:
+            # Look at earliest event in deque
+            event = events[0]
+            t = event["t"]
+            if t > self.time:
+                # Don't do event yet or remove it, need to wait until its time
+                true_delta = min(delta, t - self.time)
+                self.time += true_delta
+                return true_delta
+            # Head event should actually be done, so remove it
+            event = events.popleft()
+            # Now do it
+            match event.type:
+                case MidiMessageType.NOTE_ON:
+                    pass
+        # If we get here that means events ran dry
+        # Advance full time
+        self.time += delta
+        return delta
 
 
 class Synth:
@@ -48,6 +91,8 @@ class Synth:
         # Keep track of which SoundFont to use for different channels
         # Dictionary of channel -> sfid
         self.channel = {}
+        # Keep track of scheduled MIDI events for callback
+        self.sequencer = Sequencer()
 
     def sfload(self, filename, gain=0.0, max_voices=256):
         """Load SoundFont and return its ID
@@ -145,12 +190,15 @@ class Synth:
         def callback(in_data, frame_count, time_info, status):
             CHANNELS = 2
             SIZEOF_FLOAT_IN_BYTES = 4
-            buffer = bytearray(frame_count * CHANNELS * SIZEOF_FLOAT_IN_BYTES)
-            mix = False
-            for soundfont in self.soundfonts.values():
-                soundfont.render(buffer, mix)
-                # After first render turn on mix to mix together all sounds
-                mix = True
+            # Wrap with `memoryview` so slicing is references inside the buffer, not copies
+            buffer = memoryview(bytearray(frame_count * CHANNELS * SIZEOF_FLOAT_IN_BYTES))            
+            generated = 0
+            while generated < frame_count:
+                delta = (frame_count - generated) / self.samplerate
+                delta = self.sequencer.process(delta, self)
+                actual_frame_count = int(delta * self.samplerate + 0.999)
+                self.generate(actual_frame_count, buffer=buffer[generated:])
+                generated += actual_frame_count
             return (bytes(buffer), pyaudio.paContinue)
 
         self.p = pyaudio.PyAudio()
@@ -167,3 +215,17 @@ class Synth:
         if self.p is not None and self.stream is not None:
             self.stream.close()
             self.p.terminate()
+
+    def generate(self, samples, buffer=None):
+        """Generate fixed number of output samples in stereo float32 format as bytearray"""
+        CHANNELS = 2
+        SIZEOF_FLOAT_IN_BYTES = 4
+        if buffer is None:
+            buffer = bytearray(samples * CHANNELS * SIZEOF_FLOAT_IN_BYTES)
+        mix = False
+        for soundfont in self.soundfonts.values():
+            soundfont.render(buffer, mix)
+            # After first render turn on mix to mix together all sounds
+            mix = True
+        return buffer
+
