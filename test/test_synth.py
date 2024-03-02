@@ -33,11 +33,6 @@ def test_0():
         }
 
     synth = tinysoundfont.Synth(samplerate=22050, gain=-3.0)
-
-    seq = tinysoundfont.Sequencer()
-    seq.midi_load("test/1080-c01.mid")
-    print(seq.data)
-
     synth.start()
 
     sfid = synth.sfload("test/example.sf2", gain=-12.0)
@@ -62,7 +57,21 @@ def test_0():
     synth.noteoff(1, 60)
     synth.noteoff(1, 64)
     synth.noteoff(1, 67)
-    time.sleep(0.5)
+    time.sleep(1.0)
+
+    synth.sfunload(sfid)
+    synth.sfunload(sfid2)
+    sfid2 = synth.sfload("test/florestan-subset.sfo", gain=-1.0)
+    for i in range(127):
+        name = synth.sfpreset_name(sfid2, 0, i)
+        if name:
+            print(0, i, name)
+
+    def filter_program_change(event):
+        if event["type"] == tinysoundfont.MidiMessageType.PROGRAM_CHANGE:
+            event["program"] = 40
+    synth.sequencer.midi_load("test/1080-c01.mid", filter=filter_program_change)
+    time.sleep(10)
 
     synth.sfunload(sfid)
     with pytest.raises(Exception):
