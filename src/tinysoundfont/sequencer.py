@@ -1,3 +1,12 @@
+#
+# Python bindings for TinySoundFont
+# https://github.com/nwhitehead/tinysoundfont-pybind
+#
+# Copyright (C) 2024 Nathan Whitehead
+#
+# This code is licensed under the MIT license (see LICENSE for details)
+#
+
 from ._tinysoundfont import MidiMessageType, midi_load_memory
 from collections import deque
 

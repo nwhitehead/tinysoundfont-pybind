@@ -1,3 +1,12 @@
+//
+// Python bindings for TinySoundFont
+// https://github.com/nwhitehead/tinysoundfont-pybind
+//
+// Copyright (C) 2024 Nathan Whitehead
+//
+// This code is licensed under the MIT license (see LICENSE for details)
+//
+
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;

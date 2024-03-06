@@ -1,3 +1,12 @@
+#
+# Python bindings for TinySoundFont
+# https://github.com/nwhitehead/tinysoundfont-pybind
+#
+# Copyright (C) 2024 Nathan Whitehead
+#
+# This code is licensed under the MIT license (see LICENSE for details)
+#
+
 from . import _tinysoundfont
 from .sequencer import Sequencer
 

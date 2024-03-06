@@ -33,7 +33,7 @@ def test_0():
         }
 
     synth = tinysoundfont.Synth(samplerate=22050, gain=-3.0)
-    synth.start()
+    synth.start(buffer_size=2048)
 
     sfid = synth.sfload("test/example.sf2", gain=-12.0)
     assert sfid == 0
