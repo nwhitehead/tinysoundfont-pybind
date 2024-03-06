@@ -13,6 +13,22 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS",
+    "Intended Audience :: Developers",
+    "Topic :: Multimedia :: Sound/Audio :: MIDI",
+    "Topic :: Multimedia :: Sound/Audio :: Sound Synthesis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "pyaudio",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "numpy",
+    "scipy",
 ]
 
 [tool.cibuildwheel]
