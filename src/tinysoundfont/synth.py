@@ -1,7 +1,5 @@
 from . import _tinysoundfont
-from ._tinysoundfont import MidiMessageType, midi_load_memory
-
-from collections import deque
+from .sequencer import Sequencer
 
 # Drum channels have separate samples per key
 DRUM_CHANNEL = 10
@@ -9,78 +7,6 @@ DRUM_CHANNEL = 10
 
 class SoundFontException(Exception):
     pass
-
-
-class Sequencer:
-    """A Sequencer schedules MIDI events over time"""
-    def __init__(self):
-        self.time = 0.0
-        # events stores events for future, ordered by time
-        # Queue has items (t, event)
-        # Event is events as returned by _tinysoundfont.midi_load_memory
-        self.events = deque()
-    def midi_load(self, filename, filter=None):
-        """Load a MIDI file and schedule its events in this sequencer now
-        
-        Keyword arguments:
-        
-        filter -- Optional function that takes in individual events.
-
-        Filter function should take one input argument, the event, and modify it
-        in place. The function should return None to indicate to use the
-        modified event, or True to indicate that the event should be deleted.
-        """
-        with open(filename, "rb") as fin:
-            data = fin.read()
-            self.data = _tinysoundfont.midi_load_memory(data)
-            events = []
-            for event in self.data:
-                # Offset by current time of sequencer (MIDI events stored at t=0 are scheduled to start now)
-                event["t"] += self.time
-                if filter is not None:
-                    if filter(event) == True:
-                        event = None
-                # Check for None return value in filtered events, don't add if None
-                if event is not None:
-                    events.append(event)
-            events.sort(key=lambda e: e["t"])
-            self.events = deque(events)
-    def perform(self, event, synth):
-        """Send a MIDI event to the synth object now (ignore time information)"""
-        match event["type"]:
-            case MidiMessageType.NOTE_ON:
-                synth.noteon(event["channel"], event["key"], event["velocity"])
-            case MidiMessageType.NOTE_OFF:
-                synth.noteoff(event["channel"], event["key"])
-            case MidiMessageType.PROGRAM_CHANGE:
-                synth.program_change(event["channel"], event["program"])
-            case MidiMessageType.CONTROL_CHANGE:
-                synth.control_change(event["channel"], event["control"], event["control_value"])
-
-    def process(self, delta, synth):
-        """Process delta seconds sending events to synth
-
-        Return actual delta that can be generated before more events need to be processed.
-        Returned value will always be between 0 and delta.
-        """
-        # Send all events that are scheduled for time <= self.time
-        while len(self.events) > 0:
-            # Look at earliest event in deque
-            event = self.events[0]
-            t = event["t"]
-            if t > self.time:
-                # Don't do event yet or remove it, need to wait until its time
-                true_delta = min(delta, t - self.time)
-                self.time += true_delta
-                return true_delta
-            # Head event should actually be done, so remove it
-            event = self.events.popleft()
-            # Now do it
-            self.perform(event, synth)
-        # If we get here that means events ran dry
-        # Advance full time
-        self.time += delta
-        return delta
 
 
 class Synth:
@@ -96,13 +22,12 @@ class Synth:
             raise SoundFontException("Invalid channel (channel not assigned)")
         return self.channel[chan]
 
-    def __init__(self, gain=0, samplerate=44100, buffer_size=0):
+    def __init__(self, gain=0, samplerate=44100):
         """Create new synthesizer object to control sound generation
 
         Keyword arguments:
         gain -- scale factor for audio output in relative dB (default 0.0)
         samplerate -- output samplerate in Hz (default 44100)
-        buffer_size -- number of samples to buffer or 0 for automatic sizing for low latency (default 0)
 
         If you need to mix many simultaneous voices you may need to turn down
         the gain to avoid clipping. Some SoundFonts also require gain adjustment
@@ -112,7 +37,6 @@ class Synth:
         self.stream = None
         self.gain = gain
         self.samplerate = samplerate
-        self.buffer_size = buffer_size
         # soundfonts maps sfid numbers to SoundFont objects
         self.soundfonts = {}
         # Unique identifier creator for this Synth
@@ -227,8 +151,30 @@ class Synth:
         soundfont = self._get_soundfont(sfid)
         soundfont.channel_midi_control(chan, controller, control_value)
 
-    def start(self, driver=None):
-        """Start audio playback"""
+    def pitchbend(self, chan, value):
+        """Set pitch wheel position for a channel, value from 0 to 16383 (default 8192, no pitch change)"""
+        sfid = self._get_sfid(chan)
+        soundfont = self._get_soundfont(sfid)
+        soundfont.channel_set_pitch_wheel(chan, value)
+
+    def pitchbend_range(self, chan, value):
+        """Set pitch bend range up and down for a channel, in semitones (default 2.0)"""
+        sfid = self._get_sfid(chan)
+        soundfont = self._get_soundfont(sfid)
+        soundfont.channel_set_pitch_range(chan, value)
+
+    def start(self, buffer_size=0, **kwargs):
+        """Start audio playback
+
+        Keyword arguments:
+
+        buffer_size -- number of samples to buffer or 0 for automatic sizing for low latency (default 0)
+
+        Other keyword arguments will be passed to PyAudio stream constructor. Useful arguments might include:
+
+        output_device_index -- index of output device to use, or None for default output device
+        """
+
         # Import pyaudio here so if this function is not used there is no dependency
         import pyaudio
 
@@ -257,7 +203,8 @@ class Synth:
             rate=self.samplerate,
             output=True,
             stream_callback=callback,
-            frames_per_buffer=self.buffer_size,
+            frames_per_buffer=buffer_size,
+            **kwargs
         )
 
     def stop(self):
@@ -278,4 +225,3 @@ class Synth:
             # After first render turn on mix to mix together all sounds
             mix = True
         return buffer
-
