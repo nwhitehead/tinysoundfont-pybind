@@ -28,8 +28,8 @@ using namespace pybind11::literals;
 
 namespace {
 
-inline const char* string_empty_if_nullptr(const char* s) {
-    return s ? s : "";
+inline const char* string_none_if_nullptr(const char* s) {
+    return s ? s : "<None>";
 }
 
 } // end anonymous namespace
@@ -72,9 +72,9 @@ public:
 
     int get_preset_count() { return tsf_get_presetcount(obj); }
 
-    std::string get_preset_name(int index) { return string_empty_if_nullptr(tsf_get_presetname(obj, index)); }
+    std::string get_preset_name(int index) { return string_none_if_nullptr(tsf_get_presetname(obj, index)); }
 
-    std::string get_preset_name(int bank, int number) { return string_empty_if_nullptr(tsf_bank_get_presetname(obj, bank, number)); }
+    std::string get_preset_name(int bank, int number) { return string_none_if_nullptr(tsf_bank_get_presetname(obj, bank, number)); }
 
     void set_output(enum TSFOutputMode output_mode, int samplerate, float global_gain_db) { tsf_set_output(obj, output_mode, samplerate, global_gain_db); }
 
@@ -299,14 +299,14 @@ PYBIND11_MODULE(_tinysoundfont, m) {
         .value("Mono", TSF_MONO)
     ;
     py::enum_<enum MidiMessageType>(m, "MidiMessageType")
-        .value("NOTE_OFF", MidiMessageType::NOTE_OFF)
-        .value("NOTE_ON", MidiMessageType::NOTE_ON)
-        .value("KEY_PRESSURE", MidiMessageType::KEY_PRESSURE)
-        .value("CONTROL_CHANGE", MidiMessageType::CONTROL_CHANGE)
-        .value("PROGRAM_CHANGE", MidiMessageType::PROGRAM_CHANGE)
-        .value("CHANNEL_PRESSURE", MidiMessageType::CHANNEL_PRESSURE)
-        .value("PITCH_BEND", MidiMessageType::PITCH_BEND)
-        .value("SET_TEMPO", MidiMessageType::SET_TEMPO)
+        .value("NOTE_OFF", MidiMessageType::NOTE_OFF, "Turn off note")
+        .value("NOTE_ON", MidiMessageType::NOTE_ON, "Turn on note")
+        .value("KEY_PRESSURE", MidiMessageType::KEY_PRESSURE, "Change pressure of existing note (not handled by tinysoundfont)")
+        .value("CONTROL_CHANGE", MidiMessageType::CONTROL_CHANGE, "Change value for controller")
+        .value("PROGRAM_CHANGE", MidiMessageType::PROGRAM_CHANGE, "Change the chosen program for a channel")
+        .value("CHANNEL_PRESSURE", MidiMessageType::CHANNEL_PRESSURE, "Change the pressure of channels of existing note (not handled by tinysoundfont)")
+        .value("PITCH_BEND", MidiMessageType::PITCH_BEND, "Change pitch of existing notes")
+        .value("SET_TEMPO", MidiMessageType::SET_TEMPO, "Change tempo of playback")
     ;
     m.def("midi_load_memory", &midi_load_memory, "Load MIDI file data in Standard MIDI File format");
     py::class_<SoundFont>(m, "SoundFont")

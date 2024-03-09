@@ -6,15 +6,27 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'tinysoundfont-pybind'
+import importlib.metadata
+import packaging
+
+project = 'tinysoundfont'
 copyright = '2024, Nathan Whitehead'
 author = 'Nathan Whitehead'
-release = '0.3.0'
+
+# The short X.Y version
+project_version = importlib.metadata.version(project)
+release = project_version
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.githubpages',
+    'sphinx_autodoc_typehints',
+]
 
 templates_path = ['_templates']
 exclude_patterns = []

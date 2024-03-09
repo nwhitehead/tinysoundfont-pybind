@@ -8,18 +8,26 @@
 #
 
 from . import _tinysoundfont
-from .sequencer import Sequencer
 
-# Drum channels have separate samples per key
-DRUM_CHANNEL = 10
+from typing import Optional
 
+MAX_CHANNELS = 16
 
 class SoundFontException(Exception):
+    """An exception raised from tinysoundfont"""
     pass
 
 
 class Synth:
-    """Synth represents a synthesizer that can load a SoundFont and produce audio"""
+    """Create new synthesizer object to control sound generation.
+
+    :param gain: scale factor for audio output, in relative dB (default 0.0)
+    :param samplerate: output samplerate in Hz (default 44100)
+
+    If you need to mix many simultaneous voices you may need to turn down
+    the `gain` to avoid clipping. Some SoundFonts also require gain adjustment
+    to avoid being too loud or too quiet.
+    """
 
     def _get_soundfont(self, sfid):
         if sfid not in self.soundfonts:
@@ -31,17 +39,7 @@ class Synth:
             raise SoundFontException("Invalid channel (channel not assigned)")
         return self.channel[chan]
 
-    def __init__(self, gain=0, samplerate=44100):
-        """Create new synthesizer object to control sound generation
-
-        Keyword arguments:
-        gain -- scale factor for audio output in relative dB (default 0.0)
-        samplerate -- output samplerate in Hz (default 44100)
-
-        If you need to mix many simultaneous voices you may need to turn down
-        the gain to avoid clipping. Some SoundFonts also require gain adjustment
-        to avoid being too loud or too quiet.
-        """
+    def __init__(self, gain: float = 0, samplerate: int = 44100):
         self.p = None
         self.stream = None
         self.gain = gain
@@ -53,25 +51,29 @@ class Synth:
         # Keep track of which SoundFont to use for different channels
         # Dictionary of channel -> sfid
         self.channel = {}
-        # Keep track of scheduled MIDI events for callback
-        self.sequencer = Sequencer()
+        # Function to call to perform actions during audio callback
+        self.callback = None
 
-    def sfload(self, filename, gain=0.0, max_voices=256):
+    def sfload(self, filename_or_bytes: str | bytes, gain: float = 0.0, max_voices: int = 256) -> int:
         """Load SoundFont and return its ID
 
-        Arguments:
-        filename -- filename containing sf2/sf3/sfo SoundFont data, or `bytes` data directly
+        :param filename_or_bytes: either a filename containing sf2/sf3/sfo
+            SoundFont data or bytes object
+        :param gain: gain adjustment for this SoundFont, in relative dB (default
+            0.0)
+        :param max_voices: maximum number of simultaneous voices (default 256)
 
-        Keyword arguments:
-        gain -- gain adjustment for this SoundFont in relative dB (default 0.0)
-        max_voices -- maximum number of simultaneous voices (default 256)
+        :return: ID of SoundFont to be used by other methods such as
+            :func:`program_select`
 
-        Returns ID of SoundFont to be used by other methods such as `program_select`.
-        One note in a SoundFont may use more than one voice. Playing multiple notes
-        also uses more voices. If more voices are required than are available, older
-        voices will be cut off.
+        When deciding on the value for `max_voices`, one note in a SoundFont may
+        use more than one voice. Playing multiple notes also uses more voices.
+        If more voices are required than are available, older voices will be cut
+        off.
+
+        See also: :meth:`program_select`, :meth:`sfpreset_name`, :meth:`sfunload`
         """
-        soundfont = _tinysoundfont.SoundFont(filename)
+        soundfont = _tinysoundfont.SoundFont(filename_or_bytes)
         soundfont.set_output(
             _tinysoundfont.OutputMode.StereoInterleaved,
             self.samplerate,
@@ -82,13 +84,21 @@ class Synth:
         self.next_sfid += 1
         self.soundfonts[sfid] = soundfont
         # Set any unassigned channels to use this SoundFont
-        for chan in range(16):
+        for chan in range(MAX_CHANNELS):
             if chan not in self.channel:
                 self.channel[chan] = sfid
         return sfid
 
-    def sfunload(self, sfid):
-        """Unload a SoundFont and free memory it used"""
+    def sfunload(self, sfid: int):
+        """Unload a SoundFont and free memory it used.
+        
+        :param sfid: ID of SoundFont to unload, as returned by :func:`sfload`
+        :type sfid: int
+
+        :raises: `SoundFontException` if the SoundFont does not exist
+
+        See also: :meth:`sfload`
+        """
         _ = self._get_soundfont(sfid)
         del self.soundfonts[sfid]
         # Clear any channels that refers to this sfid
@@ -98,53 +108,112 @@ class Synth:
             if self.channel[chan] != sfid
         }
 
-    def program_select(self, chan, sfid, bank, preset):
-        """Select a program for specific channel"""
+    def program_select(self, chan: int, sfid: int, bank: int, preset: int, is_drums: bool = False):
+        """Select a program from a SoundFont for specific channel
+
+        :param chan: Channel to affect (0-15)
+        :param sfid: ID of SoundFont to use
+        :param bank: Bank to set (0-127)
+        :param preset: Which preset to use (0-127)
+        :param is_drums: Whether to set channel to MIDI drum mode (default False)
+
+        :raises: `SoundFontException` if the SoundFont does not exist
+        :raises: `RuntimeError` if channel, bank, or preset is out of range
+        :raises: `RuntimeError` if bank/preset does not match any instrument for the SoundFont
+        """
         soundfont = self._get_soundfont(sfid)
         self.channel[chan] = sfid
         soundfont.channel_set_bank(chan, bank)
-        soundfont.channel_set_preset_number(chan, preset, chan == DRUM_CHANNEL)
+        soundfont.channel_set_preset_number(chan, preset, is_drums)
 
-    def program_unset(self, chan):
-        """Set the preset of a MIDI channel to an unassigned state"""
+    def program_unset(self, chan: int):
+        """Set the preset of a MIDI channel to an unassigned state.
+        
+        :param chan: Channel to affect (0-15)
+
+        :raises: `SoundFontException` if channel is out of range
+        """
         if chan not in self.channel:
             raise SoundFontException("Invalid channel (channel not assigned)")
         del self.channel[chan]
 
-    def program_change(self, chan, preset):
-        """Select a program for a specific channel that already has a SoundFont assigned"""
+    def program_change(self, chan: int, preset: int, is_drums: bool = False):
+        """Select a program for a specific channel that already has a SoundFont assigned.
+
+        :param chan: Channel to affect (0-15)
+        :param preset: Which preset to use (0-127)
+        :param is_drums: Whether to set channel to MIDI drum mode (default False)
+
+        :raises: `SoundFontException` if channel is out of range or does not have a SoundFont loaded
+        :raises: `RuntimeError` if bank/preset are out of range or do not match any instrument for the SoundFont in the channel
+        """
         sfid = self._get_sfid(chan)
         soundfont = self._get_soundfont(sfid)
-        soundfont.channel_set_preset_number(chan, preset, chan == DRUM_CHANNEL)
+        soundfont.channel_set_preset_number(chan, preset, is_drums)
 
-    def program_info(self, chan):
-        """Get SoundFont id, bank, program number, and preset name of channel"""
+    def program_info(self, chan: int) -> (int, int, int):
+        """Get SoundFont id, bank, program number, and preset number of channel.
+
+        :param chan: Channel to affect (0-15)
+
+        :raises: `SoundFontException` if channel is out of range or has not SoundFont loaded
+
+        :return: Tuple containing `(sfid, bank, preset)` indicating SoundFont ID, bank number, and preset number
+        """
         sfid = self._get_sfid(chan)
         soundfont = self._get_soundfont(sfid)
         bank = soundfont.channel_get_preset_bank(chan)
         preset = soundfont.channel_get_preset_number(chan)
         return (sfid, bank, preset)
 
-    def sfpreset_name(self, sfid, bank, number):
-        """Return name of a SoundFont preset"""
-        soundfont = self._get_soundfont(sfid)
-        return soundfont.get_preset_name(bank, number)
+    def sfpreset_name(self, sfid: int, bank: int, preset: int) -> Optional[str]:
+        """Return name of a SoundFont preset.
 
-    def noteon(self, chan, key, vel):
-        """Play a note"""
+        :param sfid: ID of SoundFont to use
+        :param bank: Bank to use (0-127)
+        :param preset: Which preset to retrieve (0-127)
+
+        :raises: `SoundFontException` if channel is out of range or has not SoundFont loaded
+        :raises: `RuntimeError` if bank/preset are out of range
+
+        :return: Name of preset in SoundFont, or `None` if preset does not exist in SoundFont
+        """
+        soundfont = self._get_soundfont(sfid)
+        name = soundfont.get_preset_name(bank, preset)
+        if name == '<None>':
+            return None
+        return name
+
+    def noteon(self, chan: int, key: int, velocity: int) -> bool:
+        """Play a note.
+
+        :param chan: Channel to use (0-15)
+        :param key: MIDI key to press (0-127), 60 is middle C
+        :param velocity: Velocity of keypress (0-127), 0 means to turn off, 127 is maximum
+
+        :return: `True` if note was valid, `False` if note was outside of legal range or channel did not have instrument loaded
+        """
         if key < 0 or key > 127:
             return False
-        if vel < 0 or vel > 127:
+        if velocity < 0 or velocity > 127:
             return False
         if chan not in self.channel:
             return False
         sfid = self._get_sfid(chan)
         soundfont = self._get_soundfont(sfid)
-        soundfont.channel_note_on(chan, key, vel / 127.0)
+        soundfont.channel_note_on(chan, key, velocity / 127.0)
         return True
 
-    def noteoff(self, chan, key):
-        """Stop a note"""
+    def noteoff(self, chan: int, key: int):
+        """Stop a note.
+
+        :param chan: Channel to use (0-15)
+        :param key: MIDI key to release (0-127), 60 is middle C
+
+        :return: `True` if note was valid, `False` if note was outside of legal range or channel did not have instrument loaded
+
+        It is valid to call `noteoff` on a note that never had `noteon`.
+        """
         if key < 0 or key > 127:
             return False
         if chan not in self.channel:
@@ -154,34 +223,98 @@ class Synth:
         soundfont.channel_note_off(chan, key)
         return True
 
-    def control_change(self, chan, controller, control_value):
-        """Change control value for a specific channel"""
+    def control_change(self, chan: int, controller: int, control_value: int):
+        """Change control value for a specific channel.
+
+        :param chan: Channel to use (0-15)
+        :param controller: Controller to update, (0-127), meaning defined by MIDI 1.0 standard
+        :param control_value: Value to use for update, (0-127)
+
+        The interpretation of controller number is from the MIDI 1.0 standard. Supported controller values
+        that have an effect for `tinysoundfont` are:
+
+        * 7 VOLUME_MSB
+        * 39 VOLUME_LSB
+        * 11 EXPRESSION_MSB
+        * 43 EXPRESSION_LSB
+        * 10 PAN_MSB
+        * 42 PAN_LSB
+        * 6 DATA_ENTRY_MSB
+        * 38 DATA_ENTRY_LSB
+        * 0 BANK_SELECT_MSB
+        * 32 BANK_SELECT_LSB
+        * 101 RPN_MSB
+        * 100 RPN_LSB
+        * 98 NRPN_LSB
+        * 99 NRPN_MSB
+        * 120 ALL_SOUND_OFF
+        * 123 ALL_NOTES_OFF
+        * 121 ALL_CTRL_OFF
+        """
         sfid = self._get_sfid(chan)
         soundfont = self._get_soundfont(sfid)
         soundfont.channel_midi_control(chan, controller, control_value)
 
-    def pitchbend(self, chan, value):
-        """Set pitch wheel position for a channel, value from 0 to 16383 (default 8192, no pitch change)"""
+    def set_tuning(self, chan: int, tuning: float):
+        """Set tuning for a channel.
+
+        :param chan: Channel to affect (0-15)
+        :param tuning: Tuning adjustment in semitones (default 0.0)
+        """
+        sfid = self._get_sfid(chan)
+        soundfont = self._get_soundfont(sfid)
+        soundfont.channel_set_tuning(chan, tuning)
+
+    def pitchbend(self, chan: int, value: int):
+        """Set pitch wheel position for a channel.
+
+        :param chan: Channel to affect (0-15)
+        :param value: Value from 0 to 16383 indicating pitch bend down to pitch bend up (default 8192, no pitch change)
+
+        See also: :meth:`pitchbend_range`
+        """
         sfid = self._get_sfid(chan)
         soundfont = self._get_soundfont(sfid)
         soundfont.channel_set_pitch_wheel(chan, value)
 
-    def pitchbend_range(self, chan, value):
-        """Set pitch bend range up and down for a channel, in semitones (default 2.0)"""
+    def pitchbend_range(self, chan: int, semitones: float):
+        """Set pitch bend range up and down for a channel.
+        
+        :param chan: Channel to affect (0-15)
+        :param semitones: Pitch bend range up and down in semitones (default 2.0)
+
+        See also: :meth:`pitchbend`
+        """
         sfid = self._get_sfid(chan)
         soundfont = self._get_soundfont(sfid)
         soundfont.channel_set_pitch_range(chan, value)
 
-    def start(self, buffer_size=0, **kwargs):
-        """Start audio playback
+    def start(self, buffer_size: int = 0, **kwargs):
+        """Start audio playback in a separate thread.
 
-        Keyword arguments:
+        :param buffer_size: Number of samples to buffer or 0 for automatic
+            sizing for low latency (default 0)
 
-        buffer_size -- number of samples to buffer or 0 for automatic sizing for low latency (default 0)
+        Extra keyword arguments will be passed to the `pyaudio` stream
+        constructor. Useful arguments might include:
 
-        Other keyword arguments will be passed to PyAudio stream constructor. Useful arguments might include:
+        * `output_device_index` -- index of output device to use, or `None` for
+          default output device
 
-        output_device_index -- index of output device to use, or None for default output device
+        Note that depending on your platform `pyaudio` may recognize a large
+        number of devices not all of which are suitable for audio playback. You
+        may need to use `pyaudio` method `get_host_api_info_by_index()` to find
+        details about the `pyaudio` devices and choose a suitable index.
+
+        The separate audio playback thread will continue generating and playing
+        samples until stopped with :meth:`stop`.
+        
+        The audio thread will not prevent the main thread from exiting. If you
+        turn on notes and call :meth:`start`, your main thread will need to call
+        :func:`time.sleep` to let time pass to be able to hear the notes
+        playing. To schedule note events through time see :class:`Sequencer`.
+
+        See also: :meth:`stop`
         """
 
         # Import pyaudio here so if this function is not used there is no dependency
@@ -195,7 +328,10 @@ class Synth:
             generated = 0
             while generated < frame_count:
                 delta = (frame_count - generated) / self.samplerate
-                delta = self.sequencer.process(delta, self)
+                # Call all the relevant callbacks, which each may shorten delta
+                # Each callback does any actions it needs to do that are currently scheduled, then returns how much delta can advance
+                if self.callback is not None:
+                    delta = min(self.callback(delta), delta)
                 # Compute actual frame count to render based on return value in seconds (round up to keep making progress)
                 actual_frame_count = int(delta * self.samplerate + 0.999)
                 # Index into buffer at frame boundaries
@@ -217,17 +353,27 @@ class Synth:
         )
 
     def stop(self):
-        """Stop audio playback"""
+        """Stop audio playback thread.
+
+        See also: :meth:`start`
+        """
         if self.p is not None and self.stream is not None:
             self.stream.close()
             self.p.terminate()
 
-    def generate(self, samples, buffer=None):
-        """Generate fixed number of output samples in stereo float32 format as bytearray"""
+    def generate(self, samples: int, buffer: Optional[memoryview] = None) -> memoryview:
+        """Generate fixed number of output samples.
+        
+        :param samples: Number of samples to generate
+        :param buffer: Existing buffer to fill, or `None` to allocate new buffer
+
+        :returns: View into buffer with samples filled in stereo float32 format.
+
+        """
         CHANNELS = 2
         SIZEOF_FLOAT_IN_BYTES = 4
         if buffer is None:
-            buffer = bytearray(samples * CHANNELS * SIZEOF_FLOAT_IN_BYTES)
+            buffer = memoryview(bytearray(samples * CHANNELS * SIZEOF_FLOAT_IN_BYTES))
         mix = False
         for soundfont in self.soundfonts.values():
             soundfont.render(buffer, mix)
