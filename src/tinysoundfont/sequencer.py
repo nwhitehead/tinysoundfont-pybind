@@ -37,7 +37,7 @@ class Sequencer:
 
         Filter function should take one input argument, the event, and modify it
         in place as needed. The function should return `None` or `False` to
-        indicate to use the modified event, or `True` to indicate that the event
+        indicate to keep the modified event, or `True` to indicate that the event
         should be deleted.
         
         See also: :meth:`midi_load`
@@ -66,7 +66,7 @@ class Sequencer:
 
         Filter function should take one input argument, the event, and modify it
         in place as needed. The function should return `None` or `False` to
-        indicate to use the modified event, or `True` to indicate that the event
+        indicate to keep the modified event, or `True` to indicate that the event
         should be deleted.
         """
         with open(filename, "rb") as fin:
@@ -76,7 +76,19 @@ class Sequencer:
     def send(self, event: Dict):
         """Send a single MIDI event to the synth object now, ignoring any time information.
         
-        :param event: Single event, with fields `t` and `type` plus any needed additional details for event.
+        :param event: Single event, with field `type` and `channel` plus any needed additional details for event.
+
+        The `type` field is of type :class:`MidiMessageType`.
+
+        For `NOTE_ON`, the event has `key` and `velocity`.
+
+        For `NOTE_OFF`, the event has `key`.
+
+        For `CONTROL_CHANGE`, the event has `control` and `control_value`.
+
+        For `PROGRAM_CHANGE`, the event has `program`.
+
+        For `PITCH_BEND`, the event has `pitch_bend`.
         """
         synth = self.synth
         match event["type"]:

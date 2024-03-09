@@ -231,7 +231,7 @@ class Synth:
         :param control_value: Value to use for update, (0-127)
 
         The interpretation of controller number is from the MIDI 1.0 standard. Supported controller values
-        that have an effect for `tinysoundfont` are:
+        that have an effect are:
 
         * 7 VOLUME_MSB
         * 39 VOLUME_LSB
