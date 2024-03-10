@@ -28,17 +28,56 @@ class Sequencer:
         self.events = deque()
         self.synth.callback = lambda delta: self.process(delta)
 
-    def midi_load_memory(self, data: bytes, filter: Optional[Callable[[List[Dict]], Optional[bool]]] = None):
+    def get_time(self) -> float:
+        """Get current playing time of sequencer.
+        
+        :return: current playing time of sequencer in seconds of absolute time since sequencer started
+        """
+        return self.time
+
+    def set_time(self, time: float):
+        """Set current playing time of sequencer.
+
+        :param time: New absolute time in seconds
+
+        Note that if previously scheduled events did not have `persistent` set
+        then the events will no longer exist and will not play again.
+
+        Note that MIDI expects events to happen in sequence. So if there is a
+        program change as an event and you set the time to before that event,
+        you might get the new instrument at a position where the previous
+        instrument should have played. In general seeking back to the start of
+        the MIDI events should work. Other random seeking may have unintended
+        effects.
+
+        To avoid stuck notes, this method turns off all keypresses. It does
+        not stop all sounds so playing notes may still have time to decay.
+        """
+        self.time = time
+        for chan in range(16):
+            self.synth.control_change(chan, 123, 0)
+
+    def is_empty(self) -> bool:
+        """Return True if there are no more events scheduled.
+        
+        :return: True if there are no more events scheduled for this sequencer (song is over)
+        """
+        return len(self.events) == 0
+
+    def midi_load_memory(self, data: bytes, filter: Optional[Callable[[List[Dict]], Optional[bool]]] = None, persistent: bool = True):
         """Load MIDI data and schedule its events in this sequencer now
 
-        :param data: MIDI data, in Standard MIDI format
+        :param data: MIDI data, in Standard MIDI format.
         :param filter: Optional function that takes in individual events and can
-            modify them or filter them out
+            modify them or filter them out.
+        :param persistent: Whether to keep events in queue after playing,
+            allowing for seeking back to start or arbitrary positions after
+            playback started.
 
         Filter function should take one input argument, the event, and modify it
         in place as needed. The function should return `None` or `False` to
-        indicate to keep the modified event, or `True` to indicate that the event
-        should be deleted.
+        indicate to keep the modified event, or `True` to indicate that the
+        event should be deleted.
         
         See also: :meth:`midi_load`
         """
@@ -47,6 +86,8 @@ class Sequencer:
         for event in self.data:
             # Offset by current time of sequencer (MIDI events stored at t=0 are scheduled to start now)
             event["t"] += self.time
+            if persistent:
+                event["persistent"] = True
             if filter is not None:
                 if filter(event) == True:
                     event = None
@@ -78,6 +119,8 @@ class Sequencer:
         
         :param event: Single event, with field `type` and `channel` plus any needed additional details for event.
 
+        If the event tries to select a preset that does not exist no error is raised.
+
         The `type` field is of type :class:`MidiMessageType`.
 
         For `NOTE_ON`, the event has `key` and `velocity`.
@@ -102,7 +145,10 @@ class Sequencer:
             case MidiMessageType.CONTROL_CHANGE:
                 synth.control_change(event["channel"], event["control"], event["control_value"])
             case MidiMessageType.PROGRAM_CHANGE:
-                synth.program_change(event["channel"], event["program"])
+                try:
+                    synth.program_change(event["channel"], event["program"])
+                except Exception:
+                    pass
             case MidiMessageType.CHANNEL_PRESSURE:
                 # Not handled by TinySoundFont
                 pass
@@ -112,22 +158,37 @@ class Sequencer:
     def process(self, delta: float) -> float:
         """Send any events that need to be sent now.
 
-        :param delta: How many seconds to advance time.
-        :returns: How far time was actually advanced (may be smaller than `delta`).
+        :param delta: How many seconds to advance time
+        :returns: How far time was actually advanced (may be smaller than `delta`)
 
         """
-        # Send all events that are scheduled for time <= self.time
-        while len(self.events) > 0:
+        # Need to send all events with time <= self.time if not persistent
+        # Persistent events only send events with time == self.time
+        pos = 0
+        while pos < len(self.events):
             # Look at earliest event in deque
-            event = self.events[0]
+            event = self.events[pos]
             t = event["t"]
+            if t < self.time:
+                # Send it if it is not persistent, otherwise ignore
+                if "persistent" in event:
+                    pos += 1
+                else:
+                    self.events.popleft()
+                    self.send(event)
+                continue
             if t > self.time:
                 # Don't do event yet or remove it, need to wait until its time
                 true_delta = min(delta, t - self.time)
                 self.time += true_delta
                 return true_delta
-            # Head event should actually be done, so remove it
-            event = self.events.popleft()
+            # If we get here, t == self.time
+            # Head event needs to be done
+            if "persistent" in event:
+                pos += 1
+            else:
+                self.events.popleft()
+                # Don't change pos here, the popleft shifts pos to be next event
             # Now do it
             self.send(event)
         # If we get here that means events are done

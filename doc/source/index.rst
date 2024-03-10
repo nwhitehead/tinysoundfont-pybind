@@ -1,17 +1,11 @@
-``tinysoundfont`` Package
+`tinysoundfont` Documentation
 ================================================
 
-.. automodule:: tinysoundfont
-   :members: Synth, SoundFontException, Sequencer, MidiMessageType
+Hello this is some text.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 3
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   guide
+   developer
+   reference
