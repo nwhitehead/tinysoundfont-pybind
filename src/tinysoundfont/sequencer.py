@@ -22,11 +22,16 @@ class Sequencer:
     def __init__(self, synth: Synth):
         self.synth = synth
         self.time = 0.0
+        self.paused = False
         # events stores events for future, ordered by time
         # Queue has items (t, event)
         # Event is events as returned by _tinysoundfont.midi_load_memory
         self.events = deque()
-        self.synth.callback = lambda delta: self.process(delta)
+        def seq_callback(delta: float) -> float:
+            if self.paused:
+                return delta
+            return self.process(delta)
+        self.synth.callback = seq_callback
 
     def get_time(self) -> float:
         """Get current playing time of sequencer.
@@ -50,12 +55,35 @@ class Sequencer:
         the MIDI events should work. Other random seeking may have unintended
         effects.
 
-        To avoid stuck notes, this method turns off all keypresses. It does
-        not stop all sounds so playing notes may still have time to decay.
+        To avoid stuck notes, this method turns off all keypresses using
+        :meth:`notes_off`. It does not stop all sounds so playing notes may
+        still have time to decay. If needed you can call :meth:`sounds_off`
+        to stop all playing sounds immediately.
         """
         self.time = time
-        for chan in range(16):
-            self.synth.control_change(chan, 123, 0)
+        self.notes_off()
+
+    def pause(self, pause_value=True):
+        """Pause or unpause playback.
+
+        When playback is paused, time does not advance. No new events will be
+        sent to the :class:`Synth` object connected to the sequencer. If notes
+        are playing, they will continue to play.
+
+        To prevent notes from continuing to play during pause, this method calls
+        :meth:`notes_off`. You may want to call :meth:`sound_off` to stop all
+        sound playing immediately if needed.
+        """
+        self.paused = pause_value
+        self.notes_off()
+
+    def notes_off(self):
+        """Send NOTE_OFF for all currently playing notes of the Synth object."""
+        self.synth.notes_off()
+
+    def sounds_off(self):
+        """Turn off all sounds of the Synth object."""
+        self.synth.sounds_off()
 
     def is_empty(self) -> bool:
         """Return True if there are no more events scheduled.

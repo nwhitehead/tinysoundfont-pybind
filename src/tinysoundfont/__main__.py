@@ -54,6 +54,8 @@ def main():
         synth = Synth(samplerate=args.samplerate, gain=args.gain)
         sfid = synth.sfload(soundfont_filename)
         seq = Sequencer(synth)
+        for i in range(16):
+            synth.program_change(i, 0, 0)
         seq.midi_load(midi_filename)
         synth.start(buffer_size=args.buffer_size)        
         print(f'Playing {midi_filename} with SoundFont {soundfont_filename}')

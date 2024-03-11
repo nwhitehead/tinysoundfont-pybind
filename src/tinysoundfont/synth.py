@@ -223,6 +223,34 @@ class Synth:
         soundfont.channel_note_off(chan, key)
         return True
 
+    def notes_off(self, chan: Optional[int] = None):
+        """Turn off all playing notes in all channels or one specific channel.
+
+        :param chan: Channel to use (0-15) or None to indicate all channels
+
+        Some instruments have long decays or may continue to produce sound after a NOTE_OFF event.
+        If you need all sounds to stop playing use :meth:`sounds_off`.
+        """
+        if chan is None:
+            for chan in range(16):
+                self.control_change(chan, 123, 0)
+        else:
+            self.control_change(chan, 123, 0)
+
+    def sounds_off(self, chan: Optional[int] = None):
+        """Turn off all playing sounds in all channels or one specific channel.
+
+        :param chan: Channel to use (0-15) or None to indicate all channels
+
+        Some instruments have long decays or may continue to produce sound after a NOTE_OFF event.
+        If you need all notes to stop playing and continue producing the decay, use :meth:`notes_off`.
+        """
+        if chan is None:
+            for chan in range(16):
+                self.control_change(chan, 120, 0)
+        else:
+            self.control_change(chan, 120, 0)
+
     def control_change(self, chan: int, controller: int, control_value: int):
         """Change control value for a specific channel.
 
