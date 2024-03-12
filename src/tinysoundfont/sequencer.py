@@ -90,7 +90,11 @@ class Sequencer:
         
         :return: True if there are no more events scheduled for this sequencer (song is over)
         """
-        return len(self.events) == 0
+        if len(self.events) == 0:
+            return True
+        if self.events[-1]["t"] < self.time:
+            return True
+        return False
 
     def midi_load_memory(self, data: bytes, filter: Optional[Callable[[List[Dict]], Optional[bool]]] = None, persistent: bool = True):
         """Load MIDI data and schedule its events in this sequencer now

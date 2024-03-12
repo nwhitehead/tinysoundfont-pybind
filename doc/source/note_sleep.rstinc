@@ -1,0 +1,7 @@
+.. note::
+
+   This example uses :meth:`time.sleep` for scheduling :meth:`Synth.noteon`
+   and :meth:`Synth.noteoff` calls. This way of scheduling events blocks
+   the main thread and makes the program non-interactive. The timing
+   resolution of this method is also limited. Changes to the :class:`Synth`
+   object will only affect audio output at audio buffer boundaries.

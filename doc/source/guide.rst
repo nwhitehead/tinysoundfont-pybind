@@ -144,21 +144,36 @@ Here is an example that plays a single chord.
 
 .. literalinclude:: ../../test/example_chord.py
 
-.. note::
-   This example uses :meth:`time.sleep` for scheduling :meth:`Synth.noteon`
-   and :meth:`Synth.noteoff` calls. This way of scheduling events blocks
-   the main thread and makes the program non-interactive. The timing
-   resolution of this method is also limited. Changes to the :class:`Synth`
-   object will only affect audio output at audio buffer boundaries.
+.. include:: note_sleep.rstinc
 
 Change Instruments
 ------------------
 
-One SoundFont can contain many instruments. This example shows playing notes from different
-instruments in the `FluidR3_GM` SoundFont.
+One SoundFont can contain many instruments. This example shows playing notes
+from different instruments in the `FluidR3_GM` SoundFont.
 
 .. literalinclude:: ../../test/example_instruments.py
 
+.. include:: note_sleep.rstinc
+
+.. include:: note_fluidr3.rstinc
+
+
 Play a MIDI
 -----------
+
+This example plays a MIDI file using a General MIDI SoundFont. It schedules the
+song to play then waits until the song is finished and ends.
+
+.. literalinclude:: ../../test/example_song.py
+
+.. include:: note_fluidr3.rstinc
+
+Control MIDI
+------------
+
+This example plays a MIDI file using the example SoundFont. It filters the MIDI
+instrument changes to only use preset `0` for all channels.
+
+.. literalinclude:: ../../test/example_midi_filter.py
 

@@ -9,6 +9,7 @@ Internally, Python bindings are created using `pybind11
 package. That means this package is self-contained and does not link to any
 other native libraries.
 
+The `Guide`
 Things that are *not* goals of `tinysoundfont`:
 
 1. To cover general audo synthesis algorithms and digital effects
