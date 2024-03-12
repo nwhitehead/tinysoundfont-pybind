@@ -15,3 +15,4 @@ Things that are *not* goals of `tinysoundfont`:
 2. To be exhaustive in duplicating the `FluidSynth` API
 3. To control general MIDI signal routing and input/output
 4. To provide guaranteed real-time responsiveness without glitches
+5. To be an editor or validator for SoundFonts

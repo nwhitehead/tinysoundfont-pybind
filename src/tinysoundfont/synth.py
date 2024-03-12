@@ -317,11 +317,11 @@ class Synth:
         soundfont = self._get_soundfont(sfid)
         soundfont.channel_set_pitch_range(chan, value)
 
-    def start(self, buffer_size: int = 0, **kwargs):
+    def start(self, buffer_size: int = 1024, **kwargs):
         """Start audio playback in a separate thread.
 
         :param buffer_size: Number of samples to buffer or 0 for automatic
-            sizing for low latency (default 0)
+            sizing for low latency (default 1024)
 
         Extra keyword arguments will be passed to the `pyaudio` stream
         constructor. Useful arguments might include:
