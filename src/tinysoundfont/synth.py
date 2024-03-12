@@ -154,9 +154,9 @@ class Synth:
     def program_info(self, chan: int) -> (int, int, int):
         """Get SoundFont id, bank, program number, and preset number of channel.
 
-        :param chan: Channel to affect (0-15)
+        :param chan: Channel to use (0-15)
 
-        :raises: `SoundFontException` if channel is out of range or has not SoundFont loaded
+        :raises: `SoundFontException` if channel is out of range or has no SoundFont loaded
 
         :return: Tuple containing `(sfid, bank, preset)` indicating SoundFont ID, bank number, and preset number
         """
@@ -173,7 +173,7 @@ class Synth:
         :param bank: Bank to use (0-127)
         :param preset: Which preset to retrieve (0-127)
 
-        :raises: `SoundFontException` if channel is out of range or has not SoundFont loaded
+        :raises: `SoundFontException` if channel is out of range or has no SoundFont loaded
         :raises: `RuntimeError` if bank/preset are out of range
 
         :return: Name of preset in SoundFont, or `None` if preset does not exist in SoundFont
