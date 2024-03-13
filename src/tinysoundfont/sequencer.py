@@ -104,7 +104,7 @@ class Sequencer:
             modify them or filter them out.
         :param persistent: Whether to keep events in queue after playing,
             allowing for seeking back to start or arbitrary positions after
-            playback started.
+            playback has started.
 
         Filter function should take one input argument, the event, and modify it
         in place as needed. The function should return `None` or `False` to
@@ -178,7 +178,7 @@ class Sequencer:
                 synth.control_change(event["channel"], event["control"], event["control_value"])
             case MidiMessageType.PROGRAM_CHANGE:
                 try:
-                    synth.program_change(event["channel"], event["program"])
+                    synth.program_change(event["channel"], event["program"], event["channel"] == 10)
                 except Exception:
                     pass
             case MidiMessageType.CHANNEL_PRESSURE:
@@ -188,7 +188,7 @@ class Sequencer:
                 synth.pitchbend(event["channel"], event["pitch_bend"])
 
     def process(self, delta: float) -> float:
-        """Send any events that need to be sent now.
+        """Advance time and send any events that need to be sent to the Synth.
 
         :param delta: How many seconds to advance time
         :returns: How far time was actually advanced (may be smaller than `delta`)

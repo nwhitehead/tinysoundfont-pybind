@@ -3,7 +3,8 @@
 Guide
 ================================================
 
-This is a short guide to using `tinysoundfont`.
+This is a short guide to using `tinysoundfont`. If you want details on specific
+API functions look in the :doc:`reference`.
 
 What is it?
 -----------
@@ -19,7 +20,7 @@ What you might want to use this package for:
 * Play MIDI files with SoundFonts in Python
 * Play MIDI files with modifications and customizations (mute tracks, change instruments, etc.)
 * Procedurally generate and play music or sounds
-* Play music and sounds in an interative way in your Python program
+* Play music and sounds in an interactive way in your Python program
 
 Goals
 -----
@@ -98,6 +99,15 @@ FluidSynth works with a Creative Commons licensed SoundFont named `FluidR3_GM
 <https://keymusician01.s3.amazonaws.com/FluidR3_GM.zip>`_. This SoundFont is
 good for general MIDI music playback.
 
+MuseScore
+^^^^^^^^^
+
+Another source of freely available SoundFonts is the MuseScore project. The
+`MuseScore Handbook: SoundFonts and SFZ Files
+<https://musescore.org/en/handbook/3/soundfonts-and-sfz-files#list>`_ page
+includes links to download various `SF2` and `SF3` SoundFonts that have been
+used in various versions of MuseScore.
+
 Online Resources
 ^^^^^^^^^^^^^^^^
 
@@ -115,8 +125,11 @@ users.
 There are many lists of SoundFont downloads online. One resource is
 `SynthFont Links <http://www.synthfont.com/links_to_soundfonts.html>`_.
 
-Play a Note
------------
+Examples
+--------
+
+Play a note
+^^^^^^^^^^^
 
 To play a note and hear it, the general steps are:
 
@@ -135,7 +148,7 @@ Here is a tiny example program to play a note:
 .. literalinclude:: ../../test/example_one_note.py
 
 Play a Chord
-------------
+^^^^^^^^^^^^
 
 One SoundFont instrument can play multiple notes at the same time in the same MIDI channel. To play
 a chord call :meth:`Synth.noteon` for multiple keys.
@@ -147,7 +160,7 @@ Here is an example that plays a single chord.
 .. include:: note_sleep.rstinc
 
 Change Instruments
-------------------
+^^^^^^^^^^^^^^^^^^
 
 One SoundFont can contain many instruments. This example shows playing notes
 from different instruments in the `FluidR3_GM` SoundFont.
@@ -159,8 +172,8 @@ from different instruments in the `FluidR3_GM` SoundFont.
 .. include:: note_fluidr3.rstinc
 
 
-Play a MIDI
------------
+Play a MIDI File
+^^^^^^^^^^^^^^^^
 
 This example plays a MIDI file using a General MIDI SoundFont. It schedules the
 song to play then waits until the song is finished and ends.
@@ -169,11 +182,26 @@ song to play then waits until the song is finished and ends.
 
 .. include:: note_fluidr3.rstinc
 
-Control MIDI
-------------
+Filter MIDI Events
+^^^^^^^^^^^^^^^^^^
 
 This example plays a MIDI file using the example SoundFont. It filters the MIDI
-instrument changes to only use preset `0` for all channels.
+instrument changes in the multi-channel song to only use preset `0` for all
+channels to allow us to use the example organ SoundFont.
 
 .. literalinclude:: ../../test/example_midi_filter.py
 
+Drum Sounds
+^^^^^^^^^^^
+
+The General MIDI convention is that drum events happens on channel 10. You can
+set any channel to be a drum kit channel using :meth:`Synth.program_select` or
+:meth:`Synth.program_change`. A drum kit channel maps different drum instruments
+to each MIDI key of the channel. For example key `36` is a bass drum and `56` is
+a cowbell.
+
+This example plays a short drum pattern.
+
+.. literalinclude:: ../../test/example_drums.py
+
+.. include:: note_fluidr3.rstinc

@@ -58,28 +58,6 @@ def main():
                     print(f'{bank} - {preset} : {name}')
         return 0
 
-    if args.play:
-        if midi_filename is None:
-            print('No MIDI file found, a MIDI file and SoundFont file are required for MIDI playback')
-            return -1
-        if soundfont_filename is None:
-            print('No SoundFont file found, a SoundFont file is required for MIDI playback')
-            return -2
-
-        # Let's try to play a MIDI file
-        synth = Synth(samplerate=args.samplerate, gain=args.gain)
-        sfid = synth.sfload(soundfont_filename)
-        seq = Sequencer(synth)
-        for i in range(16):
-            synth.program_change(i, 0, 0)
-        seq.midi_load(midi_filename)
-        synth.start(buffer_size=args.buffer_size)
-        print(f'Playing {midi_filename} with SoundFont {soundfont_filename}')
-        while not seq.is_empty():
-            time.sleep(0.5)
-        time.sleep(1)
-        return 0
-
     if args.test:
         if soundfont_filename is None:
             print('No SoundFont file found, a SoundFont file is required for MIDI playback')
@@ -103,6 +81,28 @@ def main():
         time.sleep(3)
         synth.notes_off()
         time.sleep(1)
+
+    if args.play:
+        if midi_filename is None:
+            print('No MIDI file found, a MIDI file and SoundFont file are required for MIDI playback')
+            return -1
+        if soundfont_filename is None:
+            print('No SoundFont file found, a SoundFont file is required for MIDI playback')
+            return -2
+
+        # Let's try to play a MIDI file
+        synth = Synth(samplerate=args.samplerate, gain=args.gain)
+        sfid = synth.sfload(soundfont_filename)
+        seq = Sequencer(synth)
+        for i in range(16):
+            synth.program_change(i, 0, i == 10)
+        seq.midi_load(midi_filename)
+        synth.start(buffer_size=args.buffer_size)
+        print(f'Playing {midi_filename} with SoundFont {soundfont_filename}')
+        while not seq.is_empty():
+            time.sleep(0.5)
+        time.sleep(1)
+        return 0
 
         return 0
 
