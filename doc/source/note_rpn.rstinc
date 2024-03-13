@@ -1,0 +1,6 @@
+.. note::
+
+    To change Registered Parameters Name (RPN) values do the following.
+
+    First choose a supported RPN using Controller `RPN_LSB` (100). Controller `RPN_MSB` (101) should always be kept at `0`.
+    Next put the `MSB` value in Controller `DATA_ENTRY_MSB` (6). If needed, also put a `LSB` value in Controller `DATA_ENTRY_LSB`.

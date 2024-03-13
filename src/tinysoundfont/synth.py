@@ -13,8 +13,10 @@ from typing import Optional
 
 MAX_CHANNELS = 16
 
+
 class SoundFontException(Exception):
     """An exception raised from tinysoundfont"""
+
     pass
 
 
@@ -54,7 +56,9 @@ class Synth:
         # Function to call to perform actions during audio callback
         self.callback = None
 
-    def sfload(self, filename_or_bytes: str | bytes, gain: float = 0.0, max_voices: int = 256) -> int:
+    def sfload(
+        self, filename_or_bytes: str | bytes, gain: float = 0.0, max_voices: int = 256
+    ) -> int:
         """Load SoundFont and return its ID
 
         :param filename_or_bytes: either a filename containing sf2/sf3/sfo
@@ -91,7 +95,7 @@ class Synth:
 
     def sfunload(self, sfid: int):
         """Unload a SoundFont and free memory it used.
-        
+
         :param sfid: ID of SoundFont to unload, as returned by :func:`sfload`
         :type sfid: int
 
@@ -108,7 +112,9 @@ class Synth:
             if self.channel[chan] != sfid
         }
 
-    def program_select(self, chan: int, sfid: int, bank: int, preset: int, is_drums: bool = False):
+    def program_select(
+        self, chan: int, sfid: int, bank: int, preset: int, is_drums: bool = False
+    ):
         """Select a program from a SoundFont for specific channel
 
         :param chan: Channel to affect (0-15)
@@ -128,7 +134,7 @@ class Synth:
 
     def program_unset(self, chan: int):
         """Set the preset of a MIDI channel to an unassigned state.
-        
+
         :param chan: Channel to affect (0-15)
 
         :raises: `SoundFontException` if channel is out of range
@@ -180,7 +186,7 @@ class Synth:
         """
         soundfont = self._get_soundfont(sfid)
         name = soundfont.get_preset_name(bank, preset)
-        if name == '<None>':
+        if name == "<None>":
             return None
         return name
 
@@ -261,23 +267,13 @@ class Synth:
         The interpretation of controller number is from the MIDI 1.0 standard. Supported controller values
         that have an effect are:
 
-        * 7 VOLUME_MSB
-        * 39 VOLUME_LSB
-        * 11 EXPRESSION_MSB
-        * 43 EXPRESSION_LSB
-        * 10 PAN_MSB
-        * 42 PAN_LSB
-        * 6 DATA_ENTRY_MSB
-        * 38 DATA_ENTRY_LSB
-        * 0 BANK_SELECT_MSB
-        * 32 BANK_SELECT_LSB
-        * 101 RPN_MSB
-        * 100 RPN_LSB
-        * 98 NRPN_LSB
-        * 99 NRPN_MSB
-        * 120 ALL_SOUND_OFF
-        * 123 ALL_NOTES_OFF
-        * 121 ALL_CTRL_OFF
+        .. include:: table_supported_controller.rstinc
+
+        The supported Registered Parameter Names (RPN) are:
+
+        .. include:: table_supported_rpn.rstinc
+
+        .. include:: note_rpn.rstinc
         """
         sfid = self._get_sfid(chan)
         soundfont = self._get_soundfont(sfid)
@@ -307,7 +303,7 @@ class Synth:
 
     def pitchbend_range(self, chan: int, semitones: float):
         """Set pitch bend range up and down for a channel.
-        
+
         :param chan: Channel to affect (0-15)
         :param semitones: Pitch bend range up and down in semitones (default 2.0)
 
@@ -336,7 +332,7 @@ class Synth:
 
         The separate audio playback thread will continue generating and playing
         samples until stopped with :meth:`stop`.
-        
+
         The audio thread will not prevent the main thread from exiting. If you
         turn on notes and call :meth:`start`, your main thread will need to call
         :func:`time.sleep` to let time pass to be able to hear the notes
@@ -352,7 +348,9 @@ class Synth:
             CHANNELS = 2
             SIZEOF_FLOAT_IN_BYTES = 4
             # Wrap with `memoryview` so slicing is references inside the buffer, not copies
-            buffer = memoryview(bytearray(frame_count * CHANNELS * SIZEOF_FLOAT_IN_BYTES))            
+            buffer = memoryview(
+                bytearray(frame_count * CHANNELS * SIZEOF_FLOAT_IN_BYTES)
+            )
             generated = 0
             while generated < frame_count:
                 delta = (frame_count - generated) / self.samplerate
@@ -365,7 +363,7 @@ class Synth:
                 # Index into buffer at frame boundaries
                 pos = generated * CHANNELS * SIZEOF_FLOAT_IN_BYTES
                 sz_bytes = actual_frame_count * CHANNELS * SIZEOF_FLOAT_IN_BYTES
-                self.generate(actual_frame_count, buffer=buffer[pos:pos+sz_bytes])
+                self.generate(actual_frame_count, buffer=buffer[pos : pos + sz_bytes])
                 generated += actual_frame_count
             return (bytes(buffer), pyaudio.paContinue)
 
@@ -391,7 +389,7 @@ class Synth:
 
     def generate(self, samples: int, buffer: Optional[memoryview] = None) -> memoryview:
         """Generate fixed number of output samples.
-        
+
         :param samples: Number of samples to generate
         :param buffer: Existing buffer to fill, or `None` to allocate new buffer
 

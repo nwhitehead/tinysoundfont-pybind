@@ -7,11 +7,20 @@
 # This code is licensed under the MIT license (see LICENSE for details)
 #
 
-from ._tinysoundfont import MidiMessageType
-from ._tinysoundfont import midi_load_memory as _midi_load_memory
 from collections import deque
-from typing import Callable, Dict, List, Optional
+from typing import Callable, List, Optional
 from .synth import Synth
+from .midi import (
+    midi_load,
+    Event,
+    Action,
+    NoteOn,
+    NoteOff,
+    ControlChange,
+    ProgramChange,
+    PitchBend,
+)
+
 
 class Sequencer:
     """A Sequencer schedules MIDI events over time.
@@ -25,17 +34,29 @@ class Sequencer:
         self.paused = False
         # events stores events for future, ordered by time
         # Queue has items (t, event)
-        # Event is events as returned by _tinysoundfont.midi_load_memory
         self.events = deque()
+
         def seq_callback(delta: float) -> float:
             if self.paused:
                 return delta
             return self.process(delta)
+
         self.synth.callback = seq_callback
+
+    def add(self, events: List[Event]):
+        """Add a list of MIDI events to queue for sending."""
+        self.events.extend(events)
+
+    def midi_load(self, filename: str):
+        """Load MIDI file and schedule events.
+
+        :param filename: Filename to load MIDI data from, in Standard MIDI
+            format
+        """
 
     def get_time(self) -> float:
         """Get current playing time of sequencer.
-        
+
         :return: current playing time of sequencer in seconds of absolute time since sequencer started
         """
         return self.time
@@ -87,105 +108,39 @@ class Sequencer:
 
     def is_empty(self) -> bool:
         """Return True if there are no more events scheduled.
-        
+
         :return: True if there are no more events scheduled for this sequencer (song is over)
         """
         if len(self.events) == 0:
             return True
-        if self.events[-1]["t"] < self.time:
+        if self.events[-1].t < self.time:
             return True
         return False
 
-    def midi_load_memory(self, data: bytes, filter: Optional[Callable[[List[Dict]], Optional[bool]]] = None, persistent: bool = True):
-        """Load MIDI data and schedule its events in this sequencer now
-
-        :param data: MIDI data, in Standard MIDI format.
-        :param filter: Optional function that takes in individual events and can
-            modify them or filter them out.
-        :param persistent: Whether to keep events in queue after playing,
-            allowing for seeking back to start or arbitrary positions after
-            playback has started.
-
-        Filter function should take one input argument, the event, and modify it
-        in place as needed. The function should return `None` or `False` to
-        indicate to keep the modified event, or `True` to indicate that the
-        event should be deleted.
-        
-        See also: :meth:`midi_load`
-        """
-        self.data = _midi_load_memory(data)
-        events = []
-        for event in self.data:
-            # Offset by current time of sequencer (MIDI events stored at t=0 are scheduled to start now)
-            event["t"] += self.time
-            if persistent:
-                event["persistent"] = True
-            if filter is not None:
-                if filter(event) == True:
-                    event = None
-            # Check for None return value in filtered events, don't add if None
-            if event is not None:
-                events.append(event)
-        events.sort(key=lambda e: e["t"])
-        self.events = deque(events)
-
-    def midi_load(self, filename: str, filter: Optional[Callable[[List[Dict]], Optional[bool]]] = None):
-        """Load a MIDI file and schedule its events in this sequencer now
-
-        :param filename: Filename to load MIDI data from, in Standard MIDI
-            format
-        :param filter: Optional function that takes in individual events and can
-            modify them or filter them out
-
-        Filter function should take one input argument, the event, and modify it
-        in place as needed. The function should return `None` or `False` to
-        indicate to keep the modified event, or `True` to indicate that the event
-        should be deleted.
-        """
-        with open(filename, "rb") as fin:
-            data = fin.read()
-            self.midi_load_memory(data, filter=filter)
-
-    def send(self, event: Dict):
+    def send(self, event: Event):
         """Send a single MIDI event to the synth object now, ignoring any time information.
-        
-        :param event: Single event, with field `type` and `channel` plus any needed additional details for event.
+
+        :param event: Single event to send
 
         If the event tries to select a preset that does not exist no error is raised.
 
-        The `type` field is of type :class:`MidiMessageType`.
-
-        For `NOTE_ON`, the event has `key` and `velocity`.
-
-        For `NOTE_OFF`, the event has `key`.
-
-        For `CONTROL_CHANGE`, the event has `control` and `control_value`.
-
-        For `PROGRAM_CHANGE`, the event has `program`.
-
-        For `PITCH_BEND`, the event has `pitch_bend`.
         """
         synth = self.synth
-        match event["type"]:
-            case MidiMessageType.NOTE_ON:
-                synth.noteon(event["channel"], event["key"], event["velocity"])
-            case MidiMessageType.NOTE_OFF:
-                synth.noteoff(event["channel"], event["key"])
-            case MidiMessageType.KEY_PRESSURE:
-                # Not handled by TinySoundFont
-                pass
-            case MidiMessageType.CONTROL_CHANGE:
-                synth.control_change(event["channel"], event["control"], event["control_value"])
-            case MidiMessageType.PROGRAM_CHANGE:
+        channel = event.channel
+        match event.action:
+            case NoteOn(key, velocity):
+                synth.noteon(channel, key, velocity)
+            case NoteOff(key):
+                synth.noteoff(channel, key)
+            case ControlChange(control, control_value):
+                synth.control_change(channel, control, control_value)
+            case ProgramChange(program):
                 try:
-                    synth.program_change(event["channel"], event["program"], event["channel"] == 10)
+                    synth.program_change(channel, program, channel == DRUM_CHANNNEL)
                 except Exception:
                     pass
-            case MidiMessageType.CHANNEL_PRESSURE:
-                # Not handled by TinySoundFont
-                pass
-            case MidiMessageType.PITCH_BEND:
-                synth.pitchbend(event["channel"], event["pitch_bend"])
+            case PitchBend(pitch_bend):
+                synth.pitchbend(channel, pitch_bend)
 
     def process(self, delta: float) -> float:
         """Advance time and send any events that need to be sent to the Synth.
@@ -200,10 +155,10 @@ class Sequencer:
         while pos < len(self.events):
             # Look at earliest event in deque
             event = self.events[pos]
-            t = event["t"]
+            t = event.t
             if t < self.time:
                 # Send it if it is not persistent, otherwise ignore
-                if "persistent" in event:
+                if event.persistent:
                     pos += 1
                 else:
                     self.events.popleft()
@@ -216,7 +171,7 @@ class Sequencer:
                 return true_delta
             # If we get here, t == self.time
             # Head event needs to be done
-            if "persistent" in event:
+            if event.persistent:
                 pos += 1
             else:
                 self.events.popleft()

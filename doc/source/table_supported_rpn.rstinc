@@ -1,0 +1,3 @@
+* 0 - Pitch bend amount (measured in semitones MSB and cents LSB)
+* 1 - Fine tuning (measured in fractions of one semitone up/down using MSB and LSB)
+* 2 - Coarse tuning (measured in integral semitones up/down using MSB)

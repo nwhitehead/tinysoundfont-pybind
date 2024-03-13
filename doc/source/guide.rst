@@ -29,8 +29,8 @@ The goals of `tinysoundfont` are:
 
 1. To be easy to install with as few native dependencies as possible
 2. To allow for note generation and musical experimentation quickly with minimal code
-3. To provide an API that is as consistent as practical with other similar APIs such as `FluidSynth <https://www.fluidsynth.org/api/Introduction.html>`_.
-4. To have permissive licensing (MIT)
+3. To provide a consistent API
+4. To have permissive licensing (MIT) 
 
 Installation
 ------------
