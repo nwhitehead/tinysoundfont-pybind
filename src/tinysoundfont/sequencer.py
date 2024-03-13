@@ -11,7 +11,7 @@ from collections import deque
 from typing import Callable, List, Optional
 from .synth import Synth
 from .midi import (
-    midi_load,
+    load,
     Event,
     Action,
     NoteOn,
@@ -47,12 +47,17 @@ class Sequencer:
         """Add a list of MIDI events to queue for sending."""
         self.events.extend(events)
 
-    def midi_load(self, filename: str):
+    def midi_load(self, filename: str, **kwargs):
         """Load MIDI file and schedule events.
 
         :param filename: Filename to load MIDI data from, in Standard MIDI
             format
+
+        Any additional keyword arguments are passed to :func:`midi.load`. See
+        :func:`midi.load` for documentation on additional keyword arguments.
         """
+        events = load(filename, **kwargs)
+        self.add(events)
 
     def get_time(self) -> float:
         """Get current playing time of sequencer.

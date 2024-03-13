@@ -7,59 +7,65 @@
 # This code is licensed under the MIT license (see LICENSE for details)
 #
 
-from ._tinysoundfont import midi_load_memory as _midi_load_memory
-from ._tinysoundfont import MidiMessageType
+from .._tinysoundfont import _midi_load_memory
+from .._tinysoundfont import MidiMessageType
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Optional
 
 
 @dataclass
 class NoteOn:
-    """Turn on a single note
+    """Action that turns on a single note
 
     :param key: MIDI note number of note (0-127)
     :param velocity: Velocity of note, 0 means turn off (0-127)
     """
+
     key: int
     velocity: int = 0
 
 
 @dataclass
 class NoteOff:
-    """Turn off a single note
+    """Action that turns off a single note
 
     :param key: MIDI note number of note (0-127)
     """
+
     key: int
+
 
 @dataclass
 class ControlChange:
-    """Change a control value
+    """Action that changes a MIDI control value
 
     :param control: MIDI controller number (0-127)
     :param control_value: Value to change to (0-127)
     """
+
     control: int
     control_value: int
 
 
 @dataclass
 class ProgramChange:
-    """Change current preset program
+    """Action that changes current preset program
 
     :param program: Preset number to use (0-127)
     """
+
     program: int
 
 
 @dataclass
 class PitchBend:
-    """Bend pitch of current channel
+    """Action that bends pitch of current channel
 
     :param pitch_bend: How much to bend pitch (0-16383, 8192 means no bend)
 
-    Range of pitch bend is set using RPN 
+    Range of pitch bend is set using RPN
     """
+
     pitch_bend: int = 8192
 
 
@@ -69,16 +75,14 @@ Action = NoteOn | NoteOff | ControlChange | ProgramChange | PitchBend
 @dataclass
 class Event:
     """
-    A single event
-    The `what` contains the action which also has any needed additional details for event based on the type.
+    A single event that can be sent to a :class:`Synth` object.
 
     :param action: Details of what event is
-    :param t: Time when event is scheduled, in seconds
+    :param t: Time when event is scheduled, in absolute seconds
     :param channel: Channel to use for event
     :param persistent: Whether to keep event in event list after playing
 
     """
-
     action: Action
     t: float = 0
     channel: int = 0
@@ -95,7 +99,7 @@ def event_from_dict(item: Dict) -> Optional[Event]:
     """
     t = item["t"]
     channel = item["channel"]
-    persistent = item["persistent"] is not None
+    persistent = "persistent" in item and item["persistent"] is not None
     match item["type"]:
         case MidiMessageType.NOTE_ON:
             return Event(
@@ -117,7 +121,7 @@ def event_from_dict(item: Dict) -> Optional[Event]:
             )
         case MidiMessageType.PROGRAM_CHANGE:
             return Event(
-                ControlChange(item["program"]),
+                ProgramChange(item["program"]),
                 t=t,
                 channel=channel,
                 persistent=persistent,
@@ -135,8 +139,7 @@ def event_from_dict(item: Dict) -> Optional[Event]:
             return None
 
 
-def midi_load_memory(
-    self,
+def load_memory(
     data: bytes,
     delta_time: float = 0,
     filter: Optional[Callable[[List[Event]], Optional[bool]]] = None,
@@ -159,12 +162,14 @@ def midi_load_memory(
     indicate to keep the modified event, or `True` to indicate that the
     event should be deleted.
 
-    See also: :meth:`midi_load`
+    See also: :meth:`load`
     """
     midi_data = _midi_load_memory(data)
     events = []
     for item in midi_data:
         event = event_from_dict(item)
+        if event is None:
+            continue
         # Offset by time_delta
         event.t += delta_time
         event.persistent = persistent
@@ -178,8 +183,7 @@ def midi_load_memory(
     return events
 
 
-def midi_load(
-    self,
+def load(
     filename: str,
     delta_time: float = 0,
     filter: Optional[Callable[[List[Event]], Optional[bool]]] = None,
@@ -203,10 +207,10 @@ def midi_load(
     indicate to keep the modified event, or `True` to indicate that the event
     should be deleted.
 
-    See also: :meth:`midi_load_memory`
+    See also: :meth:`load_memory`
     """
     with open(filename, "rb") as fin:
         data = fin.read()
-        return midi_load_memory(
+        return load_memory(
             data, delta_time=delta_time, filter=filter, persistent=persistent
         )

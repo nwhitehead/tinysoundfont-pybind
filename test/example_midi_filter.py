@@ -3,12 +3,13 @@ import tinysoundfont
 import time
 
 synth = tinysoundfont.Synth()
-sfid = synth.sfload("test/example.sf2", gain=-15.0)
+sfid = synth.sfload("test/example.sf2", gain=-13.0)
 
 def filter_program_change(event):
     """Make all program changes go to preset 0"""
-    if event["type"] == tinysoundfont.MidiMessageType.PROGRAM_CHANGE:
-        event["program"] = 0
+    match event.action:
+        case tinysoundfont.midi.ProgramChange(program):
+            event.program = 0
 
 seq = tinysoundfont.Sequencer(synth)
 seq.midi_load("test/1080-c01.mid", filter=filter_program_change)

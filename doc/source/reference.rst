@@ -2,5 +2,7 @@ Reference
 ================================================
 
 .. automodule:: tinysoundfont
-   :members: Synth, SoundFontException, Sequencer, midi_load, midi_load_memory, Event, Action, NoteOn, NoteOff, ControlChange, ProgramChange, PitchBend
+   :members: Synth, SoundFontException, Sequencer
 
+.. automodule:: tinysoundfont.midi
+   :members: load, load_memory, Event, Action, NoteOn, NoteOff, ControlChange, ProgramChange, PitchBend

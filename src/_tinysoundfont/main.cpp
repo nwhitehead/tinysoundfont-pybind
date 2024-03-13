@@ -308,7 +308,7 @@ PYBIND11_MODULE(_tinysoundfont, m) {
         .value("PITCH_BEND", MidiMessageType::PITCH_BEND, "Change pitch of existing notes")
         .value("SET_TEMPO", MidiMessageType::SET_TEMPO, "Change tempo of playback")
     ;
-    m.def("midi_load_memory", &midi_load_memory, "Load MIDI file data in Standard MIDI File format");
+    m.def("_midi_load_memory", &midi_load_memory, "Load MIDI file data in Standard MIDI File format");
     py::class_<SoundFont>(m, "SoundFont")
         // Need bytes constructor first, otherwise bytes would be converted and match string constructor
         .def(py::init<py::bytes>(),

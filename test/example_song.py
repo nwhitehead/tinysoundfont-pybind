@@ -3,7 +3,7 @@ import tinysoundfont
 import time
 
 synth = tinysoundfont.Synth()
-sfid = synth.sfload("test/FluidR3_GM.sf2", gain=-6.0)
+sfid = synth.sfload("test/FluidR3_GM.sf2", gain=-3.0)
 
 seq = tinysoundfont.Sequencer(synth)
 seq.midi_load("test/1080-c01.mid")
