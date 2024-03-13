@@ -311,7 +311,7 @@ class Synth:
         """
         sfid = self._get_sfid(chan)
         soundfont = self._get_soundfont(sfid)
-        soundfont.channel_set_pitch_range(chan, value)
+        soundfont.channel_set_pitch_range(chan, semitones)
 
     def start(self, buffer_size: int = 1024, **kwargs):
         """Start audio playback in a separate thread.

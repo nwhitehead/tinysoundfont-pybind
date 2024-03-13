@@ -4,28 +4,28 @@ import time
 
 
 def test_0():
-    assert int(tinysoundfont.MidiMessageType.NOTE_ON) == 0x90
+    assert int(tinysoundfont.midi.MidiMessageType.NOTE_ON) == 0x90
 
     with open("test/1080-c01.mid", "rb") as fin:
         contents = fin.read()
-        data = tinysoundfont._midi_load_memory(contents)
+        data = tinysoundfont.midi._midi_load_memory(contents)
         assert len(data) == 1852
         assert data[0] == {
             "t": 0.0,
-            "type": tinysoundfont.MidiMessageType.SET_TEMPO,
+            "type": tinysoundfont.midi.MidiMessageType.SET_TEMPO,
             "channel": 7,
             "bpm": 115.00002875000719,
         }
         assert data[4] == {
             "t": 0.0,
-            "type": tinysoundfont.MidiMessageType.PROGRAM_CHANGE,
+            "type": tinysoundfont.midi.MidiMessageType.PROGRAM_CHANGE,
             "channel": 1,
             "program": 40,
             "bpm": 115.00002875000719,
         }
         assert data[7] == {
             "t": 0.0,
-            "type": tinysoundfont.MidiMessageType.NOTE_ON,
+            "type": tinysoundfont.midi.MidiMessageType.NOTE_ON,
             "channel": 1,
             "key": 62,
             "velocity": 100,
@@ -74,8 +74,9 @@ def test_0():
 
     def filter_program_change(event):
         """Make all program changes go to preset 40 (violin)"""
-        if event["type"] == tinysoundfont.MidiMessageType.PROGRAM_CHANGE:
-            event["program"] = 40
+        match event.action:
+            case tinysoundfont.midi.ProgramChange(program):
+                event.program = 40
     seq = tinysoundfont.Sequencer(synth)
     seq.midi_load("test/1080-c01.mid", filter=filter_program_change)
     time.sleep(10)
@@ -84,7 +85,3 @@ def test_0():
         synth.sfunload(sfid)
     synth.sfunload(sfid2)
     synth.stop()
-
-
-if __name__ == "__main__":
-    test_0()
