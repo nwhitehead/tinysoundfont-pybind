@@ -253,3 +253,57 @@ This example plays a short drum pattern.
 .. include:: note_fluidr3.rstinc
 
 .. include:: note_drum_midi.rstinc
+
+Topics
+------
+
+Command Line Tool
+^^^^^^^^^^^^^^^^^
+
+The `tinysoundfont` package contains a simple command line tool that can
+be useful for finding presets, testing the validity of SoundFonts, and
+playing MIDI files.
+
+Here is an example that loads the demo SoundFont and shows the presets it defines:
+
+.. code-block:: text
+
+   python -m tinysoundfont --info florestan-subset.sfo
+
+This results in:
+
+.. code-block:: text
+
+   Info for SoundFont florestan-subset.sfo
+   0 - 2 : Piano
+   0 - 10 : Music Box
+   0 - 12 : Marimba
+   0 - 19 : Church Org.1
+   0 - 21 : Accordion Fr
+   0 - 24 : Nylon-str.Gt
+   0 - 38 : Synth Bass 1
+   0 - 40 : Violin
+   0 - 45 : PizzicatoStr
+   0 - 55 : OrchestraHit
+   0 - 61 : Brass 1
+   0 - 75 : Pan Flute
+   0 - 87 : Bass & Lead
+   0 - 90 : Polysynth
+   0 - 97 : Soundtrack
+   0 - 109 : Bagpipe
+   0 - 116 : Taiko
+
+The output format shows `bank - preset : Name`.
+
+Here is an example that plays a test note using preset `55`:
+
+.. code-block:: text
+
+   python -m tinysoundfont --test florestan-subset.sfo --preset 55 --key 70
+
+Here is an example that plays a MIDI file using the `FluidR3_GM` SoundFont:
+
+.. code-block:: text
+
+   python -m tinysoundfont --play FluidR3_GM.sf2 1080-c01.mid
+
