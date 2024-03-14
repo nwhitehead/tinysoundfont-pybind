@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guide &mdash; tinysoundfont 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=4621528c"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/tabs.js?v=3030b3cb"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Developer Notes" href="developer.html" />
+    <link rel="prev" title="tinysoundfont Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            tinysoundfont
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-it">What is it?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-soundfonts">Getting SoundFonts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-piano">Example Piano</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-compressed-soundfont">Example Compressed SoundFont</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gm-soundfont-fluidr3-gm">GM SoundFont <cite>FluidR3_GM</cite></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#musescore">MuseScore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#online-resources">Online Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compressing-soundfonts">Compressing SoundFonts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#play-a-note">Play a note</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#play-a-chord">Play a Chord</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#change-instruments">Change Instruments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#play-a-midi-file">Play a MIDI File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter-midi-events">Filter MIDI Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#drum-sounds">Drum Sounds</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#topics">Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#command-line-tool">Command Line Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#latency">Latency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#too-loud-too-quiet">Too Loud / Too Quiet</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tinysoundfont</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="guide">
+<h1>Guide<a class="headerlink" href="#guide" title="Link to this heading"></a></h1>
+<p>This is a short guide to using <cite>tinysoundfont</cite>. If you want details on specific
+API functions look in the <a class="reference internal" href="reference.html"><span class="doc">Reference</span></a>.</p>
+<section id="what-is-it">
+<h2>What is it?<a class="headerlink" href="#what-is-it" title="Link to this heading"></a></h2>
+<p>The <cite>tinysoundfont</cite> Python package lets you generate audio using SoundFont
+instruments (<cite>.sf2</cite>, <cite>.sf3</cite>, or <cite>.sfo</cite> files) in Python. The audio data can be
+played by <a class="reference external" href="https://pypi.org/project/PyAudio/">PyAudio</a> in a separate thread if
+requested. This package also includes support for loading and playing MIDI data
+using a SoundFont instrument.</p>
+<p>What you might want to use this package for:</p>
+<ul class="simple">
+<li><p>Play MIDI files with SoundFonts in Python</p></li>
+<li><p>Play MIDI files with modifications and customizations (mute tracks, change instruments, etc.)</p></li>
+<li><p>Procedurally generate and play music or sounds</p></li>
+<li><p>Play music and sounds in an interactive way in your Python program</p></li>
+</ul>
+</section>
+<section id="goals">
+<h2>Goals<a class="headerlink" href="#goals" title="Link to this heading"></a></h2>
+<p>The goals of <cite>tinysoundfont</cite> are:</p>
+<ol class="arabic simple">
+<li><p>To be easy to install with as few native dependencies as possible</p></li>
+<li><p>To allow for note generation and musical experimentation quickly with minimal code</p></li>
+<li><p>To provide a consistent API</p></li>
+<li><p>To have permissive licensing (MIT)</p></li>
+</ol>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>This package depends on <cite>pyaudio</cite> for playing sounds. To install
+<cite>pyaudio</cite> for common platforms:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">Windows</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">MacOS</button><button aria-controls="panel-0-0-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-2" name="0-2" role="tab" tabindex="-1">Linux (Ubuntu)</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>pyaudio
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>portaudio
+pip<span class="w"> </span>install<span class="w"> </span>pyaudio
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-2" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-2" name="0-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>python3-pyaudio
+</pre></div>
+</div>
+</div></div>
+<p>To install <cite>tinysoundfont</cite>, for all platforms do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>tinysoundfont
+</pre></div>
+</div>
+<p>If you have a less common platform then binary wheels may not be available. In
+this case <cite>pip</cite> will attempt to build the package locally from the source
+distribution so you will need to have a working local development environment
+installed.</p>
+</section>
+<section id="getting-soundfonts">
+<h2>Getting SoundFonts<a class="headerlink" href="#getting-soundfonts" title="Link to this heading"></a></h2>
+<section id="example-piano">
+<h3>Example Piano<a class="headerlink" href="#example-piano" title="Link to this heading"></a></h3>
+<p>In order to use this package to do anything interesting you need at least one
+SoundFont. For testing purposes this package contains a small SoundFont that can
+be downloaded:</p>
+<p><a class="reference external" href="https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/florestan-piano.sf2">florestan-piano.sf2</a></p>
+<p>This example SoundFont contains a single instrument, an artificial piano.</p>
+</section>
+<section id="example-compressed-soundfont">
+<h3>Example Compressed SoundFont<a class="headerlink" href="#example-compressed-soundfont" title="Link to this heading"></a></h3>
+<p>To demonstrate compressed SoundFonts, this package contains a small collection
+of 17 instruments in compressed format that can be downloaded at:</p>
+<p><a class="reference external" href="https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/florestan-subset.sfo">florestan-subset.sfo</a></p>
+<p>Even though this SoundFont contains the piano instrument and 16 other instruments,
+the total file size is smaller than <cite>florestan-piano.sf2</cite> in uncompressed format.</p>
+</section>
+<section id="gm-soundfont-fluidr3-gm">
+<h3>GM SoundFont <cite>FluidR3_GM</cite><a class="headerlink" href="#gm-soundfont-fluidr3-gm" title="Link to this heading"></a></h3>
+<p>Many SoundFonts aim to cover all 128 of the <a class="reference external" href="https://en.wikipedia.org/wiki/General_MIDI">General MIDI</a> instruments. This allows playback
+of any MIDI file that uses the same General MIDI standard. Other SoundFonts are
+designed to provide instruments that represent specific physical instruments,
+vintage synthesizers, retro video game console systems, or other types of
+stylized sounds.</p>
+<p>FluidSynth works with a Creative Commons licensed SoundFont named <a class="reference external" href="https://keymusician01.s3.amazonaws.com/FluidR3_GM.zip">FluidR3_GM</a>. This SoundFont is
+good for general MIDI music playback.</p>
+</section>
+<section id="musescore">
+<h3>MuseScore<a class="headerlink" href="#musescore" title="Link to this heading"></a></h3>
+<p>Another source of freely available SoundFonts is the MuseScore project. The
+<a class="reference external" href="https://musescore.org/en/handbook/3/soundfonts-and-sfz-files#list">MuseScore Handbook: SoundFonts and SFZ Files</a> page
+includes links to download various <cite>SF2</cite> and <cite>SF3</cite> SoundFonts that have been
+used in various versions of MuseScore.</p>
+</section>
+<section id="online-resources">
+<h3>Online Resources<a class="headerlink" href="#online-resources" title="Link to this heading"></a></h3>
+<p>Because SoundFonts have been around for decades searching the web for terms
+such as “SoundFont”, “SF2” or more specific terms like “soundfont sf2 piano”
+usually leads to many results. SoundFonts found online may be of random quality
+and may or may not be licensed in a way that suites your use of the download
+(be careful).</p>
+<p>For specific instruments a good resource is the <a class="reference external" href="https://www.polyphone-soundfonts.com/download-soundfonts">Polyphone Soundfonts page</a>. This page
+lets you browse by instrument category and see reviews and comments by
+users.</p>
+<p>There are many lists of SoundFont downloads online. One resource is
+<a class="reference external" href="http://www.synthfont.com/links_to_soundfonts.html">SynthFont Links</a>.</p>
+</section>
+<section id="compressing-soundfonts">
+<h3>Compressing SoundFonts<a class="headerlink" href="#compressing-soundfonts" title="Link to this heading"></a></h3>
+<p>This package also supports compressed SoundFont2 formats <cite>.sf3</cite> and <cite>.sfo</cite>. The
+compressed formats are similar to regular <cite>.sf2</cite> but the audio waveforms are
+stored with Ogg/Vorbis compression instead of being stored uncompressed. This is
+especially useful for large General MIDI soundbanks that contain many
+instruments in one file. For information about converting SoundFonts see
+<a class="reference external" href="https://github.com/schellingb/TinySoundFont/tree/master/sfotool">SFOTool</a>.</p>
+<p>Compressed streams are decompressed into memory when the file is loaded. This
+means there will be more computation required when loading the instrument. This
+also means the total memory needed at runtime will not be less than the
+equivalent uncompressed <cite>.sf2</cite> version. The compressed format is more for saving
+space when distributing or storing the instrument file.</p>
+<p>Another consideration is unused samples and instruments. It may make sense for
+your application to start with a large General MIDI SoundFont and then edit it
+to only include the instruments and sounds you actually use. The application
+<a class="reference external" href="https://www.polyphone-soundfonts.com/">Polyphone</a> can be used to edit
+SoundFonts. The application cannot edit <cite>.sfo</cite> format, so you should use SFOTool
+to compress the SoundFont after editing with Polyphone.</p>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="play-a-note">
+<h3>Play a note<a class="headerlink" href="#play-a-note" title="Link to this heading"></a></h3>
+<p>To play a note and hear it, the general steps are:</p>
+<ol class="arabic simple">
+<li><p>Create a <a class="reference internal" href="reference.html#tinysoundfont.Synth" title="tinysoundfont.Synth"><code class="xref py py-class docutils literal notranslate"><span class="pre">Synth</span></code></a> object</p></li>
+<li><p>Call <a class="reference internal" href="reference.html#tinysoundfont.Synth.sfload" title="tinysoundfont.Synth.sfload"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.sfload()</span></code></a> to load a SoundFont instrument</p></li>
+<li><p>Select a specific bank/preset in the instrument with <a class="reference internal" href="reference.html#tinysoundfont.Synth.program_select" title="tinysoundfont.Synth.program_select"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.program_select()</span></code></a></p></li>
+<li><p>Turn on a note with <a class="reference internal" href="reference.html#tinysoundfont.Synth.noteon" title="tinysoundfont.Synth.noteon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.noteon()</span></code></a></p></li>
+<li><p>Start the audio callback thread with <a class="reference internal" href="reference.html#tinysoundfont.Synth.start" title="tinysoundfont.Synth.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.start()</span></code></a></p></li>
+<li><p>Wait to exit your program, maybe call <a class="reference external" href="https://docs.python.org/3/library/time.html#time.sleep" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">time.sleep()</span></code></a></p></li>
+</ol>
+<p>There is some flexibility in the order of steps. For example you could start the
+audio callback thread first and then select bank/preset and turn on the note.</p>
+<p>Here is a tiny example program to play a note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">tinysoundfont</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">synth</span> <span class="o">=</span> <span class="n">tinysoundfont</span><span class="o">.</span><span class="n">Synth</span><span class="p">()</span>
+<span class="n">sfid</span> <span class="o">=</span> <span class="n">synth</span><span class="o">.</span><span class="n">sfload</span><span class="p">(</span><span class="s2">&quot;florestan-piano.sf2&quot;</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">program_select</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sfid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteon</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example requires having the SoundFont file <a class="reference external" href="https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/florestan-piano.sf2">florestan-piano.sf2</a>
+available. The example code assumes it is located in the current directory.</p>
+</div>
+</section>
+<section id="play-a-chord">
+<h3>Play a Chord<a class="headerlink" href="#play-a-chord" title="Link to this heading"></a></h3>
+<p>One SoundFont instrument can play multiple notes at the same time in the same MIDI channel. To play
+a chord call <a class="reference internal" href="reference.html#tinysoundfont.Synth.noteon" title="tinysoundfont.Synth.noteon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.noteon()</span></code></a> for multiple keys.</p>
+<p>Here is an example that plays a single chord.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">tinysoundfont</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">synth</span> <span class="o">=</span> <span class="n">tinysoundfont</span><span class="o">.</span><span class="n">Synth</span><span class="p">()</span>
+<span class="n">sfid</span> <span class="o">=</span> <span class="n">synth</span><span class="o">.</span><span class="n">sfload</span><span class="p">(</span><span class="s2">&quot;florestan-piano.sf2&quot;</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">program_select</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sfid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">synth</span><span class="o">.</span><span class="n">noteon</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteon</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteon</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">synth</span><span class="o">.</span><span class="n">noteoff</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">48</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteoff</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">52</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteoff</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">55</span><span class="p">)</span>
+
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example uses <code class="xref py py-meth docutils literal notranslate"><span class="pre">time.sleep()</span></code> for scheduling <a class="reference internal" href="reference.html#tinysoundfont.Synth.noteon" title="tinysoundfont.Synth.noteon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.noteon()</span></code></a>
+and <a class="reference internal" href="reference.html#tinysoundfont.Synth.noteoff" title="tinysoundfont.Synth.noteoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.noteoff()</span></code></a> calls. This way of scheduling events blocks
+the main thread and makes the program non-interactive. The timing
+resolution of this method is also limited. Changes to the <a class="reference internal" href="reference.html#tinysoundfont.Synth" title="tinysoundfont.Synth"><code class="xref py py-class docutils literal notranslate"><span class="pre">Synth</span></code></a>
+object will only affect audio output at audio buffer boundaries.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example requires having the SoundFont file <a class="reference external" href="https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/florestan-piano.sf2">florestan-piano.sf2</a>
+available. The example code assumes it is located in the current directory.</p>
+</div>
+</section>
+<section id="change-instruments">
+<h3>Change Instruments<a class="headerlink" href="#change-instruments" title="Link to this heading"></a></h3>
+<p>One SoundFont can contain many instruments. This example shows playing notes
+from different instruments in the <cite>florestan-subset.sfo</cite> compressed SoundFont.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">tinysoundfont</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">synth</span> <span class="o">=</span> <span class="n">tinysoundfont</span><span class="o">.</span><span class="n">Synth</span><span class="p">()</span>
+<span class="n">sfid</span> <span class="o">=</span> <span class="n">synth</span><span class="o">.</span><span class="n">sfload</span><span class="p">(</span><span class="s2">&quot;florestan-subset.sfo&quot;</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">program_select</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sfid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span> <span class="c1"># Marimba</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">program_select</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">sfid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">45</span><span class="p">)</span> <span class="c1"># PizzicatoStr</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">program_select</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">sfid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span> <span class="c1"># Nylon-str.Gt</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteon</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteon</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteon</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteon</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">75</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">/</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteoff</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">70</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteon</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">75</span><span class="p">)</span>
+
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteoff</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteoff</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">67</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteoff</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">noteoff</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">67</span><span class="p">)</span>
+
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example uses <code class="xref py py-meth docutils literal notranslate"><span class="pre">time.sleep()</span></code> for scheduling <a class="reference internal" href="reference.html#tinysoundfont.Synth.noteon" title="tinysoundfont.Synth.noteon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.noteon()</span></code></a>
+and <a class="reference internal" href="reference.html#tinysoundfont.Synth.noteoff" title="tinysoundfont.Synth.noteoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.noteoff()</span></code></a> calls. This way of scheduling events blocks
+the main thread and makes the program non-interactive. The timing
+resolution of this method is also limited. Changes to the <a class="reference internal" href="reference.html#tinysoundfont.Synth" title="tinysoundfont.Synth"><code class="xref py py-class docutils literal notranslate"><span class="pre">Synth</span></code></a>
+object will only affect audio output at audio buffer boundaries.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example requires having the SoundFont file <a class="reference external" href="https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/florestan-subset.sfo">florestan-subset.sfo</a>
+available. The example code assumes it is located in the current directory.</p>
+</div>
+</section>
+<section id="play-a-midi-file">
+<h3>Play a MIDI File<a class="headerlink" href="#play-a-midi-file" title="Link to this heading"></a></h3>
+<p>This example plays a MIDI file using a General MIDI SoundFont. It schedules the
+song to play then waits until the song is finished and ends.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">tinysoundfont</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">synth</span> <span class="o">=</span> <span class="n">tinysoundfont</span><span class="o">.</span><span class="n">Synth</span><span class="p">()</span>
+<span class="n">sfid</span> <span class="o">=</span> <span class="n">synth</span><span class="o">.</span><span class="n">sfload</span><span class="p">(</span><span class="s2">&quot;FluidR3_GM.sf2&quot;</span><span class="p">)</span>
+
+<span class="n">seq</span> <span class="o">=</span> <span class="n">tinysoundfont</span><span class="o">.</span><span class="n">Sequencer</span><span class="p">(</span><span class="n">synth</span><span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">midi_load</span><span class="p">(</span><span class="s2">&quot;1080-c01.mid&quot;</span><span class="p">)</span>
+
+<span class="c1"># Larger buffer because latency is not important</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">buffer_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="ow">not</span> <span class="n">seq</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example requires downloading the <a class="reference external" href="https://keymusician01.s3.amazonaws.com/FluidR3_GM.zip">FluidR3_GM SoundFont</a>. The example code
+assumes the extracted SoundFont file is located in the current directory.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example requires having the MIDI file <a class="reference external" href="https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/1080-c01.mid">1080-c01.mid</a>
+available. The example code assumes it is located in the current directory.</p>
+</div>
+</section>
+<section id="filter-midi-events">
+<h3>Filter MIDI Events<a class="headerlink" href="#filter-midi-events" title="Link to this heading"></a></h3>
+<p>This example plays a MIDI file using the example SoundFont. It filters the MIDI
+instrument changes in the multi-channel song to only use preset <cite>0</cite> for all
+channels to allow us to use the example piano SoundFont.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">tinysoundfont</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">synth</span> <span class="o">=</span> <span class="n">tinysoundfont</span><span class="o">.</span><span class="n">Synth</span><span class="p">()</span>
+<span class="n">sfid</span> <span class="o">=</span> <span class="n">synth</span><span class="o">.</span><span class="n">sfload</span><span class="p">(</span><span class="s2">&quot;florestan-piano.sf2&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">filter_program_change</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Make all program changes go to preset 0&quot;&quot;&quot;</span>
+    <span class="k">match</span> <span class="n">event</span><span class="o">.</span><span class="n">action</span><span class="p">:</span>
+        <span class="k">case</span> <span class="n">tinysoundfont</span><span class="o">.</span><span class="n">midi</span><span class="o">.</span><span class="n">ProgramChange</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">program</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">seq</span> <span class="o">=</span> <span class="n">tinysoundfont</span><span class="o">.</span><span class="n">Sequencer</span><span class="p">(</span><span class="n">synth</span><span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">midi_load</span><span class="p">(</span><span class="s2">&quot;1080-c01.mid&quot;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">filter_program_change</span><span class="p">)</span>
+
+<span class="n">synth</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">buffer_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">)</span>
+<span class="k">while</span> <span class="ow">not</span> <span class="n">seq</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example requires having the SoundFont file <a class="reference external" href="https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/florestan-piano.sf2">florestan-piano.sf2</a>
+available. The example code assumes it is located in the current directory.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example requires having the MIDI file <a class="reference external" href="https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/1080-c01.mid">1080-c01.mid</a>
+available. The example code assumes it is located in the current directory.</p>
+</div>
+</section>
+<section id="drum-sounds">
+<h3>Drum Sounds<a class="headerlink" href="#drum-sounds" title="Link to this heading"></a></h3>
+<p>The General MIDI convention is that drum events happens on channel 10. You can
+set any channel to be a drum kit channel using <a class="reference internal" href="reference.html#tinysoundfont.Synth.program_select" title="tinysoundfont.Synth.program_select"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.program_select()</span></code></a> or
+<a class="reference internal" href="reference.html#tinysoundfont.Synth.program_change" title="tinysoundfont.Synth.program_change"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.program_change()</span></code></a>. A drum kit channel maps each MIDI key of the
+channel to different drum instruments. For example key <cite>36</cite> is a bass drum and
+<cite>56</cite> is a cowbell.</p>
+<p>This example plays a short drum pattern.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span> <span class="nn">tinysoundfont</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">synth</span> <span class="o">=</span> <span class="n">tinysoundfont</span><span class="o">.</span><span class="n">Synth</span><span class="p">()</span>
+<span class="n">sfid</span> <span class="o">=</span> <span class="n">synth</span><span class="o">.</span><span class="n">sfload</span><span class="p">(</span><span class="s2">&quot;FluidR3_GM.sf2&quot;</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">program_select</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sfid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">seq</span> <span class="o">=</span> <span class="n">tinysoundfont</span><span class="o">.</span><span class="n">Sequencer</span><span class="p">(</span><span class="n">synth</span><span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">midi_load</span><span class="p">(</span><span class="s2">&quot;drum.mid&quot;</span><span class="p">)</span>
+<span class="n">synth</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">buffer_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="ow">not</span> <span class="n">seq</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example requires downloading the <a class="reference external" href="https://keymusician01.s3.amazonaws.com/FluidR3_GM.zip">FluidR3_GM SoundFont</a>. The example code
+assumes the extracted SoundFont file is located in the current directory.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example requires having the MIDI file <a class="reference external" href="https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/drum.mid">drum.mid</a>
+available. The example code assumes it is located in the current directory.</p>
+</div>
+</section>
+</section>
+<section id="topics">
+<h2>Topics<a class="headerlink" href="#topics" title="Link to this heading"></a></h2>
+<section id="command-line-tool">
+<h3>Command Line Tool<a class="headerlink" href="#command-line-tool" title="Link to this heading"></a></h3>
+<p>The <cite>tinysoundfont</cite> package contains a simple command line tool that can
+be useful for finding presets, testing the validity of SoundFonts, and
+playing MIDI files.</p>
+<p>Here is an example that loads the demo SoundFont and shows the presets it defines:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>python -m tinysoundfont --info florestan-subset.sfo
+</pre></div>
+</div>
+<p>This results in:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Info for SoundFont florestan-subset.sfo
+0 - 2 : Piano
+0 - 10 : Music Box
+0 - 12 : Marimba
+0 - 19 : Church Org.1
+0 - 21 : Accordion Fr
+0 - 24 : Nylon-str.Gt
+0 - 38 : Synth Bass 1
+0 - 40 : Violin
+0 - 45 : PizzicatoStr
+0 - 55 : OrchestraHit
+0 - 61 : Brass 1
+0 - 75 : Pan Flute
+0 - 87 : Bass &amp; Lead
+0 - 90 : Polysynth
+0 - 97 : Soundtrack
+0 - 109 : Bagpipe
+0 - 116 : Taiko
+</pre></div>
+</div>
+<p>The output format shows <cite>bank - preset : Name</cite>.</p>
+<p>Here is an example that plays a test note using preset <cite>55</cite>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>python -m tinysoundfont --test florestan-subset.sfo --preset 55 --key 70
+</pre></div>
+</div>
+<p>Here is an example that plays a MIDI file using the <cite>FluidR3_GM</cite> SoundFont:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>python -m tinysoundfont --play FluidR3_GM.sf2 1080-c01.mid
+</pre></div>
+</div>
+</section>
+<section id="latency">
+<h3>Latency<a class="headerlink" href="#latency" title="Link to this heading"></a></h3>
+<p>If you don’t require low latency it is recommended to set the <cite>buffer_size</cite>
+passed to <a class="reference internal" href="reference.html#tinysoundfont.Synth.start" title="tinysoundfont.Synth.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.start()</span></code></a> to a somewhat large value such as <cite>4096</cite> to avoid
+glitches.</p>
+<p>If you do require low latency response you can decrease the <cite>buffer_size</cite>
+argument. A value of <cite>1024</cite> is usually safe for most platforms. Lower values can
+be safe but may result in glitches and audio underruns in some situations.
+Passing a value of <cite>0</cite> lets PortAudio decide on the buffer size to minimize
+latency. This generally works well if the main thread has priority. It may be
+too aggressive if other applications are running and interacting with the user.</p>
+<p>One thing to note about buffer sizes and latency is that MIDI events that are
+scheduled by <a class="reference internal" href="reference.html#tinysoundfont.Sequencer" title="tinysoundfont.Sequencer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequencer</span></code></a> can happen at precise positions in the audio
+output and will not have any jitter or timing issues. Direct calls to
+<a class="reference internal" href="reference.html#tinysoundfont.Synth" title="tinysoundfont.Synth"><code class="xref py py-class docutils literal notranslate"><span class="pre">Synth</span></code></a> to perform actions can only happen at audio buffer boundaries.
+This means that the larger the audio buffer the more timing jitter will happen
+for direct calls to <a class="reference internal" href="reference.html#tinysoundfont.Synth" title="tinysoundfont.Synth"><code class="xref py py-class docutils literal notranslate"><span class="pre">Synth</span></code></a>.</p>
+</section>
+<section id="too-loud-too-quiet">
+<h3>Too Loud / Too Quiet<a class="headerlink" href="#too-loud-too-quiet" title="Link to this heading"></a></h3>
+<p>SoundFonts have many internal settings which control gain and volume. Different
+SoundFonts may be adjusted to different expected final sound volumes. If you are
+getting sound output that is much too loud or too quiet you should adjust the
+gain. You can adjust global gain when constructing the <a class="reference internal" href="reference.html#tinysoundfont.Synth" title="tinysoundfont.Synth"><code class="xref py py-class docutils literal notranslate"><span class="pre">Synth</span></code></a> object. If
+you are loading several SoundFonts you can adjust the relative gain of each one
+when calling <a class="reference internal" href="reference.html#tinysoundfont.Synth.sfload" title="tinysoundfont.Synth.sfload"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Synth.sfload()</span></code></a>. All the gain factors are measured in relative dB.
+So a value of <cite>0</cite> means no change, <cite>+3</cite> means double the signal, <cite>-3</cite> means divide
+the signal by a factor of 2.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="tinysoundfont Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="developer.html" class="btn btn-neutral float-right" title="Developer Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Nathan Whitehead.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

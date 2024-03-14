@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reference &mdash; tinysoundfont 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=4621528c"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Developer Notes" href="developer.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            tinysoundfont
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="guide.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Notes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#tinysoundfont.Sequencer"><code class="docutils literal notranslate"><span class="pre">Sequencer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Sequencer.add"><code class="docutils literal notranslate"><span class="pre">Sequencer.add()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Sequencer.get_time"><code class="docutils literal notranslate"><span class="pre">Sequencer.get_time()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Sequencer.is_empty"><code class="docutils literal notranslate"><span class="pre">Sequencer.is_empty()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Sequencer.midi_load"><code class="docutils literal notranslate"><span class="pre">Sequencer.midi_load()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Sequencer.notes_off"><code class="docutils literal notranslate"><span class="pre">Sequencer.notes_off()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Sequencer.pause"><code class="docutils literal notranslate"><span class="pre">Sequencer.pause()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Sequencer.process"><code class="docutils literal notranslate"><span class="pre">Sequencer.process()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Sequencer.send"><code class="docutils literal notranslate"><span class="pre">Sequencer.send()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Sequencer.set_time"><code class="docutils literal notranslate"><span class="pre">Sequencer.set_time()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Sequencer.sounds_off"><code class="docutils literal notranslate"><span class="pre">Sequencer.sounds_off()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tinysoundfont.SoundFontException"><code class="docutils literal notranslate"><span class="pre">SoundFontException</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tinysoundfont.Synth"><code class="docutils literal notranslate"><span class="pre">Synth</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.control_change"><code class="docutils literal notranslate"><span class="pre">Synth.control_change()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.generate"><code class="docutils literal notranslate"><span class="pre">Synth.generate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.noteoff"><code class="docutils literal notranslate"><span class="pre">Synth.noteoff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.noteon"><code class="docutils literal notranslate"><span class="pre">Synth.noteon()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.notes_off"><code class="docutils literal notranslate"><span class="pre">Synth.notes_off()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.pitchbend"><code class="docutils literal notranslate"><span class="pre">Synth.pitchbend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.pitchbend_range"><code class="docutils literal notranslate"><span class="pre">Synth.pitchbend_range()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.program_change"><code class="docutils literal notranslate"><span class="pre">Synth.program_change()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.program_info"><code class="docutils literal notranslate"><span class="pre">Synth.program_info()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.program_select"><code class="docutils literal notranslate"><span class="pre">Synth.program_select()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.program_unset"><code class="docutils literal notranslate"><span class="pre">Synth.program_unset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.set_tuning"><code class="docutils literal notranslate"><span class="pre">Synth.set_tuning()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.sfload"><code class="docutils literal notranslate"><span class="pre">Synth.sfload()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.sfpreset_name"><code class="docutils literal notranslate"><span class="pre">Synth.sfpreset_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.sfunload"><code class="docutils literal notranslate"><span class="pre">Synth.sfunload()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.sounds_off"><code class="docutils literal notranslate"><span class="pre">Synth.sounds_off()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.start"><code class="docutils literal notranslate"><span class="pre">Synth.start()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tinysoundfont.Synth.stop"><code class="docutils literal notranslate"><span class="pre">Synth.stop()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tinysoundfont.midi.ControlChange"><code class="docutils literal notranslate"><span class="pre">ControlChange</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tinysoundfont.midi.Event"><code class="docutils literal notranslate"><span class="pre">Event</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tinysoundfont.midi.NoteOff"><code class="docutils literal notranslate"><span class="pre">NoteOff</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tinysoundfont.midi.NoteOn"><code class="docutils literal notranslate"><span class="pre">NoteOn</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tinysoundfont.midi.PitchBend"><code class="docutils literal notranslate"><span class="pre">PitchBend</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tinysoundfont.midi.ProgramChange"><code class="docutils literal notranslate"><span class="pre">ProgramChange</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tinysoundfont.midi.load"><code class="docutils literal notranslate"><span class="pre">load()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tinysoundfont.midi.load_memory"><code class="docutils literal notranslate"><span class="pre">load_memory()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tinysoundfont</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/reference.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-tinysoundfont">
+<span id="reference"></span><h1>Reference<a class="headerlink" href="#module-tinysoundfont" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tinysoundfont.Sequencer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tinysoundfont.</span></span><span class="sig-name descname"><span class="pre">Sequencer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">synth</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Sequencer" title="Link to this definition"></a></dt>
+<dd><p>A Sequencer schedules MIDI events over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>synth</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#tinysoundfont.Synth" title="tinysoundfont.synth.Synth"><code class="xref py py-class docutils literal notranslate"><span class="pre">Synth</span></code></a></span>) – The synthesizer object to send events to.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Sequencer.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Sequencer.add" title="Link to this definition"></a></dt>
+<dd><p>Add a list of MIDI events to queue for sending.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>events</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#tinysoundfont.midi.Event" title="tinysoundfont.midi.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a>]</span>) – List of MIDI events</p>
+</dd>
+</dl>
+<p>See <a class="reference internal" href="#tinysoundfont.midi.load" title="tinysoundfont.midi.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">midi.load()</span></code></a> for generating the list of events.
+See <a class="reference internal" href="#tinysoundfont.Sequencer.midi_load" title="tinysoundfont.Sequencer.midi_load"><code class="xref py py-func docutils literal notranslate"><span class="pre">midi_load()</span></code></a> for directly loading a MIDI file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Sequencer.get_time">
+<span class="sig-name descname"><span class="pre">get_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Sequencer.get_time" title="Link to this definition"></a></dt>
+<dd><p>Get current playing time of sequencer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>current playing time of sequencer in seconds of absolute time since sequencer started</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Sequencer.is_empty">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Sequencer.is_empty" title="Link to this definition"></a></dt>
+<dd><p>Return True if there are no more events scheduled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if there are no more events scheduled for this sequencer
+(song is over)</p>
+</dd>
+</dl>
+<p>Songs often end on a final NOTEOFF event that may have a decay time. It
+is often good to wait some amount of time before looping or scheduling a
+new song.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Sequencer.midi_load">
+<span class="sig-name descname"><span class="pre">midi_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Sequencer.midi_load" title="Link to this definition"></a></dt>
+<dd><p>Load MIDI file and schedule events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Filename to load MIDI data from, in Standard MIDI
+format</p>
+</dd>
+</dl>
+<p>Any additional keyword arguments are passed to <a class="reference internal" href="#tinysoundfont.midi.load" title="tinysoundfont.midi.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">midi.load()</span></code></a>. See
+<a class="reference internal" href="#tinysoundfont.midi.load" title="tinysoundfont.midi.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">midi.load()</span></code></a> for documentation on additional keyword arguments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Sequencer.notes_off">
+<span class="sig-name descname"><span class="pre">notes_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Sequencer.notes_off" title="Link to this definition"></a></dt>
+<dd><p>Send NOTE_OFF for all currently playing notes of the Synth object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Sequencer.pause">
+<span class="sig-name descname"><span class="pre">pause</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pause_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Sequencer.pause" title="Link to this definition"></a></dt>
+<dd><p>Pause or unpause playback.</p>
+<p>When playback is paused, time does not advance. No new events will be
+sent to the <a class="reference internal" href="#tinysoundfont.Synth" title="tinysoundfont.Synth"><code class="xref py py-class docutils literal notranslate"><span class="pre">Synth</span></code></a> object connected to the sequencer. If notes
+are playing, they will continue to play.</p>
+<p>To prevent notes from continuing to play during pause, this method calls
+<a class="reference internal" href="#tinysoundfont.Sequencer.notes_off" title="tinysoundfont.Sequencer.notes_off"><code class="xref py py-meth docutils literal notranslate"><span class="pre">notes_off()</span></code></a>. You may want to call <code class="xref py py-meth docutils literal notranslate"><span class="pre">sound_off()</span></code> to stop all
+sound playing immediately if needed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Sequencer.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Sequencer.process" title="Link to this definition"></a></dt>
+<dd><p>Advance time and send any events that need to be sent to the Synth.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>delta</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – How many seconds to advance time</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>How far time was actually advanced (may be smaller than <cite>delta</cite>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Sequencer.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Sequencer.send" title="Link to this definition"></a></dt>
+<dd><p>Send a single MIDI event to the synth object now, ignoring any time information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#tinysoundfont.midi.Event" title="tinysoundfont.midi.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></span>) – Single event to send</p>
+</dd>
+</dl>
+<p>If the event tries to select a preset that does not exist no error is raised.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Sequencer.set_time">
+<span class="sig-name descname"><span class="pre">set_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Sequencer.set_time" title="Link to this definition"></a></dt>
+<dd><p>Set current playing time of sequencer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>time</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – New absolute time in seconds</p>
+</dd>
+</dl>
+<p>Note that if previously scheduled events did not have <cite>persistent</cite> set
+then the events will no longer exist and will not play again.</p>
+<p>Note that MIDI expects events to happen in sequence. So if there is a
+program change as an event and you set the time to before that event,
+you might get the new instrument at a position where the previous
+instrument should have played. In general seeking back to the start of
+the MIDI events should work. Other random seeking may have unintended
+effects.</p>
+<p>To avoid stuck notes, this method turns off all keypresses using
+<a class="reference internal" href="#tinysoundfont.Sequencer.notes_off" title="tinysoundfont.Sequencer.notes_off"><code class="xref py py-meth docutils literal notranslate"><span class="pre">notes_off()</span></code></a>. It does not stop all sounds so playing notes may
+still have time to decay. If needed you can call <a class="reference internal" href="#tinysoundfont.Sequencer.sounds_off" title="tinysoundfont.Sequencer.sounds_off"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sounds_off()</span></code></a>
+to stop all playing sounds immediately.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Sequencer.sounds_off">
+<span class="sig-name descname"><span class="pre">sounds_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Sequencer.sounds_off" title="Link to this definition"></a></dt>
+<dd><p>Turn off all sounds of the Synth object.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tinysoundfont.SoundFontException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tinysoundfont.</span></span><span class="sig-name descname"><span class="pre">SoundFontException</span></span><a class="headerlink" href="#tinysoundfont.SoundFontException" title="Link to this definition"></a></dt>
+<dd><p>An exception raised from tinysoundfont</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tinysoundfont.Synth">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tinysoundfont.</span></span><span class="sig-name descname"><span class="pre">Synth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samplerate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">44100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth" title="Link to this definition"></a></dt>
+<dd><p>Create new synthesizer object to control sound generation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gain</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – scale factor for audio output, in relative dB (default 0.0)</p></li>
+<li><p><strong>samplerate</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – output samplerate in Hz (default 44100)</p></li>
+</ul>
+</dd>
+</dl>
+<p>If you need to mix many simultaneous voices you may need to turn down
+the <cite>gain</cite> to avoid clipping. Some SoundFonts also require gain adjustment
+to avoid being too loud or too quiet.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.control_change">
+<span class="sig-name descname"><span class="pre">control_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.control_change" title="Link to this definition"></a></dt>
+<dd><p>Change control value for a specific channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chan</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Channel to use (0-15)</p></li>
+<li><p><strong>controller</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Controller to update, (0-127), meaning defined by MIDI 1.0 standard</p></li>
+<li><p><strong>control_value</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Value to use for update, (0-127)</p></li>
+</ul>
+</dd>
+</dl>
+<p>The interpretation of controller number is from the MIDI 1.0 standard. Supported controller values
+that have an effect are:</p>
+<ul class="simple">
+<li><p>7 VOLUME_MSB</p></li>
+<li><p>39 VOLUME_LSB</p></li>
+<li><p>11 EXPRESSION_MSB</p></li>
+<li><p>43 EXPRESSION_LSB</p></li>
+<li><p>10 PAN_MSB</p></li>
+<li><p>42 PAN_LSB</p></li>
+<li><p>6 DATA_ENTRY_MSB</p></li>
+<li><p>38 DATA_ENTRY_LSB</p></li>
+<li><p>0 BANK_SELECT_MSB</p></li>
+<li><p>32 BANK_SELECT_LSB</p></li>
+<li><p>100 RPN_LSB</p></li>
+<li><p>101 RPN_MSB</p></li>
+<li><p>98 NRPN_LSB</p></li>
+<li><p>99 NRPN_MSB</p></li>
+<li><p>120 ALL_SOUND_OFF</p></li>
+<li><p>123 ALL_NOTES_OFF</p></li>
+<li><p>121 ALL_CTRL_OFF</p></li>
+</ul>
+<p>The supported Registered Parameter Names (RPN) are:</p>
+<ul class="simple">
+<li><p>0 - Pitch bend amount (measured in semitones MSB and cents LSB)</p></li>
+<li><p>1 - Fine tuning (measured in fractions of one semitone up/down using MSB and LSB)</p></li>
+<li><p>2 - Coarse tuning (measured in integral semitones up/down using MSB)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To change Registered Parameters Name (RPN) values do the following.</p>
+<p>First choose a supported RPN using Controller <cite>RPN_LSB</cite> (100). Controller <cite>RPN_MSB</cite> (101) should always be kept at <cite>0</cite>.
+Next put the <cite>MSB</cite> value in Controller <cite>DATA_ENTRY_MSB</cite> (6). If needed, also put a <cite>LSB</cite> value in Controller <cite>DATA_ENTRY_LSB</cite>.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.generate" title="Link to this definition"></a></dt>
+<dd><p>Generate fixed number of output samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>samples</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of samples to generate</p></li>
+<li><p><strong>buffer</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#memoryview" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">memoryview</span></code></a>]</span>) – Existing buffer to fill, or <cite>None</cite> to allocate new buffer</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#memoryview" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">memoryview</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>View into buffer with samples filled in stereo float32 format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.noteoff">
+<span class="sig-name descname"><span class="pre">noteoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.noteoff" title="Link to this definition"></a></dt>
+<dd><p>Stop a note.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chan</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Channel to use (0-15)</p></li>
+<li><p><strong>key</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – MIDI key to release (0-127), 60 is middle C</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>True</cite> if note was valid, <cite>False</cite> if note was outside of legal range or channel did not have instrument loaded</p>
+</dd>
+</dl>
+<p>It is valid to call <cite>noteoff</cite> on a note that never had <cite>noteon</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.noteon">
+<span class="sig-name descname"><span class="pre">noteon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.noteon" title="Link to this definition"></a></dt>
+<dd><p>Play a note.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chan</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Channel to use (0-15)</p></li>
+<li><p><strong>key</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – MIDI key to press (0-127), 60 is middle C</p></li>
+<li><p><strong>velocity</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Velocity of keypress (0-127), 0 means to turn off, 127 is maximum</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>True</cite> if note was valid, <cite>False</cite> if note was outside of legal range or channel did not have instrument loaded</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.notes_off">
+<span class="sig-name descname"><span class="pre">notes_off</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.notes_off" title="Link to this definition"></a></dt>
+<dd><p>Turn off all playing notes in all channels or one specific channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chan</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Channel to use (0-15) or None to indicate all channels</p>
+</dd>
+</dl>
+<p>Some instruments have long decays or may continue to produce sound after a NOTE_OFF event.
+If you need all sounds to stop playing use <a class="reference internal" href="#tinysoundfont.Synth.sounds_off" title="tinysoundfont.Synth.sounds_off"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sounds_off()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.pitchbend">
+<span class="sig-name descname"><span class="pre">pitchbend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.pitchbend" title="Link to this definition"></a></dt>
+<dd><p>Set pitch wheel position for a channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chan</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Channel to affect (0-15)</p></li>
+<li><p><strong>value</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Value from 0 to 16383 indicating pitch bend down to pitch bend up (default 8192, no pitch change)</p></li>
+</ul>
+</dd>
+</dl>
+<p>See also: <a class="reference internal" href="#tinysoundfont.Synth.pitchbend_range" title="tinysoundfont.Synth.pitchbend_range"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pitchbend_range()</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.pitchbend_range">
+<span class="sig-name descname"><span class="pre">pitchbend_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semitones</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.pitchbend_range" title="Link to this definition"></a></dt>
+<dd><p>Set pitch bend range up and down for a channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chan</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Channel to affect (0-15)</p></li>
+<li><p><strong>semitones</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – Pitch bend range up and down in semitones (default 2.0)</p></li>
+</ul>
+</dd>
+</dl>
+<p>See also: <a class="reference internal" href="#tinysoundfont.Synth.pitchbend" title="tinysoundfont.Synth.pitchbend"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pitchbend()</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.program_change">
+<span class="sig-name descname"><span class="pre">program_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_drums</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.program_change" title="Link to this definition"></a></dt>
+<dd><p>Select a program for a specific channel that already has a SoundFont assigned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chan</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Channel to affect (0-15)</p></li>
+<li><p><strong>preset</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Which preset to use (0-127)</p></li>
+<li><p><strong>is_drums</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to set channel to MIDI drum mode (default False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>SoundFontException</cite> if channel is out of range or does not have a SoundFont loaded</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>RuntimeError</cite> if bank/preset are out of range or do not match any instrument for the SoundFont in the channel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.program_info">
+<span class="sig-name descname"><span class="pre">program_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.program_info" title="Link to this definition"></a></dt>
+<dd><p>Get SoundFont id, bank, program number, and preset number of channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chan</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Channel to use (0-15)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>SoundFontException</cite> if channel is out of range or has no SoundFont loaded</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>)</span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple containing <cite>(sfid, bank, preset)</cite> indicating SoundFont ID, bank number, and preset number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.program_select">
+<span class="sig-name descname"><span class="pre">program_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sfid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bank</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_drums</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.program_select" title="Link to this definition"></a></dt>
+<dd><p>Select a program from a SoundFont for specific channel</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chan</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Channel to affect (0-15)</p></li>
+<li><p><strong>sfid</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – ID of SoundFont to use</p></li>
+<li><p><strong>bank</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Bank to set (0-127)</p></li>
+<li><p><strong>preset</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Which preset to use (0-127)</p></li>
+<li><p><strong>is_drums</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to set channel to MIDI drum mode (default False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>SoundFontException</cite> if the SoundFont does not exist</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>RuntimeError</cite> if channel, bank, or preset is out of range</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>RuntimeError</cite> if bank/preset does not match any instrument for the SoundFont</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.program_unset">
+<span class="sig-name descname"><span class="pre">program_unset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.program_unset" title="Link to this definition"></a></dt>
+<dd><p>Set the preset of a MIDI channel to an unassigned state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chan</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Channel to affect (0-15)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>SoundFontException</cite> if channel is out of range</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.set_tuning">
+<span class="sig-name descname"><span class="pre">set_tuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.set_tuning" title="Link to this definition"></a></dt>
+<dd><p>Set tuning for a channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chan</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Channel to affect (0-15)</p></li>
+<li><p><strong>tuning</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – Tuning adjustment in semitones (default 0.0)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.sfload">
+<span class="sig-name descname"><span class="pre">sfload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_or_bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_voices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.sfload" title="Link to this definition"></a></dt>
+<dd><p>Load SoundFont and return its ID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename_or_bytes</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></span>) – either a filename containing sf2/sf3/sfo
+SoundFont data or bytes object</p></li>
+<li><p><strong>gain</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – gain adjustment for this SoundFont, in relative dB (default
+0.0)</p></li>
+<li><p><strong>max_voices</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – maximum number of simultaneous voices (default 256)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ID of SoundFont to be used by other methods such as
+<a class="reference internal" href="#tinysoundfont.Synth.program_select" title="tinysoundfont.Synth.program_select"><code class="xref py py-func docutils literal notranslate"><span class="pre">program_select()</span></code></a></p>
+</dd>
+</dl>
+<p>When deciding on the value for <cite>max_voices</cite>, one note in a SoundFont may
+use more than one voice. Playing multiple notes also uses more voices.
+If more voices are required than are available, older voices will be cut
+off.</p>
+<p>See also: <a class="reference internal" href="#tinysoundfont.Synth.program_select" title="tinysoundfont.Synth.program_select"><code class="xref py py-meth docutils literal notranslate"><span class="pre">program_select()</span></code></a>, <a class="reference internal" href="#tinysoundfont.Synth.sfpreset_name" title="tinysoundfont.Synth.sfpreset_name"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sfpreset_name()</span></code></a>, <a class="reference internal" href="#tinysoundfont.Synth.sfunload" title="tinysoundfont.Synth.sfunload"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sfunload()</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.sfpreset_name">
+<span class="sig-name descname"><span class="pre">sfpreset_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sfid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bank</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.sfpreset_name" title="Link to this definition"></a></dt>
+<dd><p>Return name of a SoundFont preset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sfid</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – ID of SoundFont to use</p></li>
+<li><p><strong>bank</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Bank to use (0-127)</p></li>
+<li><p><strong>preset</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Which preset to retrieve (0-127)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>SoundFontException</cite> if channel is out of range or has no SoundFont loaded</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>RuntimeError</cite> if bank/preset are out of range</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Name of preset in SoundFont, or <cite>None</cite> if preset does not exist in SoundFont</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.sfunload">
+<span class="sig-name descname"><span class="pre">sfunload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sfid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.sfunload" title="Link to this definition"></a></dt>
+<dd><p>Unload a SoundFont and free memory it used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sfid</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – ID of SoundFont to unload, as returned by <a class="reference internal" href="#tinysoundfont.Synth.sfload" title="tinysoundfont.Synth.sfload"><code class="xref py py-func docutils literal notranslate"><span class="pre">sfload()</span></code></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>SoundFontException</cite> if the SoundFont does not exist</p>
+</dd>
+</dl>
+<p>See also: <a class="reference internal" href="#tinysoundfont.Synth.sfload" title="tinysoundfont.Synth.sfload"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sfload()</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.sounds_off">
+<span class="sig-name descname"><span class="pre">sounds_off</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.sounds_off" title="Link to this definition"></a></dt>
+<dd><p>Turn off all playing sounds in all channels or one specific channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chan</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Channel to use (0-15) or None to indicate all channels</p>
+</dd>
+</dl>
+<p>Some instruments have long decays or may continue to produce sound after a NOTE_OFF event.
+If you need all notes to stop playing and continue producing the decay, use <a class="reference internal" href="#tinysoundfont.Synth.notes_off" title="tinysoundfont.Synth.notes_off"><code class="xref py py-meth docutils literal notranslate"><span class="pre">notes_off()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1024</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.start" title="Link to this definition"></a></dt>
+<dd><p>Start audio playback in a separate thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buffer_size</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of samples to buffer or 0 for automatic
+sizing for low latency (default 1024)</p>
+</dd>
+</dl>
+<p>Extra keyword arguments will be passed to the <cite>pyaudio</cite> stream
+constructor. Useful arguments might include:</p>
+<ul class="simple">
+<li><p><cite>output_device_index</cite> – index of output device to use, or <cite>None</cite> for
+default output device</p></li>
+</ul>
+<p>Note that depending on your platform <cite>pyaudio</cite> may recognize a large
+number of devices not all of which are suitable for audio playback. You
+may need to use <cite>pyaudio</cite> method <cite>get_host_api_info_by_index()</cite> to find
+details about the <cite>pyaudio</cite> devices and choose a suitable index.</p>
+<p>The separate audio playback thread will continue generating and playing
+samples until stopped with <a class="reference internal" href="#tinysoundfont.Synth.stop" title="tinysoundfont.Synth.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop()</span></code></a>.</p>
+<p>The audio thread will not prevent the main thread from exiting. If you
+turn on notes and call <a class="reference internal" href="#tinysoundfont.Synth.start" title="tinysoundfont.Synth.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">start()</span></code></a>, your main thread will need to call
+<a class="reference external" href="https://docs.python.org/3/library/time.html#time.sleep" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">time.sleep()</span></code></a> to let time pass to be able to hear the notes
+playing. To schedule note events through time see <a class="reference internal" href="#tinysoundfont.Sequencer" title="tinysoundfont.Sequencer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequencer</span></code></a>.</p>
+<p>See also: <a class="reference internal" href="#tinysoundfont.Synth.stop" title="tinysoundfont.Synth.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop()</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tinysoundfont.Synth.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.Synth.stop" title="Link to this definition"></a></dt>
+<dd><p>Stop audio playback thread.</p>
+<p>See also: <a class="reference internal" href="#tinysoundfont.Synth.start" title="tinysoundfont.Synth.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">start()</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class" id="module-tinysoundfont.midi">
+<dt class="sig sig-object py" id="tinysoundfont.midi.ControlChange">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tinysoundfont.midi.</span></span><span class="sig-name descname"><span class="pre">ControlChange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.midi.ControlChange" title="Link to this definition"></a></dt>
+<dd><p>Action that changes a MIDI control value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>control</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – MIDI controller number (0-127)</p></li>
+<li><p><strong>control_value</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Value to change to (0-127)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tinysoundfont.midi.Event">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tinysoundfont.midi.</span></span><span class="sig-name descname"><span class="pre">Event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persistent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.midi.Event" title="Link to this definition"></a></dt>
+<dd><p>A single event that can be sent to a <code class="xref py py-class docutils literal notranslate"><span class="pre">Synth</span></code> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#tinysoundfont.midi.NoteOn" title="tinysoundfont.midi.NoteOn"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoteOn</span></code></a> | <a class="reference internal" href="#tinysoundfont.midi.NoteOff" title="tinysoundfont.midi.NoteOff"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoteOff</span></code></a> | <a class="reference internal" href="#tinysoundfont.midi.ControlChange" title="tinysoundfont.midi.ControlChange"><code class="xref py py-class docutils literal notranslate"><span class="pre">ControlChange</span></code></a> | <a class="reference internal" href="#tinysoundfont.midi.ProgramChange" title="tinysoundfont.midi.ProgramChange"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgramChange</span></code></a> | <a class="reference internal" href="#tinysoundfont.midi.PitchBend" title="tinysoundfont.midi.PitchBend"><code class="xref py py-class docutils literal notranslate"><span class="pre">PitchBend</span></code></a></span>) – Details of what event is</p></li>
+<li><p><strong>t</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – Time when event is scheduled, in absolute seconds</p></li>
+<li><p><strong>channel</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Channel to use for event</p></li>
+<li><p><strong>persistent</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to keep event in event list after playing</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tinysoundfont.midi.NoteOff">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tinysoundfont.midi.</span></span><span class="sig-name descname"><span class="pre">NoteOff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.midi.NoteOff" title="Link to this definition"></a></dt>
+<dd><p>Action that turns off a single note</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – MIDI note number of note (0-127)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tinysoundfont.midi.NoteOn">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tinysoundfont.midi.</span></span><span class="sig-name descname"><span class="pre">NoteOn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.midi.NoteOn" title="Link to this definition"></a></dt>
+<dd><p>Action that turns on a single note</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – MIDI note number of note (0-127)</p></li>
+<li><p><strong>velocity</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Velocity of note, 0 means turn off (0-127)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tinysoundfont.midi.PitchBend">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tinysoundfont.midi.</span></span><span class="sig-name descname"><span class="pre">PitchBend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pitch_bend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8192</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.midi.PitchBend" title="Link to this definition"></a></dt>
+<dd><p>Action that bends pitch of current channel</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pitch_bend</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – How much to bend pitch (0-16383, 8192 means no bend)</p>
+</dd>
+</dl>
+<p>Range of pitch bend is set using RPN</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tinysoundfont.midi.ProgramChange">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tinysoundfont.midi.</span></span><span class="sig-name descname"><span class="pre">ProgramChange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">program</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.midi.ProgramChange" title="Link to this definition"></a></dt>
+<dd><p>Action that changes current preset program</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>program</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Preset number to use (0-127)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tinysoundfont.midi.load">
+<span class="sig-prename descclassname"><span class="pre">tinysoundfont.midi.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persistent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.midi.load" title="Link to this definition"></a></dt>
+<dd><p>Load MIDI file and turn into list of events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Filename to load MIDI data from, in Standard MIDI
+format</p></li>
+<li><p><strong>delta_time</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – Time offset to add to all events (default 0)</p></li>
+<li><p><strong>filter</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#tinysoundfont.midi.Event" title="tinysoundfont.midi.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a>]], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]]]</span>) – Optional function that takes in individual events and can
+modify them or filter them out (default None)</p></li>
+<li><p><strong>persistent</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to keep events in queue after playing,
+allowing for seeking back to start or arbitrary positions after
+playback has started (default True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#tinysoundfont.midi.Event" title="tinysoundfont.midi.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of events from MIDI data, possibly filtered</p>
+</dd>
+</dl>
+<p>Filter function should take one input argument, the event, and modify it
+in place as needed. The function should return <cite>None</cite> or <cite>False</cite> to
+indicate to keep the modified event, or <cite>True</cite> to indicate that the event
+should be deleted.</p>
+<p>See also: <a class="reference internal" href="#tinysoundfont.midi.load_memory" title="tinysoundfont.midi.load_memory"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load_memory()</span></code></a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tinysoundfont.midi.load_memory">
+<span class="sig-prename descclassname"><span class="pre">tinysoundfont.midi.</span></span><span class="sig-name descname"><span class="pre">load_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persistent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tinysoundfont.midi.load_memory" title="Link to this definition"></a></dt>
+<dd><p>Load MIDI data and turn into list of events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></span>) – MIDI data, in Standard MIDI format</p></li>
+<li><p><strong>delta_time</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – Time offset to add to all events (default 0)</p></li>
+<li><p><strong>filter</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#tinysoundfont.midi.Event" title="tinysoundfont.midi.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a>]], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]]]</span>) – Optional function that takes in individual events and can
+modify them or filter them out (default None)</p></li>
+<li><p><strong>persistent</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to keep events in queue after playing,
+allowing for seeking back to start or arbitrary positions after
+playback has started (default True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#tinysoundfont.midi.Event" title="tinysoundfont.midi.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of events from MIDI data, possibly filtered</p>
+</dd>
+</dl>
+<p>Filter function should take one input argument, the event, and modify it
+in place as needed. The function should return <cite>None</cite> or <cite>False</cite> to
+indicate to keep the modified event, or <cite>True</cite> to indicate that the
+event should be deleted.</p>
+<p>See also: <a class="reference internal" href="#tinysoundfont.midi.load" title="tinysoundfont.midi.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a></p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="developer.html" class="btn btn-neutral float-left" title="Developer Notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Nathan Whitehead.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
