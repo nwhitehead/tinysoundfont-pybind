@@ -25,4 +25,5 @@ jobs:
             
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v3
-              path: doc/build/html/
+              with:
+                  path: ./doc/build/html/
