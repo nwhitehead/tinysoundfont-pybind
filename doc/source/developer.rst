@@ -9,8 +9,8 @@ Internally, Python bindings are created using `pybind11
 package. That means this package is self-contained and does not link to any
 other native libraries.
 
-The `Guide`
-Things that are *not* goals of `tinysoundfont`:
+The `Guide` talks about the goals of `tinysoundfont`. Things that are *not*
+goals of `tinysoundfont`:
 
 1. To cover general audo synthesis algorithms and digital effects
 2. To be exhaustive in duplicating the `FluidSynth` API
@@ -21,7 +21,7 @@ Things that are *not* goals of `tinysoundfont`:
 Compression
 -----------
 
-Compressed audio is handled by [std_vorbis.c](https://github.com/nothings/stb/blob/master/stb_vorbis.c).
+Compressed audio is handled by `std_vorbis.c <https://github.com/nothings/stb/blob/master/stb_vorbis.c>`_.
 
 MIDI
 ----
