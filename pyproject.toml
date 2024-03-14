@@ -4,9 +4,9 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "tinysoundfont"
-version = "0.3.0"
+version = "0.3.1"
 authors = [ { name = "Nathan Whitehead", email = "nwhitehe@gmail.com" } ]
-description = "Python bindings for using Sound Fonts (sf2/sf3/sfo formats), generating audio samples, and playing MIDI songs"
+description = "Python bindings for using SoundFonts (sf2/sf3/sfo formats), generating audio samples, and playing MIDI songs"
 readme = "README.md"
 python_requires = ">=3.7"
 classifiers = [
