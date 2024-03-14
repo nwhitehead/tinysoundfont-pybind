@@ -1,0 +1,4 @@
+.. note::
+   This example requires having the MIDI file `1080-c01.mid
+   <https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/1080-c01.mid>`_
+   available. The example code assumes it is located in the current directory.

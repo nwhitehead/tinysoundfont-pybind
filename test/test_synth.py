@@ -36,12 +36,12 @@ def test_0():
     # Try with buffer size large enough that listener will hear jitter if notes must start/end on buffer boundaries
     synth.start(buffer_size=4096)
 
-    sfid = synth.sfload("test/example.sf2", gain=-12.0)
+    sfid = synth.sfload("test/florestan-piano.sf2", gain=-12.0)
     assert sfid == 0
     sfid2 = synth.sfload("test/florestan-subset.sfo", gain=-1.0)
     assert sfid2 == 1
     name = synth.sfpreset_name(sfid, 0, 0)
-    assert name == "El Cheapo Organ"
+    assert name == "Piano"
     name = synth.sfpreset_name(sfid2, 0, 2)
     assert name == "Piano"
     synth.program_select(0, sfid, 0, 0)

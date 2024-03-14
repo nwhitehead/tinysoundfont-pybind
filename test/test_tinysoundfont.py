@@ -18,33 +18,32 @@ def test_help():
 
 def test_load():
     s = tinysoundfont.Synth()
-    sfid = s.sfload("test/example.sf2")
-    assert s.sfpreset_name(sfid, 0, 0) == "El Cheapo Organ"
-    with open("test/example.sf2", "rb") as f:
+    sfid = s.sfload("test/florestan-piano.sf2")
+    assert s.sfpreset_name(sfid, 0, 0) == "Piano"
+    with open("test/florestan-piano.sf2", "rb") as f:
         mem = f.read()
         assert mem[:4] == b"RIFF"
-        assert len(mem) == 3576
+        assert len(mem) == 187548
         sfid2 = s.sfload(mem)
-        assert s.sfpreset_name(sfid2, 0, 0) == "El Cheapo Organ"
+        assert s.sfpreset_name(sfid2, 0, 0) == "Piano"
 
 
 def test_bytes():
     s = tinysoundfont.Synth(gain=-14)
-    sfid = s.sfload("test/example.sf2")
+    sfid = s.sfload("test/florestan-piano.sf2")
     s.program_select(0, sfid, 0, 0)
     s.noteon(0, 48, 100)
     # Create 1 second buffer
     buffer = s.generate(44100)
     # buffer now contains audio data
     # Check first and last value
-    print(buffer[-4:])
-    assert buffer[:4] == b"\x00\x00\x00\x00"
-    assert buffer[-4:] == b"\xf9D\x07>"
+    assert buffer[:4] == b"\x99\xfa\xac\xba"
+    assert buffer[-4:] == b"\xc6z\x97;"
 
 
 def test_wav():
     s = tinysoundfont.Synth(gain=-14)
-    sfid = s.sfload("test/example.sf2")
+    sfid = s.sfload("test/florestan-piano.sf2")
     s.program_select(0, sfid, 0, 0)
     s.program_select(1, sfid, 0, 0)
     s.program_select(2, sfid, 0, 0)
@@ -88,12 +87,12 @@ def test_wav():
             # Check that WAV file has exactly right size
             assert len(contents) == 1411258
             # Check that WAV has right CRC32 (golden value)
-            assert zlib.crc32(contents) == 3729228750
+            assert zlib.crc32(contents) == 3997000505
 
 
 def test_start():
     s = tinysoundfont.Synth(gain=-14)
-    sfid = s.sfload("test/example.sf2")
+    sfid = s.sfload("test/florestan-piano.sf2")
     s.program_select(0, sfid, 0, 0)
     s.program_select(1, sfid, 0, 0)
     s.program_select(2, sfid, 0, 0)

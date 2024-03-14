@@ -1,0 +1,4 @@
+.. note::
+   This example requires having the MIDI file `drum.mid
+   <https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/drum.mid>`_
+   available. The example code assumes it is located in the current directory.

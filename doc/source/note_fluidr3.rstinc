@@ -1,2 +1,4 @@
 .. note::
-   This example requires downloading the `FluidR3_GM SoundFont <https://keymusician01.s3.amazonaws.com/FluidR3_GM.zip>`_.
+   This example requires downloading the `FluidR3_GM SoundFont
+   <https://keymusician01.s3.amazonaws.com/FluidR3_GM.zip>`_. The example code
+   assumes the extracted SoundFont file is located in the current directory.

@@ -3,7 +3,7 @@ import sys
 import time
 
 from .synth import Synth, SoundFontException
-from .sequencer import Sequencer, MidiMessageType
+from .sequencer import Sequencer
 
 
 def endswith_any(value, suffixes):

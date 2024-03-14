@@ -3,7 +3,7 @@ import tinysoundfont
 import time
 
 synth = tinysoundfont.Synth()
-sfid = synth.sfload("test/example.sf2", gain=-13.0)
+sfid = synth.sfload("florestan-piano.sf2")
 
 def filter_program_change(event):
     """Make all program changes go to preset 0"""
@@ -12,7 +12,7 @@ def filter_program_change(event):
             event.program = 0
 
 seq = tinysoundfont.Sequencer(synth)
-seq.midi_load("test/1080-c01.mid", filter=filter_program_change)
+seq.midi_load("1080-c01.mid", filter=filter_program_change)
 
 synth.start(buffer_size=4096)
 while not seq.is_empty():

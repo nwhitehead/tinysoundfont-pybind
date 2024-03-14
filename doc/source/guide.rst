@@ -74,16 +74,29 @@ installed.
 Getting SoundFonts
 ------------------
 
-Example Organ
+Example Piano
 ^^^^^^^^^^^^^
 
 In order to use this package to do anything interesting you need at least one
 SoundFont. For testing purposes this package contains a small SoundFont that can
-be downloaded: `example.sf2
-<https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/example.sf2>`_
+be downloaded:
 
-This example SoundFont contains a single instrument, an artificial organ with
-preset name "El Cheapo Organ".
+`florestan-piano.sf2
+<https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/florestan-piano.sf2>`_
+
+This example SoundFont contains a single instrument, an artificial piano.
+
+Example Compressed SoundFont
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To demonstrate compressed SoundFonts, this package contains a small collection
+of 17 instruments in compressed format that can be downloaded at: 
+
+`florestan-subset.sfo
+<https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/florestan-subset.sfo>`_.
+
+Even though this SoundFont contains the piano instrument and 16 other instruments,
+the total file size is smaller than `florestan-piano.sf2` in uncompressed format.
 
 GM SoundFont `FluidR3_GM`
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -125,6 +138,29 @@ users.
 There are many lists of SoundFont downloads online. One resource is
 `SynthFont Links <http://www.synthfont.com/links_to_soundfonts.html>`_.
 
+Compressing SoundFonts
+^^^^^^^^^^^^^^^^^^^^^^
+
+This package also supports compressed SoundFont2 formats `.sf3` and `.sfo`. The
+compressed formats are similar to regular `.sf2` but the audio waveforms are
+stored with Ogg/Vorbis compression instead of being stored uncompressed. This is
+especially useful for large General MIDI soundbanks that contain many
+instruments in one file. For information about converting SoundFonts see
+`SFOTool <https://github.com/schellingb/TinySoundFont/tree/master/sfotool>`_.
+
+Compressed streams are decompressed into memory when the file is loaded. This
+means there will be more computation required when loading the instrument. This
+also means the total memory needed at runtime will not be less than the
+equivalent uncompressed `.sf2` version. The compressed format is more for saving
+space when distributing or storing the instrument file.
+
+Another consideration is unused samples and instruments. It may make sense for
+your application to start with a large General MIDI SoundFont and then edit it
+to only include the instruments and sounds you actually use. The application
+`Polyphone <https://www.polyphone-soundfonts.com/>`_ can be used to edit
+SoundFonts. The application cannot edit `.sfo` format, so you should use SFOTool
+to compress the SoundFont after editing with Polyphone.
+
 Examples
 --------
 
@@ -147,6 +183,8 @@ Here is a tiny example program to play a note:
 
 .. literalinclude:: ../../test/example_one_note.py
 
+.. include:: note_piano.rstinc
+
 Play a Chord
 ^^^^^^^^^^^^
 
@@ -159,17 +197,19 @@ Here is an example that plays a single chord.
 
 .. include:: note_sleep.rstinc
 
+.. include:: note_piano.rstinc
+
 Change Instruments
 ^^^^^^^^^^^^^^^^^^
 
 One SoundFont can contain many instruments. This example shows playing notes
-from different instruments in the `FluidR3_GM` SoundFont.
+from different instruments in the `florestan-subset.sfo` compressed SoundFont.
 
 .. literalinclude:: ../../test/example_instruments.py
 
 .. include:: note_sleep.rstinc
 
-.. include:: note_fluidr3.rstinc
+.. include:: note_florestan.rstinc
 
 
 Play a MIDI File
@@ -182,26 +222,34 @@ song to play then waits until the song is finished and ends.
 
 .. include:: note_fluidr3.rstinc
 
+.. include:: note_1080.rstinc
+
 Filter MIDI Events
 ^^^^^^^^^^^^^^^^^^
 
 This example plays a MIDI file using the example SoundFont. It filters the MIDI
 instrument changes in the multi-channel song to only use preset `0` for all
-channels to allow us to use the example organ SoundFont.
+channels to allow us to use the example piano SoundFont.
 
 .. literalinclude:: ../../test/example_midi_filter.py
+
+.. include:: note_piano.rstinc
+
+.. include:: note_1080.rstinc
 
 Drum Sounds
 ^^^^^^^^^^^
 
 The General MIDI convention is that drum events happens on channel 10. You can
 set any channel to be a drum kit channel using :meth:`Synth.program_select` or
-:meth:`Synth.program_change`. A drum kit channel maps different drum instruments
-to each MIDI key of the channel. For example key `36` is a bass drum and `56` is
-a cowbell.
+:meth:`Synth.program_change`. A drum kit channel maps each MIDI key of the
+channel to different drum instruments. For example key `36` is a bass drum and
+`56` is a cowbell.
 
 This example plays a short drum pattern.
 
 .. literalinclude:: ../../test/example_drums.py
 
 .. include:: note_fluidr3.rstinc
+
+.. include:: note_drum_midi.rstinc

@@ -1,0 +1,4 @@
+.. note::
+   This example requires having the SoundFont file `florestan-subset.sfo
+   <https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/florestan-subset.sfo>`_
+   available. The example code assumes it is located in the current directory.
