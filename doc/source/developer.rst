@@ -17,3 +17,16 @@ Things that are *not* goals of `tinysoundfont`:
 3. To control general MIDI signal routing and input/output
 4. To provide guaranteed real-time responsiveness without glitches
 5. To be an editor or validator for SoundFonts
+
+Compression
+-----------
+
+Compressed audio is handled by [std_vorbis.c](https://github.com/nothings/stb/blob/master/stb_vorbis.c).
+
+MIDI
+----
+
+Low-level MIDI decoding is handled by `tml.h` which is included in `TinySoundFont`. From there some code
+in `main.cpp` goes through the MIDI events and constructs a Python list of dictionaries with appropriate
+keys for passing to Python. This data structure is converted to a nicer representation that uses Python
+`dataclasses`.
