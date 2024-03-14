@@ -307,3 +307,35 @@ Here is an example that plays a MIDI file using the `FluidR3_GM` SoundFont:
 
    python -m tinysoundfont --play FluidR3_GM.sf2 1080-c01.mid
 
+Latency
+^^^^^^^
+
+If you don't require low latency it is recommended to set the `buffer_size`
+passed to :meth:`Synth.start` to a somewhat large value such as `4096` to avoid
+glitches.
+
+If you do require low latency response you can decrease the `buffer_size`
+argument. A value of `1024` is usually safe for most platforms. Lower values can
+be safe but may result in glitches and audio underruns in some situations.
+Passing a value of `0` lets PortAudio decide on the buffer size to minimize
+latency. This generally works well if the main thread has priority. It may be
+too aggressive if other applications are running and interacting with the user.
+
+One thing to note about buffer sizes and latency is that MIDI events that are
+scheduled by :class:`Sequencer` can happen at precise positions in the audio
+output and will not have any jitter or timing issues. Direct calls to
+:class:`Synth` to perform actions can only happen at audio buffer boundaries.
+This means that the larger the audio buffer the more timing jitter will happen
+for direct calls to :class:`Synth`.
+
+Too Loud / Too Quiet
+^^^^^^^^^^^^^^^^^^^^
+
+SoundFonts have many internal settings which control gain and volume. Different
+SoundFonts may be adjusted to different expected final sound volumes. If you are
+getting sound output that is much too loud or too quiet you should adjust the
+gain. You can adjust global gain when constructing the :class:`Synth` object. If
+you are loading several SoundFonts you can adjust the relative gain of each one
+when calling :meth:`Synth.sfload`. All the gain factors are measured in relative dB.
+So a value of `0` means no change, `+3` means double the signal, `-3` means divide
+the signal by a factor of 2.
