@@ -12,7 +12,7 @@ jobs:
             - uses: actions/setup-python@v5
 
             - name: Install dev requirements
-              run: apt install python3-pyaudio
+              run: sudo apt install python3-pyaudio
 
             - name: Install doc requirements
               run: python -m pip install -r doc/requirements.txt
