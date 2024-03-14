@@ -31,11 +31,9 @@ extensions = [
 sphinx_tabs_disable_tab_closing = True
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 
-templates_path = ['_templates']
 exclude_patterns = []
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'alabaster'
-html_static_path = ['_static']
+html_theme = 'sphinx_rtd_theme'

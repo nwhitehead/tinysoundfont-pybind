@@ -44,7 +44,13 @@ class Sequencer:
         self.synth.callback = seq_callback
 
     def add(self, events: List[Event]):
-        """Add a list of MIDI events to queue for sending."""
+        """Add a list of MIDI events to queue for sending.
+
+        :param events: List of MIDI events
+
+        See :func:`midi.load` for generating the list of events.
+        See :func:`midi_load` for directly loading a MIDI file.
+        """
         self.events.extend(events)
 
     def midi_load(self, filename: str, **kwargs):
@@ -114,7 +120,12 @@ class Sequencer:
     def is_empty(self) -> bool:
         """Return True if there are no more events scheduled.
 
-        :return: True if there are no more events scheduled for this sequencer (song is over)
+        :return: True if there are no more events scheduled for this sequencer
+            (song is over)
+
+        Songs often end on a final NOTEOFF event that may have a decay time. It
+        is often good to wait some amount of time before looping or scheduling a
+        new song.
         """
         if len(self.events) == 0:
             return True

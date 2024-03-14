@@ -93,7 +93,7 @@ To demonstrate compressed SoundFonts, this package contains a small collection
 of 17 instruments in compressed format that can be downloaded at: 
 
 `florestan-subset.sfo
-<https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/florestan-subset.sfo>`_.
+<https://github.com/nwhitehead/tinysoundfont-pybind/raw/main/test/florestan-subset.sfo>`_
 
 Even though this SoundFont contains the piano instrument and 16 other instruments,
 the total file size is smaller than `florestan-piano.sf2` in uncompressed format.

@@ -83,6 +83,7 @@ class Event:
     :param persistent: Whether to keep event in event list after playing
 
     """
+
     action: Action
     t: float = 0
     channel: int = 0
