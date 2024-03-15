@@ -72,13 +72,14 @@ Here is an example program that plays a chord:
 
     time.sleep(0.5)
 
-Please see the [Guide](https://nwhitehead.github.io/tinysoundfont-pybind/guide.html)
-for more examples and notes about the examples.
+Please see the
+[Guide](https://nwhitehead.github.io/tinysoundfont-pybind/guide.html) for more
+examples and notes about the examples.
 
 ## Local build and test
 
-Note that a local build and test is not required to use the package,
-only for developing `tinysoundfont` itself.
+Note that a local build and test is not required to use the package, only for
+developing `tinysoundfont` itself.
 
 Build and install locally with:
 
@@ -90,9 +91,9 @@ Test in the root directory with:
 
 You may want to build and test in a `virtualenv` environment.
 
-The `python -m pip install .` will perform a compilation step for `C++` code. Your
-environment must have access to a working `C++` compiler as well as the Python
-development headers.
+The `python -m pip install .` will perform a compilation step for `C++` code.
+Your environment must have access to a working `C++` compiler as well as the
+Python development headers.
 
 ### Editable build
 
@@ -105,12 +106,16 @@ Then install with `editable.rebuild` on:
 
     pip install . --no-build-isolation --config-setting=editable.rebuild=true -Cbuild-dir=build .
 
-In my experience you still need to rerun this command when editing files, but it will go faster.
+In my experience you still need to rerun this command when editing files, but it
+will go faster.
 
 ### Packaging
 
-Building wheels for PyPI is done by GitHub Actions and does not need to be done manually.
+Building wheels for PyPI is done by GitHub Actions and does not need to be done
+manually.
 
 ### Documentation
 
 Documentation is done using [Sphinx](https://www.sphinx-doc.org/en/master/).
+GitHub Actions builds automatically and pushes pages to the [Documentation
+Page](https://nwhitehead.github.io/tinysoundfont-pybind/).
