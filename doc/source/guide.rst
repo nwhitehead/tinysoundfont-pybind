@@ -227,14 +227,14 @@ song to play then waits until the song is finished and ends.
 Filter MIDI Events
 ^^^^^^^^^^^^^^^^^^
 
-This example plays a MIDI file using the smaller compressed example SoundFont.
-It filters the MIDI instrument changes in the multi-channel song to only use
-preset `19` (Church Organ) for all channels.
+This example plays a MIDI file using the `florestan_subset.sfo` compressed
+example SoundFont. It filters the MIDI instrument changes in the multi-channel
+song to only use preset `19` (Church Organ) for all channels.
 
-The MIDI file uses MIDI GM instruments `40` to `43` (or instruments `41` through
-`44` in 1-based indexing). The `florestan_subset.sfo` SoundFont only contains
-preset `40`. Without any MIDI filtering the playback would start with violin,
-but then later parts using cello and contrabass would default to a piano sound.
+The MIDI file uses MIDI GM presets `40` to `43` (or presets `41` through `44` in
+1-based indexing). The `florestan_subset.sfo` SoundFont only contains preset
+`40`. Without any MIDI filtering the playback would start with violin but later
+parts using cello and contrabass would default to a piano sound.
 
 .. literalinclude:: ../../test/example_midi_filter.py
 
