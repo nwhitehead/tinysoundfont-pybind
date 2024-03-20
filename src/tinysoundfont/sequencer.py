@@ -21,6 +21,7 @@ from .midi import (
     PitchBend,
 )
 
+DRUM_CHANNEL = 10
 
 class Sequencer:
     """A Sequencer schedules MIDI events over time.
@@ -152,7 +153,7 @@ class Sequencer:
                 synth.control_change(channel, control, control_value)
             case ProgramChange(program):
                 try:
-                    synth.program_change(channel, program, channel == DRUM_CHANNNEL)
+                    synth.program_change(channel, program, channel == DRUM_CHANNEL)
                 except Exception:
                     pass
             case PitchBend(pitch_bend):

@@ -26,9 +26,9 @@ class Synth:
     :param gain: scale factor for audio output, in relative dB (default 0.0)
     :param samplerate: output samplerate in Hz (default 44100)
 
-    If you need to mix many simultaneous voices you may need to turn down
-    the `gain` to avoid clipping. Some SoundFonts also require gain adjustment
-    to avoid being too loud or too quiet.
+    If you need to mix many simultaneous voices you may need to turn down the
+    `gain` to avoid clipping. Some SoundFonts also require gain adjustment to
+    avoid being too loud or too quiet.
     """
 
     def _get_soundfont(self, sfid):
@@ -75,7 +75,8 @@ class Synth:
         If more voices are required than are available, older voices will be cut
         off.
 
-        See also: :meth:`program_select`, :meth:`sfpreset_name`, :meth:`sfunload`
+        See also: :meth:`program_select`, :meth:`sfpreset_name`,
+        :meth:`sfunload`
         """
         soundfont = _tinysoundfont.SoundFont(filename_or_bytes)
         soundfont.set_output(
@@ -121,11 +122,16 @@ class Synth:
         :param sfid: ID of SoundFont to use
         :param bank: Bank to set (0-127)
         :param preset: Which preset to use (0-127)
-        :param is_drums: Whether to set channel to MIDI drum mode (default False)
+        :param is_drums: Whether to set channel to MIDI drum mode (default
+            False)
 
         :raises: `SoundFontException` if the SoundFont does not exist
         :raises: `RuntimeError` if channel, bank, or preset is out of range
-        :raises: `RuntimeError` if bank/preset does not match any instrument for the SoundFont
+        :raises: `RuntimeError` if bank/preset does not match any instrument for
+            the SoundFont
+
+        Note that presets are numbered with 0-based indexing. MIDI user
+        interfaces typically number presets 1-128.
         """
         soundfont = self._get_soundfont(sfid)
         self.channel[chan] = sfid
@@ -144,14 +150,20 @@ class Synth:
         del self.channel[chan]
 
     def program_change(self, chan: int, preset: int, is_drums: bool = False):
-        """Select a program for a specific channel that already has a SoundFont assigned.
+        """Select a program for a specific channel.
 
         :param chan: Channel to affect (0-15)
         :param preset: Which preset to use (0-127)
-        :param is_drums: Whether to set channel to MIDI drum mode (default False)
+        :param is_drums: Whether to set channel to MIDI drum mode (default
+            False)
 
-        :raises: `SoundFontException` if channel is out of range or does not have a SoundFont loaded
-        :raises: `RuntimeError` if bank/preset are out of range or do not match any instrument for the SoundFont in the channel
+        :raises: `SoundFontException` if channel is out of range or does not
+            have a SoundFont loaded
+        :raises: `RuntimeError` if bank/preset are out of range or do not match
+            any instrument for the SoundFont in the channel
+
+        Note that presets are numbered with 0-based indexing. MIDI user
+        interfaces typically number presets 1-128.
         """
         sfid = self._get_sfid(chan)
         soundfont = self._get_soundfont(sfid)
@@ -162,9 +174,11 @@ class Synth:
 
         :param chan: Channel to use (0-15)
 
-        :raises: `SoundFontException` if channel is out of range or has no SoundFont loaded
+        :raises: `SoundFontException` if channel is out of range or has no
+            SoundFont loaded
 
-        :return: Tuple containing `(sfid, bank, preset)` indicating SoundFont ID, bank number, and preset number
+        :return: Tuple containing `(sfid, bank, preset)` indicating SoundFont
+            ID, bank number, and preset number
         """
         sfid = self._get_sfid(chan)
         soundfont = self._get_soundfont(sfid)
@@ -179,10 +193,15 @@ class Synth:
         :param bank: Bank to use (0-127)
         :param preset: Which preset to retrieve (0-127)
 
-        :raises: `SoundFontException` if channel is out of range or has no SoundFont loaded
+        :raises: `SoundFontException` if channel is out of range or has no
+            SoundFont loaded
         :raises: `RuntimeError` if bank/preset are out of range
 
-        :return: Name of preset in SoundFont, or `None` if preset does not exist in SoundFont
+        :return: Name of preset in SoundFont, or `None` if preset does not exist
+            in SoundFont
+
+        Note that presets are numbered with 0-based indexing. MIDI user
+        interfaces typically number presets 1-128.
         """
         soundfont = self._get_soundfont(sfid)
         name = soundfont.get_preset_name(bank, preset)
@@ -195,9 +214,11 @@ class Synth:
 
         :param chan: Channel to use (0-15)
         :param key: MIDI key to press (0-127), 60 is middle C
-        :param velocity: Velocity of keypress (0-127), 0 means to turn off, 127 is maximum
+        :param velocity: Velocity of keypress (0-127), 0 means to turn off, 127
+            is maximum
 
-        :return: `True` if note was valid, `False` if note was outside of legal range or channel did not have instrument loaded
+        :return: `True` if note was valid, `False` if note was outside of legal
+            range or channel did not have instrument loaded
         """
         if key < 0 or key > 127:
             return False
@@ -216,7 +237,8 @@ class Synth:
         :param chan: Channel to use (0-15)
         :param key: MIDI key to release (0-127), 60 is middle C
 
-        :return: `True` if note was valid, `False` if note was outside of legal range or channel did not have instrument loaded
+        :return: `True` if note was valid, `False` if note was outside of legal
+            range or channel did not have instrument loaded
 
         It is valid to call `noteoff` on a note that never had `noteon`.
         """
@@ -234,8 +256,9 @@ class Synth:
 
         :param chan: Channel to use (0-15) or None to indicate all channels
 
-        Some instruments have long decays or may continue to produce sound after a NOTE_OFF event.
-        If you need all sounds to stop playing use :meth:`sounds_off`.
+        Some instruments have long decays or may continue to produce sound after
+        a NOTE_OFF event. If you need all sounds to stop playing use
+        :meth:`sounds_off`.
         """
         if chan is None:
             for chan in range(16):
@@ -248,8 +271,9 @@ class Synth:
 
         :param chan: Channel to use (0-15) or None to indicate all channels
 
-        Some instruments have long decays or may continue to produce sound after a NOTE_OFF event.
-        If you need all notes to stop playing and continue producing the decay, use :meth:`notes_off`.
+        Some instruments have long decays or may continue to produce sound after
+        a NOTE_OFF event. If you need all notes to stop playing and continue
+        producing the decay, use :meth:`notes_off`.
         """
         if chan is None:
             for chan in range(16):
@@ -261,11 +285,12 @@ class Synth:
         """Change control value for a specific channel.
 
         :param chan: Channel to use (0-15)
-        :param controller: Controller to update, (0-127), meaning defined by MIDI 1.0 standard
+        :param controller: Controller to update, (0-127), meaning defined by
+            MIDI 1.0 standard
         :param control_value: Value to use for update, (0-127)
 
-        The interpretation of controller number is from the MIDI 1.0 standard. Supported controller values
-        that have an effect are:
+        The interpretation of controller number is from the MIDI 1.0 standard.
+        Supported controller values that have an effect are:
 
         .. include:: table_supported_controller.rstinc
 
@@ -293,7 +318,8 @@ class Synth:
         """Set pitch wheel position for a channel.
 
         :param chan: Channel to affect (0-15)
-        :param value: Value from 0 to 16383 indicating pitch bend down to pitch bend up (default 8192, no pitch change)
+        :param value: Value from 0 to 16383 indicating pitch bend down to pitch
+            bend up (default 8192, no pitch change)
 
         See also: :meth:`pitchbend_range`
         """
@@ -305,7 +331,8 @@ class Synth:
         """Set pitch bend range up and down for a channel.
 
         :param chan: Channel to affect (0-15)
-        :param semitones: Pitch bend range up and down in semitones (default 2.0)
+        :param semitones: Pitch bend range up and down in semitones (default
+            2.0)
 
         See also: :meth:`pitchbend`
         """
