@@ -1,6 +1,9 @@
 name: Doc
 
-on: [push, pull_request]
+on:
+    push:
+        branches:
+            - main
 
 jobs:
     build_doc:
@@ -33,8 +36,8 @@ jobs:
         runs-on: ubuntu-latest
 
         permissions:
-            pages: write      # to deploy to Pages
-            id-token: write   # to verify the deployment originates from an appropriate source
+            pages: write
+            id-token: write
 
         environment:
             name: github-pages
