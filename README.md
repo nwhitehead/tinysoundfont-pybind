@@ -30,7 +30,7 @@ common platforms:
 
 ### Windows
 
-    python -m pip install pyaudio
+    py -m pip install pyaudio
 
 ### macOS
 

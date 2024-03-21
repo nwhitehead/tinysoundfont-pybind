@@ -44,7 +44,7 @@ This package depends on `pyaudio` for playing sounds. To install
 
       .. code-block:: bash
 
-         python -m pip install pyaudio
+         py -m pip install pyaudio
 
    .. tab:: MacOS
 
@@ -274,6 +274,8 @@ Here is an example that loads the demo SoundFont and shows the presets it define
 .. code-block:: text
 
    python -m tinysoundfont --info florestan-subset.sfo
+
+(In Windows you may need to use `py` instead of `python`).
 
 This results in:
 
