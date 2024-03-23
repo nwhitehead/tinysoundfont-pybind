@@ -21,12 +21,70 @@ goals of `tinysoundfont`:
 Compression
 -----------
 
-Compressed audio is handled by `std_vorbis.c <https://github.com/nothings/stb/blob/master/stb_vorbis.c>`_.
+Compressed audio is handled by `std_vorbis.c
+<https://github.com/nothings/stb/blob/master/stb_vorbis.c>`_.
 
 MIDI
 ----
 
-Low-level MIDI decoding is handled by `tml.h` which is included in `TinySoundFont`. From there some code
-in `main.cpp` goes through the MIDI events and constructs a Python list of dictionaries with appropriate
-keys for passing to Python. This data structure is converted to a nicer representation that uses Python
-`dataclasses`.
+Low-level MIDI decoding is handled by `tml.h` which is included in
+`TinySoundFont`. From there some code in `main.cpp` goes through the MIDI events
+and constructs a Python list of dictionaries with appropriate keys for passing
+to Python. This data structure is converted to a nicer representation that uses
+Python `dataclasses`.
+
+Development local build and test
+--------------------------------
+
+Note that a local build and test is not required to use the package, only for
+developing `tinysoundfont` itself.
+
+Build and install locally with:
+
+.. code-block:: text
+
+    python -m pip install .
+
+Test in the root directory with:
+
+.. code-block:: text
+
+    pytest
+
+You may want to build and test in a `virtualenv` environment.
+
+The `python -m pip install .` will perform a compilation step for `C++` code.
+Your environment must have access to a working `C++` compiler as well as the
+Python development headers.
+
+Editable build
+--------------
+
+To speed up development you can do an "editable build". This will cache a lot of
+compiling and setup. First install all needed dependencies in `pip`:
+
+.. code-block:: text
+
+    pip install scikit_build_core pyproject_metadata pathspec pybind11
+
+Then install with `editable.rebuild` on:
+
+.. code-block:: text
+
+    pip install . --no-build-isolation --config-setting=editable.rebuild=true -Cbuild-dir=build .
+
+In my experience you still need to rerun this command when editing files, but it
+will go faster.
+
+Packaging
+---------
+
+Building wheels for PyPI is done by GitHub Actions and does not need to be done
+manually.
+
+Documentation
+-------------
+
+Documentation is done using `Sphinx <https://www.sphinx-doc.org/en/master/>`_.
+GitHub Actions builds automatically and pushes pages to the `Documentation Page
+<https://nwhitehead.github.io/tinysoundfont-pybind/>`_.

@@ -25,24 +25,21 @@ The documentation contains:
 
 ## Installation
 
-This package depends on `pyaudio` for playing sounds. To install `pyaudio` for
-common platforms:
+This package depends on `pyaudio` for playing sounds. To install `pyaudio` and
+`tinysoundfont` for common platforms:
 
 ### Windows
 
-    py -m pip install pyaudio
+    py -m pip install pyaudio tinysoundfont
 
 ### macOS
 
     brew install portaudio
-    pip install pyaudio
+    pip install pyaudio tinysoundfont
 
 ### GNU/Linux (Ubuntu)
 
     sudo apt install python3-pyaudio
-
-To install `tinysoundfont`, for all platforms do:
-
     pip install tinysoundfont
 
 
@@ -76,46 +73,58 @@ Please see the
 [Guide](https://nwhitehead.github.io/tinysoundfont-pybind/guide.html) for more
 examples and notes about the examples.
 
-## Local build and test
+## Command line
 
-Note that a local build and test is not required to use the package, only for
-developing `tinysoundfont` itself.
+The `tinysoundfont` package contains a simple command line tool that can
+be useful for finding presets, testing the validity of SoundFonts, and
+playing MIDI files.
 
-Build and install locally with:
+Here is an example that loads the demo SoundFont and shows the presets it defines:
 
-    python -m pip install .
+   python -m tinysoundfont --info florestan-subset.sfo
 
-Test in the root directory with:
+(In Windows you may need to use `py` instead of `python`).
 
-    pytest
+This results in:
 
-You may want to build and test in a `virtualenv` environment.
+   Info for SoundFont florestan-subset.sfo
+   0 - 2 : Piano
+   0 - 10 : Music Box
+   0 - 12 : Marimba
+   0 - 19 : Church Org.1
+   0 - 21 : Accordion Fr
+   0 - 24 : Nylon-str.Gt
+   0 - 38 : Synth Bass 1
+   0 - 40 : Violin
+   0 - 45 : PizzicatoStr
+   0 - 55 : OrchestraHit
+   0 - 61 : Brass 1
+   0 - 75 : Pan Flute
+   0 - 87 : Bass & Lead
+   0 - 90 : Polysynth
+   0 - 97 : Soundtrack
+   0 - 109 : Bagpipe
+   0 - 116 : Taiko
 
-The `python -m pip install .` will perform a compilation step for `C++` code.
-Your environment must have access to a working `C++` compiler as well as the
-Python development headers.
+The output format shows `bank - preset : Name`.
 
-### Editable build
+Here is an example that plays a test note using preset `55`:
 
-To speed up development you can do an "editable build". This will cache a lot of
-compiling and setup. First install all needed dependencies in `pip`:
+   python -m tinysoundfont --test florestan-subset.sfo --preset 55 --key 70
 
-    pip install scikit_build_core pyproject_metadata pathspec pybind11
+Here is an example that plays a MIDI file using the `FluidR3_GM` SoundFont:
 
-Then install with `editable.rebuild` on:
+   python -m tinysoundfont --play FluidR3_GM.sf2 1080-c01.mid
 
-    pip install . --no-build-isolation --config-setting=editable.rebuild=true -Cbuild-dir=build .
+## License
 
-In my experience you still need to rerun this command when editing files, but it
-will go faster.
+This project is MIT licensed, see
+[LICENSE](https://github.com/nwhitehead/tinysoundfont-pybind/blob/main/LICENSE).
+For full license information about dependencies and test files included in this
+repository, see
+[NOTICE](https://github.com/nwhitehead/tinysoundfont-pybind/blob/main/NOTICE).
 
-### Packaging
+## Contributing
 
-Building wheels for PyPI is done by GitHub Actions and does not need to be done
-manually.
-
-### Documentation
-
-Documentation is done using [Sphinx](https://www.sphinx-doc.org/en/master/).
-GitHub Actions builds automatically and pushes pages to the [Documentation
-Page](https://nwhitehead.github.io/tinysoundfont-pybind/).
+If you have ideas for features, bug fixes, or other things please use Github
+and contribute! If something doesn't work or seems wrong please file an issue.
