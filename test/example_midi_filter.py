@@ -6,7 +6,7 @@ synth = tinysoundfont.Synth()
 sfid = synth.sfload("florestan-subset.sfo")
 
 def filter_program_change(event):
-    """Make all program changes go to preset 0"""
+    """Make all program changes go to preset 19"""
     match event.action:
         case tinysoundfont.midi.ProgramChange(program):
             event.action.program = 19 # Church organ
