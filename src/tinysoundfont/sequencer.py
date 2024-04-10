@@ -21,7 +21,7 @@ from .midi import (
     PitchBend,
 )
 
-DRUM_CHANNEL = 10
+DRUM_CHANNEL = 9
 
 class Sequencer:
     """A Sequencer schedules MIDI events over time.

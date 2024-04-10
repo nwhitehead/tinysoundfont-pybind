@@ -6,3 +6,4 @@ dist/
 wheelhouse/
 _skbuild/
 **/__pycache__
+.vscode/
