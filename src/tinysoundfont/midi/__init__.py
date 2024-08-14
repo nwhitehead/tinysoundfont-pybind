@@ -175,7 +175,7 @@ def load_memory(
         event.t += delta_time
         event.persistent = persistent
         if filter is not None:
-            if filter(event) == True:
+            if filter(event):
                 event = None
         # Check for None return value in filtered events, don't add if None
         if event is not None:

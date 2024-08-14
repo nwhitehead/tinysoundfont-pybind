@@ -1,2 +1,7 @@
-from .synth import Synth, SoundFontException
-from .sequencer import Sequencer
+from .synth import (
+    Synth as Synth,
+    SoundFontException as SoundFontException,
+)
+from .sequencer import (
+    Sequencer as Sequencer,
+)

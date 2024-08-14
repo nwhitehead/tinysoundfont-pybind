@@ -75,7 +75,7 @@ def test_0():
     def filter_program_change(event):
         """Make all program changes go to preset 40 (violin)"""
         match event.action:
-            case tinysoundfont.midi.ProgramChange(program):
+            case tinysoundfont.midi.ProgramChange(_program):
                 event.program = 40
     seq = tinysoundfont.Sequencer(synth)
     seq.midi_load("test/1080-c01.mid", filter=filter_program_change)
@@ -90,7 +90,7 @@ def test_midi_generate():
     import numpy as np
 
     synth = tinysoundfont.Synth()
-    sfid = synth.sfload("test/florestan-subset.sfo")
+    _sfid = synth.sfload("test/florestan-subset.sfo")
 
     seq = tinysoundfont.Sequencer(synth)
     seq.midi_load("test/1080-c01.mid")

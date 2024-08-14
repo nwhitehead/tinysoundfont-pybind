@@ -8,12 +8,11 @@
 #
 
 from collections import deque
-from typing import Callable, List, Optional
+from typing import List
 from .synth import Synth
 from .midi import (
     load,
     Event,
-    Action,
     NoteOn,
     NoteOff,
     ControlChange,

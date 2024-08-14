@@ -2,7 +2,7 @@ import argparse
 import sys
 import time
 
-from .synth import Synth, SoundFontException
+from .synth import Synth
 from .sequencer import Sequencer
 
 
