@@ -372,26 +372,8 @@ class Synth:
         import pyaudio
 
         def callback(in_data, frame_count, time_info, status):
-            CHANNELS = 2
-            SIZEOF_FLOAT_IN_BYTES = 4
-            # Wrap with `memoryview` so slicing is references inside the buffer, not copies
-            buffer = memoryview(
-                bytearray(frame_count * CHANNELS * SIZEOF_FLOAT_IN_BYTES)
-            )
-            generated = 0
-            while generated < frame_count:
-                delta = (frame_count - generated) / self.samplerate
-                # Call all the relevant callbacks, which each may shorten delta
-                # Each callback does any actions it needs to do that are currently scheduled, then returns how much delta can advance
-                if self.callback is not None:
-                    delta = min(self.callback(delta), delta)
-                # Compute actual frame count to render based on return value in seconds (round up to keep making progress)
-                actual_frame_count = int(delta * self.samplerate + 0.999)
-                # Index into buffer at frame boundaries
-                pos = generated * CHANNELS * SIZEOF_FLOAT_IN_BYTES
-                sz_bytes = actual_frame_count * CHANNELS * SIZEOF_FLOAT_IN_BYTES
-                self.generate(actual_frame_count, buffer=buffer[pos : pos + sz_bytes])
-                generated += actual_frame_count
+            buffer = self.generate(samples=frame_count)
+            # PyAudio needs actual bytes, not just memoryview
             return (bytes(buffer), pyaudio.paContinue)
 
         self.p = pyaudio.PyAudio()
@@ -422,6 +404,46 @@ class Synth:
 
         :returns: View into buffer with samples filled in stereo float32 format.
 
+        This method fills in a fixed number of output samples in the output
+        buffer given (or creates a new buffer if none is given). The sequencer
+        callback is called as needed to trigger MIDI events at the correct
+        sample location.
+        """
+        CHANNELS = 2
+        SIZEOF_FLOAT_IN_BYTES = 4
+        if buffer is None:
+            # Wrap with `memoryview` so slicing is references inside the buffer, not copies
+            buffer = memoryview(bytearray(samples * CHANNELS * SIZEOF_FLOAT_IN_BYTES))
+        generated = 0
+        while generated < samples:
+            delta = (samples - generated) / self.samplerate
+            # Call all the relevant callbacks, which each may shorten delta
+            # Each callback does any actions it needs to do that are currently scheduled, then returns how much delta can advance
+            if self.callback is not None:
+                delta = min(self.callback(delta), delta)
+            # Compute actual frame count to render based on return value in seconds (round up to keep making progress in each iteration)
+            actual_frame_count = int(delta * self.samplerate + 0.999)
+            # Index into buffer at frame boundaries
+            pos = generated * CHANNELS * SIZEOF_FLOAT_IN_BYTES
+            sz_bytes = actual_frame_count * CHANNELS * SIZEOF_FLOAT_IN_BYTES
+            self.generate_simple(actual_frame_count, buffer=buffer[pos : pos + sz_bytes])
+            generated += actual_frame_count
+        return buffer
+
+    def generate_simple(self, samples: int, buffer: Optional[memoryview] = None) -> memoryview:
+        """Generate fixed number of output samples, ignoring sequenced events.
+
+        :param samples: Number of samples to generate
+        :param buffer: Existing buffer to fill, or `None` to allocate new buffer
+
+        :returns: View into buffer with samples filled in stereo float32 format.
+
+        This method fills in a fixed number of output samples in the output
+        buffer given (or creates a new buffer if none is given). The sequencer
+        is not called from this method so no new events are ever triggered by
+        this method.
+
+        See also: :meth:`generate`
         """
         CHANNELS = 2
         SIZEOF_FLOAT_IN_BYTES = 4

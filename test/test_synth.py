@@ -85,3 +85,17 @@ def test_0():
         synth.sfunload(sfid)
     synth.sfunload(sfid2)
     synth.stop()
+
+def test_midi_generate():
+    import numpy as np
+
+    synth = tinysoundfont.Synth()
+    sfid = synth.sfload("test/florestan-subset.sfo")
+
+    seq = tinysoundfont.Sequencer(synth)
+    seq.midi_load("test/1080-c01.mid")
+
+    # Generate 1 second buffer
+    buffer = synth.generate(44100)
+    block = np.frombuffer(bytes(buffer), dtype=np.float32)
+    assert block.min() < block.max()
