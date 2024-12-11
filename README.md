@@ -15,6 +15,11 @@ What you might want to use this package for:
 * Procedurally generate and play music or sounds
 * Play music and sounds in an interactive way in your Python program
 
+Some advantages of this package specifically compared to some others:
+
+* Permissive MIT licensing that works well with commercial products like games
+* No dependencies on other installed libraries for audio data generation
+
 ## Documentation
 
 [Main `tinysoundfont` documentation](https://nwhitehead.github.io/tinysoundfont-pybind/)
