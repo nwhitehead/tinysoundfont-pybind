@@ -35,4 +35,4 @@ test = [
 skip = "cp36-*"
 
 [tool.scikit-build]
-cmake.verbose = false
+build.verbose = false
