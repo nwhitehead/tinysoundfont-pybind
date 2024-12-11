@@ -29,6 +29,7 @@ jobs:
                   path: ./doc/build/html/
 
     deploy:
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         needs: build_doc
         runs-on: ubuntu-latest
 
