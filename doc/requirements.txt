@@ -2,3 +2,4 @@ sphinx
 sphinx_autodoc_typehints
 sphinx-tabs
 sphinx-rtd-theme
+ninja
